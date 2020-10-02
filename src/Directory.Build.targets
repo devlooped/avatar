@@ -33,8 +33,12 @@
   </Target>
 
   <Target Name="UpdatePackageMetadata" 
-          BeforeTargets="PrepareForBuild;GetAssemblyVersion;GenerateNuspec;Pack" 
-          Condition="'$(IsPackable)' == 'true' And '$(RepositoryUrl)' != '' And '$(SourceRevisionId)' != ''">
+          BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack" 
+          DependsOnTargets="InitializeSourceControlInformation"
+          Condition="'$(SourceControlInformationFeatureSupported)' And
+                     '$(IsPackable)' == 'true' And 
+                     '$(RepositoryUrl)' != '' And 
+                     '$(SourceRevisionId)' != ''">
     <PropertyGroup>
       <Description>
         $(Description)

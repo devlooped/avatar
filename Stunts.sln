@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.UnitTests", "src\Stunts.UnitTests\Stunts.UnitTests.csproj", "{766CB6E6-24EF-4CC4-AB05-A45637765838}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "src\Sample\Sample.csproj", "{D1EB27BA-BA63-4118-B374-BB14BD4C9CD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualStunts", "src\ManualStunts\ManualStunts.csproj", "{D1EB27BA-BA63-4118-B374-BB14BD4C9CD5}"
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Stunts.Package", "src\Stunts.Package\Stunts.Package.msbuildproj", "{A997BFF1-3735-4231-A926-113070B0DF5E}"
 EndProject

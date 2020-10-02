@@ -39,7 +39,7 @@ namespace Sample
 
         public override bool TryAdd(ref int x, ref int y, out int z)
         {
-            z = default(int);
+            z = default;
             var local_x = x;
             var local_y = y;
             var local_z = z;
