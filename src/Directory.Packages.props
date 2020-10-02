@@ -1,8 +1,10 @@
 <Project>
+
   <PropertyGroup Condition="!$(CI)">
     <NuGetizerVersion>42.42.42</NuGetizerVersion>
     <NuGetizerVersion Condition="!Exists('C:\Code\kzu\NuGetizer\bin')">42.42.42-dev.*</NuGetizerVersion>
   </PropertyGroup>
+  
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="ThisAssembly" Version="0.10.4" />
@@ -11,10 +13,13 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageVersion Include="Moq" Version="4.14.5" />
     <PackageVersion Include="xunit" Version="2.4.1" />
+    <PackageVersion Include="xunit.runner.console" Version="2.4.1" />
+    <PackageVersion Include="xunit.runner.msbuild" Version="2.4.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.1" />
 
     <PackageVersion Include="Superpower" Version="2.3.0" />
 
     <PackageVersion Include="NuGetizer" Version="$(NuGetizerVersion)" />
   </ItemGroup>
+  
 </Project>

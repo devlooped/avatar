@@ -28,6 +28,11 @@
     <EmbeddedResource Update="@(EmbeddedResource)" Generator="" />
   </ItemGroup>
 
+  <Target Name="Test" Condition="@(PackageReference -> WithMetadataValue('Identity', 'xunit')) != ''" DependsOnTargets="GetTargetPath">
+    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
+    <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
+  </Target>
+
   <Target Name="Prepare" BeforeTargets="PrepareForBuild">
     <MakeDir Directories="$(PackageOutputPath)" Condition="'$(PackageOutputPath)' != '' And !Exists('$(PackageOutputPath)')" />
   </Target>

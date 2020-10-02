@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts", "src\Stunts\Stunts
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AB748028-AEB8-4CB5-B19F-15E5F92ED71F}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
 		src\Directory.Build.props = src\Directory.Build.props
 		src\Directory.Build.targets = src\Directory.Build.targets
 		src\Directory.Packages.props = src\Directory.Packages.props
 		global.json = global.json
 		src\Packages.props = src\Packages.props
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.UnitTests", "src\Stunts.UnitTests\Stunts.UnitTests.csproj", "{766CB6E6-24EF-4CC4-AB05-A45637765838}"
@@ -19,6 +21,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualStunts", "src\ManualStunts\ManualStunts.csproj", "{D1EB27BA-BA63-4118-B374-BB14BD4C9CD5}"
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Stunts.Package", "src\Stunts.Package\Stunts.Package.msbuildproj", "{A997BFF1-3735-4231-A926-113070B0DF5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{E1FA02D5-89FF-4C7D-80F1-F94117386637}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E1FA02D5-89FF-4C7D-80F1-F94117386637} = {AB748028-AEB8-4CB5-B19F-15E5F92ED71F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EC1923A-DA53-4C10-99E5-F3862D5F4445}

@@ -4,6 +4,7 @@
 out
 bin
 obj
+TestResults
 dotnet-nugetize.items
 *.nupkg
 *.lock.json
