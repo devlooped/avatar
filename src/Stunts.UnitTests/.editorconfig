@@ -1,0 +1,4 @@
+[*.cs]
+
+# xUnit1013: Public method should be marked as test
+dotnet_diagnostic.xUnit1013.severity = none

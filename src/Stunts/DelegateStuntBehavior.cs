@@ -9,7 +9,7 @@ namespace Stunts
     /// <see cref="IStuntBehavior.AppliesTo(IMethodInvocation)"/> (via a <see cref="AppliesToDelegate"/>) 
     /// interface methods.
     /// </summary>
-    public class DelegateStuntBehavior : IStuntBehavior
+    class DelegateStuntBehavior : IStuntBehavior
     {
         readonly AppliesToDelegate appliesTo;
         readonly ExecuteDelegate behavior;
@@ -45,6 +45,6 @@ namespace Stunts
         /// No actual behavior depends on these strings.
         /// </devdoc>
         [DebuggerNonUserCode]
-        public override string ToString() => name ?? "<unnamed>";
+        public override string ToString() => name ?? "<anonymous>";
     }
 }

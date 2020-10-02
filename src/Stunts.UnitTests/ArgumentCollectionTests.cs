@@ -90,7 +90,6 @@ namespace Stunts.Tests
         public void Count()
             => Assert.Equal(1, new ArgumentCollection(new object[] { 5 }, testMethod.GetParameters()).Count);
 
-        [SuppressMessage("Usage", "xUnit1013:Public method should be marked as test")]
         public static void Do(int value) { }
     }
 }

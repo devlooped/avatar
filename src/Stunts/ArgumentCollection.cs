@@ -5,6 +5,7 @@ using System.Reflection;
 using System;
 using System.Diagnostics;
 using TypeNameFormatter;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Stunts
 {
@@ -62,18 +63,20 @@ namespace Stunts
             return -1;
         }
 
-        public override string ToString() => string
-            .Join(", ", infos
-                .Select((p, i) =>
-                    (p.IsOut ? p.ParameterType.GetFormattedName().Replace("ref ", "out ") : p.ParameterType.GetFormattedName()) +
-                    " " + p.Name +
-                    (p.IsOut ? "" :
-                        (" = " +
-                            ((IsString(p.ParameterType) && values[i] != null) ? "\"" + values[i] + "\"" :
-                                // render boolean as lowercase to match C#
-                                (values[i] is bool b) ? b.ToString().ToLowerInvariant() : (values[i] ?? "null"))
-                        )
-                    )
+        [DebuggerNonUserCode]
+        [ExcludeFromCodeCoverage]
+        public override string ToString() => string.Join(", ", infos.Select(ToString));
+
+        [DebuggerNonUserCode]
+        [ExcludeFromCodeCoverage]
+        string ToString(ParameterInfo parameter, int index) => 
+            (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
+            " " + parameter.Name +
+            (parameter.IsOut ? "" :
+                (" = " +
+                    ((IsString(parameter.ParameterType) && values[index] != null) ? "\"" + values[index] + "\"" :
+                        // render boolean as lowercase to match C#
+                        (values[index] is bool b) ? b.ToString().ToLowerInvariant() : (values[index] ?? "null"))
                 )
             );
 

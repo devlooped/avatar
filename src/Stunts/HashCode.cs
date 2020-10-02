@@ -46,6 +46,8 @@ https://raw.githubusercontent.com/Cyan4973/xxHash/5c174cfa4e45a42f94082dc0d4539b
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Stunts
@@ -55,6 +57,8 @@ namespace Stunts
     /// <summary>
     /// Hashing helper class from corefx. 
     /// </summary>
+    [DebuggerNonUserCode]
+    [ExcludeFromCodeCoverage]
     public struct HashCode
     {
         private static readonly uint s_seed = (uint)new Random().Next();

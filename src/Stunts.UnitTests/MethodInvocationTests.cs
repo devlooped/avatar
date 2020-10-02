@@ -4,7 +4,6 @@ using Xunit;
 
 namespace Stunts.Tests
 {
-#pragma warning disable xUnit1013 // Public method should be marked as test
     public class MethodInvocationTests
     {
         public void Do() { }
@@ -57,6 +56,12 @@ namespace Stunts.Tests
             var doInt6 = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt)), 6);
 
             Assert.NotEqual(doInt5, doInt6);
+
+            var doIntNull = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt)), 5);
+            var doIntNulls = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt)), new object[] { null! });
+
+            Assert.NotEqual(doIntNull, doIntNulls);
+            Assert.NotEqual(doIntNull.GetHashCode(), doIntNulls.GetHashCode());
         }
 
         public void DoWithNullableInt(int? value) { }
@@ -151,5 +156,4 @@ namespace Stunts.Tests
         public void ThrowsIfNullMethodBase()
             => Assert.Throws<ArgumentNullException>(() => new MethodInvocation(this, null!));
     }
-#pragma warning restore xUnit1013 // Public method should be marked as test
 }

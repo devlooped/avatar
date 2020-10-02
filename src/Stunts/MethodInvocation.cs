@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TypeNameFormatter;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Stunts
 {
@@ -62,7 +63,8 @@ namespace Stunts
         /// Annotating this method with DebuggerNonUserCode achieves that.
         /// No actual behavior depends on these strings.
         /// </devdoc>
-        //[DebuggerNonUserCode]
+        [ExcludeFromCodeCoverage]
+        [DebuggerNonUserCode]
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -113,7 +115,7 @@ namespace Stunts
                 var generic = ((MethodInfo)MethodBase).GetGenericMethodDefinition();
                 result
                     .Append("<")
-                    .Append(string.Join(", ", generic.GetGenericArguments().Select(t => t.Name)))
+                    .Append(string.Join(", ", generic.GetGenericArguments().Select(TypeName)))
                     .Append(">");
             }
 
@@ -143,6 +145,10 @@ namespace Stunts
 
             return result.ToString();
         }
+
+        [DebuggerNonUserCode]
+        [ExcludeFromCodeCoverage]
+        string TypeName(Type type) => type.Name;
 
         #region Equality
 

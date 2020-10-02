@@ -30,6 +30,7 @@ namespace Stunts
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
 		public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             // We can't just add a constraint to the method signature, because 
@@ -45,7 +46,8 @@ namespace Stunts
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
-		public static TStunt AddBehavior<TStunt>(this TStunt stunt, IStuntBehavior behavior)
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static TStunt AddBehavior<TStunt>(this TStunt stunt, IStuntBehavior behavior)
         {
             if (stunt is IStunt target)
                 target.Behaviors.Add(behavior);
@@ -79,6 +81,7 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             if (stunt is IStunt target)
@@ -93,6 +96,7 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, IStuntBehavior behavior)
         {
             if (stunt is IStunt target)

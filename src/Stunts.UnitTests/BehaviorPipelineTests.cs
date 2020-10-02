@@ -22,6 +22,17 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void WhenInvokingPipelineWithNoBehaviors_ThenTargetCannotInvokeNext()
+        {
+            var pipeline = new BehaviorPipeline();
+
+            Action a = WhenInvokingPipelineWithNoBehaviors_ThenInvokesTarget;
+
+            Assert.Throws<InvalidOperationException>(() => pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => n().Invoke(m, n))));
+        }
+
+        [Fact]
         public void WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget()
         {
             var firstCalled = false;

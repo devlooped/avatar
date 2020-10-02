@@ -77,17 +77,29 @@ namespace Stunts
         public static StringBuilder AddNames(this StringBuilder builder, IEnumerable<Type> types)
         {
             foreach (var type in types)
-            {
                 builder.AddName(type);
-                if (type.IsConstructedGenericType)
-                {
-                    builder.Append("Of").AddNames(type.GenericTypeArguments);
-                }
-            }
+
             return builder;
         }
 
         public static StringBuilder AddName(this StringBuilder builder, Type type)
-            => type.IsGenericType ? builder.Append(type.Name.Substring(0, type.Name.IndexOf('`'))) : builder.Append(type.Name);
+        {
+            if (type.IsGenericType)
+            {
+                builder.Append(type.Name.Substring(0, type.Name.IndexOf('`')));
+                if (type.IsConstructedGenericType)
+                {
+                    return builder.Append("Of").AddNames(type.GenericTypeArguments);
+                }
+                else
+                {
+                    return builder.Append("Of").AddNames(type.GetGenericArguments());
+                }
+            }
+            else
+            {
+                return builder.Append(type.Name);
+            }
+        }
     }
 }
