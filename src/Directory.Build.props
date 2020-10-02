@@ -6,8 +6,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <Version>42.42.42</Version>
-    <PackageVersion>$(Version)</PackageVersion>
+    <VersionPrefix>42.42.42</VersionPrefix>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
