@@ -1,5 +1,9 @@
 <Project>
 
+  <PropertyGroup>
+    <NuGetizerVersion>0.4.1</NuGetizerVersion>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="!$(CI)">
     <NuGetizerVersion>42.42.42</NuGetizerVersion>
     <NuGetizerVersion Condition="!Exists('C:\Code\kzu\NuGetizer\bin')">42.42.42-dev.*</NuGetizerVersion>
