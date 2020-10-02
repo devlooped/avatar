@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ThisAssembly" PrivateAssets="all" />
+    <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Stunts.UnitTests" />
+    <!--
+    <InternalsVisibleTo Include="Stunts.Dynamic" />
+    <InternalsVisibleTo Include="Stunts.Sdk.Tests" />
+    -->
+  </ItemGroup>
+  
+</Project>

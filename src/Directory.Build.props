@@ -1,0 +1,43 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>kzu</Authors>
+    <Copyright>Copyright 2020 - Daniel Cazzulino</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <Version>42.42.42</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
+
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\bin'))</PackageOutputPath>
+
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>Preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseSharedCompilation>true</UseSharedCompilation>
+
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp</DefaultItemExcludes>
+
+    <!-- Use Directory.Packages.props -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <RestoreSources>https://pkg.kzu.io/index.json;$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('C:\Code\kzu\NuGetizer\bin')">C:\Code\kzu\NuGetizer\bin;$(RestoreSources)</RestoreSources>
+  </PropertyGroup>
+
+  <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
+    <CI>false</CI>
+    <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" Visible="false" />
+    <PackageReference Include="NuGetizer" Visible="false" />
+  </ItemGroup>
+
+</Project>
