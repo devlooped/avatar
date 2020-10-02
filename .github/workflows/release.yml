@@ -34,6 +34,6 @@ jobs:
       - name: test
         run: msbuild -t:test
       - name: pack
-        run: msbuild -t:pack -p:nobuild=true -p:version=$($env:VERSION)
+        run: msbuild -t:pack -p:version=$($env:VERSION)
       - name: push
         run: dotnet nuget push bin\**\*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
