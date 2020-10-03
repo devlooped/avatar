@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 2.1.x
-      - run: dotnet build -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER"
+      - run: dotnet msbuild -r -m:1 -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER"
       - run: dotnet test --no-build
       - name: sleet
         if: matrix.os == 'ubuntu-latest'

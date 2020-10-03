@@ -14,6 +14,6 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
-      - run: dotnet build -p:version=${GITHUB_REF#refs/*/v}
+      - run: dotnet build -c Release -p:version=${GITHUB_REF#refs/*/v}
       - run: dotnet test --no-build
       - run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
