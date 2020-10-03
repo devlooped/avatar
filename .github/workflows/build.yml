@@ -9,6 +9,10 @@ env:
   DOTNET_NOLOGO: true
   codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     name: Build-${{ matrix.os }}
