@@ -11,7 +11,7 @@
   
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
-    <PackageVersion Include="ThisAssembly" Version="0.10.4" />
+    <PackageVersion Include="ThisAssembly" Version="1.0.0-alpha" />
     <PackageVersion Include="TypeNameFormatter.Sources" Version="1.0.1" />
 
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />

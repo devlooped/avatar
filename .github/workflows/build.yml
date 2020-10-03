@@ -1,38 +1,33 @@
 name: build
-on: push
+on: 
+  push:
+    branches: [main, dev]  
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 env:
   DOTNET_NOLOGO: true
-  MSBUILDDISABLENODEREUSE: 1
+  codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: Build-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: set version
-        run: echo "::set-env name=VERSION_SUFFIX::$(git name-rev --name-only --refs=refs/heads/* HEAD).$($env:GITHUB_RUN_NUMBER)"
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 2.1.x
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.x
-      - run: dotnet tool update -g dotnet-vs
-      - run: echo "::set-env name=MSB::$(vs where preview --prop=InstallationPath)"
-      - run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
-        if: env.MSB == ''
-      - run: echo "::add-path::$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
-      - name: build
-        run: msbuild -r -p:versionsuffix=$($env:VERSION_SUFFIX)
-      - name: test
-        run: msbuild -t:test
-      - name: pack
-        run: msbuild -t:pack -p:versionsuffix=$($env:VERSION_SUFFIX)
+      - run: dotnet build -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER"
+      - run: dotnet test --no-build
       - name: sleet
+        if: matrix.os == 'ubuntu-latest'
         run: |
           dotnet tool install -g --version 2.3.33 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
