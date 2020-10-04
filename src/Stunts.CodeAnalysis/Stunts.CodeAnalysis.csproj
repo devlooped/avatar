@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackFolder>analyzers\dotnet\cs</PackFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
+  </ItemGroup>
+
+</Project>

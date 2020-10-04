@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <PackFolder>analyzers\dotnet\cs</PackFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" PrivateAssets="all" />
+  </ItemGroup>
+  
+</Project>
