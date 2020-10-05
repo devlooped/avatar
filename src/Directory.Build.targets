@@ -57,7 +57,7 @@
   <!-- Clears nuget cache for the current project package id -->
   <Target Name="ClearCachedPackageId"
           Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
+          AfterTargets="Build;Pack">
     <PropertyGroup>
       <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
     </PropertyGroup>
