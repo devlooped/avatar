@@ -16,6 +16,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
   </ItemGroup>

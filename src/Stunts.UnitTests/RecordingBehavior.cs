@@ -5,7 +5,7 @@ using Stunts;
 
 public class RecordingBehavior : IStuntBehavior
 {
-    readonly List<object> invocations = new();
+    public List<object> Invocations { get; } = new();
 
     public bool AppliesTo(IMethodInvocation invocation) => true;
 
@@ -13,12 +13,12 @@ public class RecordingBehavior : IStuntBehavior
     {
         var result = next().Invoke(invocation, next);
         if (result != null)
-            invocations.Add(result);
+            Invocations.Add(result);
         else
-            invocations.Add(invocation);
+            Invocations.Add(invocation);
 
         return result!;
     }
 
-    public override string ToString() => string.Join(Environment.NewLine, invocations.Select(i => i.ToString()));
+    public override string ToString() => string.Join(Environment.NewLine, Invocations.Select(i => i.ToString()));
 }
