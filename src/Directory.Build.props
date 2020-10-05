@@ -34,6 +34,10 @@
     <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackOnBuild Condition="'$(PackOnBuild)' == ''">$(CI)</PackOnBuild>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" Visible="false" />
     <PackageReference Include="NuGetizer" Visible="false" />
