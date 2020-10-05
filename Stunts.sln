@@ -32,7 +32,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.StaticProxy", "src\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.StaticProxy.Sdk", "src\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj", "{E6C7D2A1-E425-4B25-879A-C7EE8B642C1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stunts.DynamicProxy", "src\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj", "{EE910E63-2490-434C-961E-83C088ADC5C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.DynamicProxy", "src\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj", "{EE910E63-2490-434C-961E-83C088ADC5C2}"
+EndProject
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Pack", "src\Pack\Pack.msbuildproj", "{4A1785A4-3CE1-4E13-A267-769574AF4F05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{EE910E63-2490-434C-961E-83C088ADC5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE910E63-2490-434C-961E-83C088ADC5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE910E63-2490-434C-961E-83C088ADC5C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
