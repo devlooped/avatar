@@ -1,0 +1,12 @@
+<Project>
+
+  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes">
+    <ItemGroup>
+      <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
+        <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
+        <_Parameter2>%(StuntFactory.PackageId)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -1,3 +1,7 @@
 <Project>
 
+  <PropertyGroup>
+    <DynamicProxyStuntFactory>Stunts.Sdk.DynamicProxyFactory, Stunts.DynamicProxy, PublicKeyToken=00352124762f2aa5</DynamicProxyStuntFactory>
+  </PropertyGroup>
+
 </Project>

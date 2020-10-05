@@ -4,12 +4,13 @@
     <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
     <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
     <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">$(IsPackable)</ClearHttpNuGetCacheOnPack>
+    <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">false</ClearHttpNuGetCacheOnPack>
     <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
     <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
   </PropertyGroup>
 
   <ItemGroup>
-    <UpToDateCheck Include="@(_PackageFiles)" />
+    <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
     <EmbeddedResource Update="@(EmbeddedResource)" Generator="" />
   </ItemGroup>
 
@@ -109,7 +110,7 @@
   </Target>
 
   <Target Name="ClearHttpNuGetCache"
-          Condition="!$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
+          Condition="$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
           AfterTargets="Build;Pack" DependsOnTargets="Pack">
     <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
     <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />

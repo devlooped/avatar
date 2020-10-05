@@ -8,10 +8,13 @@ namespace Stunts.UnitTests
 {
     public class DynamicProxyTests
     {
+        public void test() => Console.WriteLine(typeof(DynamicProxyFactory).AssemblyQualifiedName);
+
         [Fact]
         public void TestFactory()
         {
             var factory = new DynamicProxyFactory();
+
 
             var calculator = (ICalculator)factory.CreateStunt(Assembly.GetExecutingAssembly(), 
                 typeof(ICalculator), Array.Empty<Type>(), Array.Empty<object>());

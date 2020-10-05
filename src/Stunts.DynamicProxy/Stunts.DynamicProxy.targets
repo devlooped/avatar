@@ -1,0 +1,30 @@
+<Project>
+
+  <ItemGroup>
+    <StuntFactory Include="$(DynamicProxyStuntFactory)" 
+                  PackageId="Stunts.DynamicProxy"
+                  Condition="'$(RegisterDynamicProxyFactory)' != 'false'" />
+  </ItemGroup>
+
+  <Target Name="EnsureDynamicProxyFactory" 
+          BeforeTargets="BeforeCompile;CoreCompile"
+          Condition="'$(RegisterDynamicProxyFactory)' != 'false'">
+
+    <!-- NOTE: we do this in a targets rather than just making StuntFactoryAttribute AllowMultiple=false 
+         because this will be significantly user-friendlier, since the attribute is a generated one and 
+         users won't know where the duplicate is coming from otherwise. -->
+
+    <PropertyGroup>
+      <StuntFactories>@(StuntFactory -> Count())</StuntFactories>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <_OtherStuntFactories Include="@(StuntFactory -> '%(PackageId)')" Exclude="Stunts.DynamicProxy" />
+    </ItemGroup>
+
+    <Error Code="ST001" Condition="$(StuntFactories) &gt; '1'"
+           Text="More than one stunt factory is registered in the current project. Set RegisterDynamicProxyFactory=false or remove the other package(s) providing factories: @(_OtherStuntFactories, ', ')." />
+
+  </Target>
+
+</Project>
