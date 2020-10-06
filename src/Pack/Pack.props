@@ -1,0 +1,23 @@
+﻿<Project>
+  
+  <ItemGroup>
+    <ProjectCapability Include="Pack" />
+    <ProjectReference Include="..\**\*.csproj" Exclude="..\**\bin\**\*.*proj" />
+  </ItemGroup>
+  
+  <!-- Remove IsPackable=false projects from the globing -->
+  <Target Name="RemoveNonPackable">
+    <MSBuild Projects="@(ProjectReference)" Targets="GetTargetPathWithTargetPlatformMoniker" SkipNonexistentProjects="$(SkipNonexistentProjects)" SkipNonexistentTargets="$(SkipNonexistentTargets)" StopOnFirstFailure="$(StopOnFirstFailure)">
+      <Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
+    </MSBuild>
+    <ItemGroup>
+      <NonPackableProjectReference Include="@(_ReferencedProjectTargetPath -> '%(OriginalItemSpec)')" Condition="'%(_ReferencedProjectTargetPath.IsPackable)' == 'false'" />
+      <ProjectReference Remove="@(NonPackableProjectReference)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="CompileDesignTime" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" 
+          Condition="'$(DebuggerFlavor)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
+
+</Project>
