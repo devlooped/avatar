@@ -6,6 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Superpower" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+
+    <!-- Workaround for revision mismatch with public versions -->
+    <PackageReference Include="System.Collections.Immutable" Pack="false" />
+    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
   </ItemGroup>
 

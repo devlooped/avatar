@@ -3,8 +3,15 @@
   <PropertyGroup>
     <TargetFramework Condition="'$(BuildingInsideVisualStudio)' == 'true'">net472</TargetFramework>
     <TargetFramework Condition="'$(BuildingInsideVisualStudio)' != 'true'">net5.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectProperty Include="MSBuildProjectDirectory" />
+    <ProjectProperty Include="MSBuildBinPath" />
+    <ProjectProperty Include="BuildReferencePaths" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
@@ -13,12 +20,74 @@
     <PackageReference Include="xunit.runner.console" />
     <PackageReference Include="xunit.runner.msbuild" />
     <PackageReference Include="xunit.runner.visualstudio" />
+
+    <PackageReference Include="NuGet.Client" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" />
+
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Locator" />
+    <PackageReference Include="MSBuild.StructuredLogger" />
+
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+
+    <PackageReference Include="Superpower" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" EmitMetadata="false" />
     <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="CodeAnalysis\ST*\**\*.NoBuild.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Remove="CodeAnalysis\ST*\**\*.NoBuild.cs" />
+    <Compile Update="CodeAnalysis\ST*\**\*.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Internals\Program.cs" />
+    <None Include="Internals\Program.cs" CopyToOutputDirectory="PreserveNewest" />    
+    <None Include="..\Stunts.StaticProxy.Sdk\RoslynInternals.cs" Link="Internals\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  
+  <Target Name="ClearMSBuild" AfterTargets="Build">
+    <ItemGroup>
+      <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
+    </ItemGroup>
+    <Delete Files="@(MSBuildAssembly)">
+      <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
+    </Delete>
+    <Message Text="Deleted: @(DeletedFiles)" Importance="high" />
+  </Target>
+
+  <ItemDefinitionGroup>
+    <ReferencePath>
+      <FrameworkFile />
+      <FusionName />
+      <EmitMetadata />
+    </ReferencePath>
+  </ItemDefinitionGroup>
+
+  <Target Name="AddBuildReferencePaths" AfterTargets="ResolveReferences" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="ResolveReferences;GetTargetPath" Returns="@(BuildReferencePath)">
+
+    <ItemGroup>
+      <BuildReferencePath Include="@(ReferencePath)" Condition="$([MSBuild]::ValueOrDefault('%(EmitMetadata)', 'true')) != 'false'" />
+      <TargetPath Include="$(TargetPath)" />
+      <BuildReferencePath Include="@(TargetPath -> '%(FullPath)')" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <BuildReferencePaths>@(BuildReferencePath, '|')</BuildReferencePaths>
+    </PropertyGroup>
+    
+  </Target>
+  
 </Project>

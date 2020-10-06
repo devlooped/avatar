@@ -2,7 +2,7 @@
 using Sample;
 using Xunit;
 
-namespace Stunts.Tests
+namespace Stunts.UnitTests
 {
     public class Sample
     {
@@ -14,9 +14,9 @@ namespace Stunts.Tests
             
             var isOn = false;
             stunt.TurnedOn += (_, __) => isOn = true;
-
+            
             stunt.TurnOn();
-
+            
             Assert.True(isOn);
             Assert.Equal(3, stunt.Add(1, 2));
             Assert.Equal(default, stunt.Mode);

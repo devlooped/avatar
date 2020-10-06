@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Xunit;
 
-namespace Stunts.Tests
+namespace Stunts.UnitTests
 {
     public class ArgumentCollectionTests
     {

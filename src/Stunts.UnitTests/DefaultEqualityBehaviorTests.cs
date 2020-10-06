@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Stunts.Tests
+namespace Stunts.UnitTests
 {
     public class DefaultEqualityBehaviorTests
     {
