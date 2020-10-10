@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Stunts;
+using Microsoft.CodeAnalysis.VisualBasic;
 
 /// <summary>
 /// Class for turning strings into documents and getting the diagnostics on them
@@ -14,13 +14,6 @@ using Stunts;
 /// </summary>
 public abstract partial class DiagnosticVerifier
 {
-    private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-    private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-    private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
-    private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
-    private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true)!.Assembly.Location);
-    private static readonly MetadataReference StuntsReference = MetadataReference.CreateFromFile(typeof(IStunt).Assembly.Location);
-
     internal static string DefaultFilePathPrefix = "Test";
     internal static string CSharpDefaultFileExt = "cs";
     internal static string VisualBasicDefaultExt = "vb";
@@ -145,9 +138,20 @@ public abstract partial class DiagnosticVerifier
 
         var projectId = ProjectId.CreateNewId(debugName: TestProjectName);
 
-        var solution = new AdhocWorkspace()
+        using var workspace = new AdhocWorkspace();
+
+        var options = language == LanguageNames.CSharp ?
+                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable) :
+                (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On);
+        var parse = language == LanguageNames.CSharp ?
+                (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
+                (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
+
+        var solution = workspace
             .CurrentSolution
             .AddProject(projectId, TestProjectName, TestProjectName, language)
+            .WithProjectCompilationOptions(projectId, options)
+            .WithProjectParseOptions(projectId, parse)
             .AddMetadataReferences(projectId, AppDomain.CurrentDomain
                 .GetAssemblies()
                 .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
@@ -161,6 +165,7 @@ public abstract partial class DiagnosticVerifier
             solution = solution.AddDocument(documentId, newFileName, SourceText.From(source), isGenerated: false);
             count++;
         }
+
         return solution.GetProject(projectId) ?? throw new InvalidOperationException();
     }
     #endregion

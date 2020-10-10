@@ -25,6 +25,7 @@ public static class WorkspaceHelper
             {
                 typeof(IStunt).Assembly,
                 typeof(NamingConvention).Assembly,
+                typeof(Superpower.Parse).Assembly,
                 typeof(ICodeFix).Assembly,
             })));
         var projectInfo = CreateProjectInfo(language, assemblyName, includeStuntApi, includeMockApi);
