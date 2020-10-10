@@ -29,7 +29,7 @@ namespace Stunts.UnitTests
                 new[]
                 {
                     File.ReadAllText(path),
-                    File.ReadAllText(@"Stunts\Stunt.cs"),
+                    File.ReadAllText(@"Stunts/Stunt.cs"),
                 },
                 expected);
         }
