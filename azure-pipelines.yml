@@ -40,7 +40,7 @@ stages:
         version: 2.1.x
         performMultiLevelLookup: true
 
-    - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$BUILD_BUILDID"
+    - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       displayName: build
 
     - task: VSTest@2
