@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET472
+using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -48,3 +49,5 @@ namespace System.Runtime.CompilerServices
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public sealed class ModuleInitializerAttribute : Attribute { }
 }
+
+#endif

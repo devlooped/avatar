@@ -7,6 +7,10 @@
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DefineConstants Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">$(DefineConstants);$(TargetFramework.ToUpperInvariant().TrimEnd('0').TrimEnd('.'))</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Label="NuGet Pack">
     <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
     <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
