@@ -1,0 +1,6 @@
+﻿<Project>
+  <PropertyGroup>
+    <LangVersion>Preview</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>

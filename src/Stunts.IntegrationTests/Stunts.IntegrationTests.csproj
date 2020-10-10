@@ -2,10 +2,16 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
-    <Nullable>annotations</Nullable>
+    <Nullable>disable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="InternalAccess\Program.cs" />
+    <ProjectProperty Include="MSBuildProjectDirectory" />
+    <ProjectProperty Include="MSBuildBinPath" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -19,6 +25,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
 
     <PackageReference Include="Superpower" />
+    <PackageReference Include="NuGet.Client" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" />
   </ItemGroup>
 
   <ItemGroup Label="Targets">
@@ -55,6 +63,10 @@
 
   <ItemGroup>
     <None Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Stunts.StaticProxy.Sdk\RoslynInternals.cs" Link="InternalAccess\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="InternalAccess\Program.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="InternalAccess\Directory.Build.props" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="InternalAccess\Directory.Build.targets" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

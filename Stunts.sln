@@ -39,7 +39,7 @@ Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Pack", "src\Pack\Pack.msbui
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Stunts.Basic", "src\Stunts.Basic\Stunts.Basic.vbproj", "{851DF623-1CD9-4A3A-8EB6-9999710BF40A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stunts.AcceptanceTests", "src\Stunts.AcceptanceTests\Stunts.AcceptanceTests.csproj", "{349999C7-0F55-460C-BBB2-8C45D7BC00E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.IntegrationTests", "src\Stunts.IntegrationTests\Stunts.IntegrationTests.csproj", "{349999C7-0F55-460C-BBB2-8C45D7BC00E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
