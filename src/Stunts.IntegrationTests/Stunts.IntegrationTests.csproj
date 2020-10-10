@@ -5,12 +5,11 @@
     <Nullable>disable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="InternalAccess\Program.cs" />
-    <ProjectProperty Include="MSBuildProjectDirectory" />
-    <ProjectProperty Include="MSBuildBinPath" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 using Xunit.Sdk;
 using static WorkspaceHelper;
 
-namespace Stunts.Tests.GeneratorTests
+namespace Stunts.UnitTests.GeneratorTests
 {
     public class StuntDocumentGeneratorTests
     {
