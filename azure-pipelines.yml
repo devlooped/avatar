@@ -18,10 +18,10 @@ stages:
   - job:
     strategy:
       matrix:
-        Ubuntu:
-          vm: ubuntu-latest
-        macOS:
-          vm: macOS-latest
+        # Ubuntu:
+        #  vm: ubuntu-latest
+        #macOS:
+        #  vm: macOS-latest
         Windows:
           vm: windows-latest
     pool:
