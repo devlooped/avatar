@@ -24,14 +24,14 @@ namespace Stunts.UnitTests
 
         [Theory]
         [MemberData(nameof(GetPackageVersions))]
-        public void CanAccessRequiredInternalsViaReflection(PackageIdentity package)
+        public void CanAccessRequiredInternalsViaReflection(PackageIdentity package, string targetFramework)
         {
             var projectFile = Path.GetFullPath($"Internals\\test-{package}.csproj")!;
             File.WriteAllText(projectFile,
 $@"<Project Sdk='Microsoft.NET.Sdk'>
     <PropertyGroup>    
         <OutputType>Exe</OutputType>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>{targetFramework}</TargetFramework>
         <EnableDefaultItems>false</EnableDefaultItems>
         <OutputPath>bin\{package.Version}</OutputPath>
         <IntermediateOutputPath>obj\{package.Version}</IntermediateOutputPath>
@@ -109,7 +109,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 
             var info = new ProcessStartInfo(Path.Combine(
                 Path.GetDirectoryName(projectFile) ?? "",
-                $@"bin\{package.Version}",
+                $@"bin\{package.Version}\{targetFramework}",
                 Path.ChangeExtension(Path.GetFileName(projectFile), ".exe")))
             {
                 UseShellExecute = false,
@@ -140,7 +140,11 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             return metadata
                 .Select(m => m.Identity)
                 .Where(m => m.Version >= new NuGetVersion("3.1.0"))
-                .Select(v => new object[] { v });
+                .SelectMany(v => new[]
+                {
+                    new object[] { v, "net472" },
+                    new object[] { v, "net5.0" }
+                });
         }
 
         class Logger : NuGet.Common.ILogger
