@@ -7,9 +7,6 @@ namespace Stunts
     {
         public static void CheckDebugger(this AnalyzerConfigOptionsProvider analyzerOptions, string debugableName)
         {
-            if (Debugger.IsAttached)
-                Debugger.Break();
-
             if (analyzerOptions.GlobalOptions.TryGetValue("build_property.DebugSourceGenerators", out var debugValue) &&
                 bool.TryParse(debugValue, out var shouldDebug) &&
                 shouldDebug)

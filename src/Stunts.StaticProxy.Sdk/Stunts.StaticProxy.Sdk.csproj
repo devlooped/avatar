@@ -53,7 +53,13 @@
 
   <Target Name="AddDependencies" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="Build">
     <ItemGroup Condition="'$(TargetFramework)' != ''">
-      <AnalyzerFile Include="$(OutputPath)\Stunts*.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.*.dll;&#xD;&#xA;                             $(OutputPath)\System.*.dll;&#xD;&#xA;                             $(OutputPath)\Humanizer.dll" Exclude="$(OutputPath)\Microsoft.CodeAnalysis.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.CodeAnalysis.CSharp.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.CodeAnalysisVisualBasic.dll;" />
+      <AnalyzerFile Include="$(OutputPath)\Stunts*.dll;
+                             $(OutputPath)\Microsoft.*.dll;
+                             $(OutputPath)\System.*.dll;
+                             $(OutputPath)\Humanizer.dll" 
+                    Exclude="$(OutputPath)\Microsoft.CodeAnalysis.dll;
+                             $(OutputPath)\Microsoft.CodeAnalysis.CSharp.dll;
+                             $(OutputPath)\Microsoft.CodeAnalysisVisualBasic.dll;" />
       <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>
