@@ -1,0 +1,60 @@
+variables:
+- group: Sleet
+- name: Configuration
+  value: Release
+- name: PackageOutputPath
+  value: $(Build.ArtifactStagingDirectory)
+
+trigger:
+  paths:
+    exclude:
+    - docs/*
+    - README.md
+
+stages:
+
+- stage: Build
+  jobs:
+  - job:
+    strategy:
+      matrix:
+        Ubuntu:
+          vm: ubuntu-latest
+        macOS:
+          vm: macOS-latest
+        Windows:
+          vm: windows-latest
+    pool:
+      vmImage: $(vm)
+    steps:
+    - checkout: self
+      clean: true
+
+    - task: UseDotNet@2
+      inputs:
+        version: 5.0.100-rc.1.20452.10
+        performMultiLevelLookup: true
+
+    - task: UseDotNet@2
+      inputs:
+        version: 2.1.x
+        performMultiLevelLookup: true
+
+    - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$BUILD_BUILDID"
+      displayName: build
+
+    - task: VSTest@2
+      displayName: Test
+      inputs:
+        testAssemblyVer2: '**/bin/**/*Tests.dll'
+        runInParallel: true
+        codeCoverageEnabled: false
+        publishRunAttachments: true
+        diagnosticsEnabled: false
+        rerunFailedTests: true
+
+    - bash: |
+        dotnet tool install -g --version 2.3.33 sleet
+        sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=$(SLEET_FEED_CONNECTIONSTRING)" -p "SLEET_FEED_TYPE=azure"
+      displayName: sleet
+      condition: eq(variables['vm'], 'windows-latest')
