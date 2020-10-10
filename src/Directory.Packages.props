@@ -21,7 +21,7 @@
     <PackageVersion Include="System.Reflection.Metadata" Version="5.0.0-preview.8.20407.11" />
 
     <!-- For packaging purposes -->
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0-rc.1.20423.8" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0-rc.1.20451.14" />
 
     <!-- Unit tests need to pack this for tests to run on macOS, for example -->
     <PackageVersion Include="SQLitePCLRaw.bundle_green" Version="2.0.4" />
