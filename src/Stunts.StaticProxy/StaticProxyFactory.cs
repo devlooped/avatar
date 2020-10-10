@@ -10,7 +10,7 @@ namespace Stunts.Sdk
     public class StaticProxyFactory : IStuntFactory
     {
         /// <inheritdoc/>
-        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments)
         {
             var name = StuntNaming.GetFullName(baseType, implementedInterfaces);
             var type = stuntsAssembly.GetType(name, true, false);

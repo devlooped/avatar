@@ -34,7 +34,7 @@ namespace Stunts.Sdk
         }
 
         /// <inheritdoc />
-        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
+        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
         {
             var notImplemented = false;
 
@@ -65,7 +65,7 @@ namespace Stunts.Sdk
             }
             else
             {
-                return CreateProxy(baseType, implementedInterfaces, options, constructorArguments, notImplemented);
+                return CreateProxy(baseType, implementedInterfaces, options, constructorArguments!, notImplemented);
             }
         }
 
