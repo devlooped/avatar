@@ -101,7 +101,7 @@ namespace Stunts.Tests.GeneratorTests
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
-        [Theory]
+        [Theory(Skip = "With source generators, we likely don't need the attributes anymore.")]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
             var compilation = await CreateStunt(new StuntDocumentGenerator(), language, typeof(ICalculator), trace);
