@@ -11,16 +11,16 @@ trigger:
 
 stages:
 
-- stage: Build
+- stage: build
   jobs:
   - job:
     strategy:
       matrix:
-        # Ubuntu:
+        # ubuntu-latest:
         #  vm: ubuntu-latest
-        #macOS:
+        #macOS-latest:
         #  vm: macOS-latest
-        Windows:
+        windows-latest:
           vm: windows-latest
     pool:
       vmImage: $(vm)
