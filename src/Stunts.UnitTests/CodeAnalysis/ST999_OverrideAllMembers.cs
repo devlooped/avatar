@@ -13,7 +13,7 @@ namespace Stunts.UnitTests
         protected override CodeFixProvider? GetCSharpCodeFixProvider() => new OverrideAllMembersCodeFix();
 
         [Theory]
-        [InlineData("CodeAnalysis/ST999/Diagnostic/PublicClass.cs", "CodeAnalysis/ST999/Diagnostic/PublicClass.Fix.cs", 3, 26)]
+        [InlineData("CodeAnalysis/ST999/Diagnostic/PublicClass.cs", "CodeAnalysis/ST999/Diagnostic/PublicClass.Fix.cs", 4, 26)]
         public void Verify_Diagnostic(string path, string fix, int line, int column)
         {
             var expected = new DiagnosticResult

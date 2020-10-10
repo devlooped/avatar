@@ -10,7 +10,7 @@ namespace Stunts.UnitTests
         protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new OverridableMembersAnalyzer();
 
         [Theory]
-        [InlineData("CodeAnalysis/ST999/Diagnostic/PublicClass.cs", 3, 26)]
+        [InlineData("CodeAnalysis/ST999/Diagnostic/PublicClass.cs", 4, 26)]
         public void Verify_Diagnostic(string path, int line, int column)
         {
             var expected = new DiagnosticResult
