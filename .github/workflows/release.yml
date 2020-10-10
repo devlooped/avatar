@@ -15,5 +15,5 @@ jobs:
         with:
           dotnet-version: 5.0.100-rc.1.20452.10
       - run: dotnet msbuild -r -m:1 -c Release -p:version=${GITHUB_REF#refs/*/v}
-      - run: dotnet test --no-build
+      - run: dotnet test --no-build -c Release
       - run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
