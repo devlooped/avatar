@@ -18,6 +18,6 @@ namespace Stunts
         /// Constructor arguments if the <paramref name="baseType" /> is a class, rather than an interface, or an empty array.
         /// </param>
         /// <returns>A stunt that implements <see cref="IStunt"/> in addition to the specified interfaces (if any).</returns>
-		object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments);
+		object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments);
 	}
 }

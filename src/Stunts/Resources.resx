@@ -120,4 +120,7 @@
   <data name="PipelineTargetShouldNeverCallNext" xml:space="preserve">
     <value>Behavior pipeline ultimate target cannot get the next delegate because there never is one.</value>
   </data>
+  <data name="StuntFactoryNotImplemented" xml:space="preserve">
+    <value>Default factory does not implement stunt creation.</value>
+  </data>
 </root>

@@ -12,24 +12,10 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Stunts.UnitTests" />
-    <!--
-    <InternalsVisibleTo Include="Stunts.Dynamic" />
-    <InternalsVisibleTo Include="Stunts.Sdk.Tests" />
-    -->
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
   
 </Project>

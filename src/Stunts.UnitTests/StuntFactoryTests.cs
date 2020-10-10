@@ -7,6 +7,10 @@ namespace Stunts.UnitTests
     public class StuntFactoryTests
     {
         [Fact]
+        public void NullFactoryThrows()
+            => Assert.Throws<NotImplementedException>(() => StuntFactory.Null.CreateStunt(Assembly.GetExecutingAssembly(), typeof(IDisposable), Array.Empty<Type>(), Array.Empty<object>()));
+
+        [Fact]
         public void ReplaceDefaultFactory()
         {
             var instance = new object();
@@ -23,24 +27,13 @@ namespace Stunts.UnitTests
             Assert.Same(instance, actual);
         }
 
-        [Fact]
-        public void ThrowsIfNoStunt()
-        {
-            Assert.Throws<TypeLoadException>(() =>
-                StuntFactory.Default.CreateStunt(
-                    Assembly.GetExecutingAssembly(),
-                    typeof(object),
-                    new[] { typeof(IFormatProvider) },
-                    Array.Empty<object>()));
-        }
-
         public class TestFactory : IStuntFactory
         {
             object instance;
 
             public TestFactory(object instance) => this.instance = instance;
 
-            public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+            public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments)
                 => instance;
         }
     }
