@@ -2,7 +2,9 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -21,13 +23,14 @@ namespace Stunts.Processors
         // These namespaces are used by the default stunt code and are always imported.
         static readonly string[] DefaultNamespaces = 
         {
-            typeof(EventArgs).Namespace,
-            typeof(GeneratedCodeAttribute).Namespace,
-            typeof(ObservableCollection<>).Namespace,
-            typeof(DebuggerDisplayAttribute).Namespace,
-            typeof(MethodBase).Namespace,
-            typeof(CompilerGeneratedAttribute).Namespace,
-            typeof(IStunt).Namespace,
+            typeof(EventArgs).Namespace!,
+            typeof(ObservableCollection<>).Namespace!,
+            typeof(DebuggerDisplayAttribute).Namespace!,
+            typeof(MethodBase).Namespace!,
+            typeof(CompilerGeneratedAttribute).Namespace!,
+            typeof(GeneratedCodeAttribute).Namespace!,
+            typeof(ExcludeFromCodeCoverageAttribute).Namespace!,
+            typeof(IStunt).Namespace!,
         };
 
         readonly string[] namespaces;
@@ -59,6 +62,9 @@ namespace Stunts.Processors
         {
             var generator = SyntaxGenerator.GetGenerator(document);
             var root = await document.GetSyntaxRootAsync();
+            if (root == null)
+                return document;
+
             var imports =  generator.GetNamespaceImports(root).Select(generator.GetName);
 
             var missing = new HashSet<string>(namespaces);

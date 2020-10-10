@@ -7,7 +7,7 @@ public class FileNameEqualityComparer : IEqualityComparer<string>
 
     FileNameEqualityComparer() { }
 
-    public bool Equals(string x, string y) => Path.GetFileName(x).Equals(Path.GetFileName(y));
+    public bool Equals(string? x, string? y) => Path.GetFileName(x)?.Equals(Path.GetFileName(y)) == true;
 
     public int GetHashCode(string obj) => Path.GetFileName(obj).GetHashCode();
 }

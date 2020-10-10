@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
     <PackageId>Stunts</PackageId>
     <Title>Stunts</Title>
     <Summary>"Dynamic proxies" that can run everywhere, including mobile!</Summary>
@@ -8,10 +9,19 @@
     <PackageTags>proxy runtime dynamic</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Stunt.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
+    <Content Include="Stunt.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
     <None Include="Stunts.targets" PackFolder="build\netstandard2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" />
+    <PackageReference Include="NuGetizer" Version="$(NuGetizerVersion)" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
   </ItemGroup>
+  <!-- Pending https://github.com/microsoft/MSBuildSdks/pull/211/ -->
+  <Target Name="CompileDesignTime" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" Condition="'$(DebuggerFlavor)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
 </Project>

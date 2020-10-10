@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 public class DefaultValueProvider
 {
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    readonly ConcurrentDictionary<Type, Func<Type, object>> factories = new ConcurrentDictionary<Type, Func<Type, object>>();
+    readonly ConcurrentDictionary<Type, Func<Type, object?>> factories = new ConcurrentDictionary<Type, Func<Type, object?>>();
 
     /// <summary>
     /// Initializes the provider.
@@ -54,7 +54,7 @@ public class DefaultValueProvider
     {
         // If type is by ref, we need to get the actual element type of the ref. 
         // i.e. Object[]& has ElementType = Object[]
-        var valueType = type.IsByRef && type.HasElementType ? type.GetElementType() : type;
+        var valueType = type.IsByRef && type.HasElementType ? type.GetElementType()! : type;
         var info = valueType.GetTypeInfo();
         var typeKey = valueType.IsArray ? typeof(Array) : valueType;
 
@@ -109,7 +109,8 @@ public class DefaultValueProvider
         return null;
     }
 
-    private static object CreateArray(Type type) => Array.CreateInstance(type.GetElementType(), new int[type.GetArrayRank()]);
+    private static object CreateArray(Type type) => Array.CreateInstance(
+        type.GetElementType() ?? throw new ArgumentException(nameof(type)), new int[type.GetArrayRank()]);
 
     private static object CreateTask(Type type) => Task.CompletedTask;
 
@@ -119,7 +120,7 @@ public class DefaultValueProvider
 
     private static object CreateQueryable(Type type) => Enumerable.Empty<object>().AsQueryable();
 
-    private static object CreateQueryableOf(Type type)
+    private static object? CreateQueryableOf(Type type)
     {
         var elementType = type.GetGenericArguments()[0];
         var array = Array.CreateInstance(elementType, 0);
@@ -130,7 +131,7 @@ public class DefaultValueProvider
             .Invoke(null, new[] { array });
     }
 
-    private object CreateValueTupleOf(Type type)
+    private object? CreateValueTupleOf(Type type)
     {
         var itemTypes = type.GetGenericArguments();
         var items = new object?[itemTypes.Length];
@@ -146,14 +147,16 @@ public class DefaultValueProvider
 
     private Task GetCompletedTaskForType(Type type)
     {
-        var tcs = Activator.CreateInstance(typeof(TaskCompletionSource<>).MakeGenericType(type));
+        var tcs = Activator.CreateInstance(typeof(TaskCompletionSource<>).MakeGenericType(type)) 
+            ?? throw new NotSupportedException();
+        var setResultMethod = tcs.GetType().GetTypeInfo().GetDeclaredMethod(nameof(TaskCompletionSource<object>.SetResult))
+            ?? throw new NotSupportedException();
+        var taskProperty = tcs.GetType().GetTypeInfo().GetDeclaredProperty(nameof(TaskCompletionSource<object>.Task))
+            ?? throw new NotSupportedException();
 
-        var setResultMethod = tcs.GetType().GetTypeInfo().GetDeclaredMethod("SetResult");
-        var taskProperty = tcs.GetType().GetTypeInfo().GetDeclaredProperty("Task");
         var result = GetDefault(type);
-
         setResultMethod.Invoke(tcs, new[] { result });
 
-        return (Task)taskProperty.GetValue(tcs, null);
+        return (Task?)taskProperty.GetValue(tcs, null) ?? throw new NotSupportedException();
     }
 }

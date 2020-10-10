@@ -24,10 +24,11 @@ namespace Microsoft.CodeAnalysis
                 .SelectMany(x => x.GetTypes()
                 .Where(t => !t.IsAbstract && typeof(DiagnosticAnalyzer).IsAssignableFrom(t)))
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
-                .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t))
+                .Select(t => (DiagnosticAnalyzer)(Activator.CreateInstance(t)!))
+                .Where(d => d != null)
                 // Add our own.
                 .Concat(new[] { new OverridableMembersAnalyzer() })
-                .ToImmutableArray());
+                .ToImmutableArray<DiagnosticAnalyzer>());
 
         /// <summary>
         /// Exposes the built-in analyzers, discovered via reflection.
@@ -49,7 +50,7 @@ namespace Microsoft.CodeAnalysis
             while (codeFixes.Length != 0)
             {
                 var operations = await codeFixes[0].Action.GetOperationsAsync(cancellationToken);
-                ApplyChangesOperation operation;
+                ApplyChangesOperation? operation;
                 if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
                 {
                     // According to https://github.com/DotNetAnalyzers/StyleCopAnalyzers/pull/935 and 
@@ -148,7 +149,7 @@ namespace Microsoft.CodeAnalysis
 
         // Debug view of all available providers and their metadata
         // document.Project.Solution.Workspace.Services.HostServices.GetExports<CodeFixProvider, IDictionary<string, object>>().OrderBy(x => x.Metadata["Name"]?.ToString()).Select(x => $"{x.Metadata["Name"]}: {string.Join(", ", (string[])x.Metadata["Languages"])}"  ).ToList()
-        static CodeFixProvider GetCodeFixProvider(Document document, string codeFixName)
+        static CodeFixProvider? GetCodeFixProvider(Document document, string codeFixName)
             => document.Project.Solution.Workspace.Services.HostServices
                     .GetExports<CodeFixProvider, IDictionary<string, object>>()
                     .Where(x =>

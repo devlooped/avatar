@@ -1,20 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <IsPackable>true</IsPackable>
-    <EnableSourceLink>true</EnableSourceLink>
-    <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <RootNamespace>Stunts</RootNamespace>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <DisableTransitiveFrameworkReferences>true</DisableTransitiveFrameworkReferences>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PackFolder>tools\$(TargetFramework)</PackFolder>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
+
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
 
     <!-- Workaround for revision mismatch with public versions -->
-    <PackageReference Include="System.Collections.Immutable" Pack="false" />
-    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="System.Reflection.Metadata" />
+
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,9 +31,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources.resx" Generator="" />
+    <EmbeddedResource Update="Resources.resx" Generator="">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <ProjectProperty Include="PrivateRepositoryUrl" />
     <InternalsVisibleTo Include="Stunts.UnitTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="@(PackageReference)" Pack="false" />
+    <ProjectReference Update="@(ProjectReference)" Pack="false" />
+  </ItemGroup>
+
+  <Target Name="AddDependencies" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="Build">
+    <ItemGroup Condition="'$(TargetFramework)' != ''">
+      <AnalyzerFile Include="$(OutputPath)\Stunts*.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.*.dll;&#xD;&#xA;                             $(OutputPath)\System.*.dll;&#xD;&#xA;                             $(OutputPath)\Humanizer.dll" Exclude="$(OutputPath)\Microsoft.CodeAnalysis.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.CodeAnalysis.CSharp.dll;&#xD;&#xA;                             $(OutputPath)\Microsoft.CodeAnalysisVisualBasic.dll;" />
+      <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
 
 </Project>

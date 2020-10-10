@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Stunts;
 
 /// <summary>
 /// Class for turning strings into documents and getting the diagnostics on them
@@ -15,9 +16,10 @@ public abstract partial class DiagnosticVerifier
 {
     private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
     private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-    private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
-    private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true).Assembly.Location);
     private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
+    private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
+    private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true)!.Assembly.Location);
+    private static readonly MetadataReference StuntsReference = MetadataReference.CreateFromFile(typeof(IStunt).Assembly.Location);
 
     internal static string DefaultFilePathPrefix = "Test";
     internal static string CSharpDefaultFileExt = "cs";
@@ -146,18 +148,17 @@ public abstract partial class DiagnosticVerifier
         var solution = new AdhocWorkspace()
             .CurrentSolution
             .AddProject(projectId, TestProjectName, TestProjectName, language)
-            .AddMetadataReference(projectId, CorlibReference)
-            .AddMetadataReference(projectId, SystemCoreReference)
-            .AddMetadataReference(projectId, CSharpSymbolsReference)
-            .AddMetadataReference(projectId, CSharpFeaturesReference)
-            .AddMetadataReference(projectId, CodeAnalysisReference);
+            .AddMetadataReferences(projectId, AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
+                .Select(assembly => MetadataReference.CreateFromFile(assembly.Location)));
 
         int count = 0;
         foreach (var source in sources)
         {
             var newFileName = fileNamePrefix + count + "." + fileExt;
             var documentId = DocumentId.CreateNewId(projectId, debugName: newFileName);
-            solution = solution.AddDocument(documentId, newFileName, SourceText.From(source));
+            solution = solution.AddDocument(documentId, newFileName, SourceText.From(source), isGenerated: false);
             count++;
         }
         return solution.GetProject(projectId) ?? throw new InvalidOperationException();

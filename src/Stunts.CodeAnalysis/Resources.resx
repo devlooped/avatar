@@ -117,11 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BaseTypeNotFirst_Description" xml:space="preserve">
+    <value>When a base type is specified, it must be the first type in the type arguments list.</value>
+  </data>
+  <data name="BaseTypeNotFirst_Message" xml:space="preserve">
+    <value>Base type '{0}' must be the first in the type arguments list.</value>
+  </data>
+  <data name="BaseTypeNotFirst_Title" xml:space="preserve">
+    <value>Base type must be first</value>
+  </data>
+  <data name="DuplicateBaseType_Description" xml:space="preserve">
+    <value>Cannot specify more than one base type.</value>
+  </data>
+  <data name="DuplicateBaseType_Message" xml:space="preserve">
+    <value>Cannot specify more than one base type.</value>
+  </data>
+  <data name="DuplicateBaseType_Title" xml:space="preserve">
+    <value>Multiple base types specified</value>
+  </data>
   <data name="InvalidSealedBaseType" xml:space="preserve">
     <value>Cannot intercept sealed types.</value>
   </data>
   <data name="InvalidStuntTypes" xml:space="preserve">
     <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>
+  </data>
+  <data name="SealedBaseType_Description" xml:space="preserve">
+    <value>Cannot specify sealed base type.</value>
+  </data>
+  <data name="SealedBaseType_Message" xml:space="preserve">
+    <value>Cannot specify sealed base type '{0}'..</value>
+  </data>
+  <data name="SealedBaseType_Title" xml:space="preserve">
+    <value>Invalid sealed base type</value>
   </data>
   <data name="SymbolRequired" xml:space="preserve">
     <value>At least one symbol is required.</value>

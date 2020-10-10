@@ -45,7 +45,7 @@ namespace Stunts
                     else
                     {
                         var generic = method.MakeGenericMethod(typeof(TExtension), typeof(TMetadata));
-                        func = () => (IEnumerable<Lazy<TExtension, TMetadata>>)generic.Invoke(services, null);
+                        func = () => (IEnumerable<Lazy<TExtension, TMetadata>>)generic.Invoke(services, null)!;
                     }
 
                     return func;
@@ -64,7 +64,7 @@ namespace Stunts
 
         public static ImmutableArray<ISymbol> GetOverridableMembers(INamedTypeSymbol containingType, CancellationToken cancellationToken)
             => (ImmutableArray<ISymbol>)(getOverridableMembers ?? throw NotSupported()).Invoke(
-                null, new object[] { containingType, cancellationToken });
+                null, new object[] { containingType, cancellationToken })!;
 
         #endregion
 
@@ -76,7 +76,7 @@ namespace Stunts
 
         public static Task<ISymbol> OverrideAsync(SyntaxGenerator generator, ISymbol symbol, INamedTypeSymbol containingType, Document document, DeclarationModifiers? modifiersOpt = null, CancellationToken cancellationToken = default)
             => (Task<ISymbol>)(overrideAsync ?? throw NotSupported()).Invoke(
-                null, new object?[] { generator, symbol, containingType, document, modifiersOpt, cancellationToken });
+                null, new object?[] { generator, symbol, containingType, document, modifiersOpt, cancellationToken })!;
 
         #endregion
 
@@ -97,7 +97,7 @@ namespace Stunts
                     solution, destination, members, 
                     GetOptions(solution.Workspace.Options), 
                     cancellationToken 
-                });
+                })!;
 
         static object? GetOptions(OptionSet options)
         {
@@ -114,6 +114,6 @@ namespace Stunts
         #endregion
 
         static Exception NotSupported() => new NotSupportedException(
-            $"Version {typeof(Workspace).Assembly.GetName().Version.ToString(3)} of the Roslyn assemblies do not support our code generation. Please report at https://github.com/kzu/stunts/issues.");
+            $"Version {typeof(Workspace).Assembly.GetName().Version?.ToString(3)} of the Roslyn assemblies do not support our code generation. Please report at https://github.com/kzu/stunts/issues.");
     }
 }

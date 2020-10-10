@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace Stunts
+namespace Stunts.CodeAnalysis
 {
     /// <summary>
     /// Naming conventions used for analyzers, code fixes and code generation.

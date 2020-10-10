@@ -9,7 +9,7 @@ namespace Stunts.UnitTests
 {
     public class ArgumentCollectionTests
     {
-        static readonly MethodInfo testMethod = typeof(ArgumentCollectionTests).GetMethod(nameof(Do), BindingFlags.Static | BindingFlags.Public);
+        static readonly MethodInfo testMethod = typeof(ArgumentCollectionTests).GetMethod(nameof(Do), BindingFlags.Static | BindingFlags.Public)!;
 
         [Fact]
         public void ThrowsIfMismatchValuesLength()

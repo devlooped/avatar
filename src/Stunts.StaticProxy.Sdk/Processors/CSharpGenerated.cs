@@ -14,7 +14,7 @@ namespace Stunts.Processors
     /// attribute to all generated members, so that it's possible to distinguish user-authored 
     /// members in a partial class from the generated code.
     /// </summary>
-    public class CSharpCompilerGenerated : IDocumentProcessor
+    public class CSharpGenerated : IDocumentProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
@@ -81,7 +81,8 @@ namespace Stunts.Processors
             SyntaxNode AddAttributes(SyntaxNode node)
                 => generator.AddAttributes(node,
                     Attribute(IdentifierName("CompilerGenerated")),
-                    Attribute(IdentifierName("GeneratedCode"),
+                    Attribute(IdentifierName("GeneratedCode")),
+                    Attribute(IdentifierName("ExcludeFromCodeCoverage"),
                         AttributeArgumentList(SeparatedList(new[]
                         {
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(nameof(Stunts)))),

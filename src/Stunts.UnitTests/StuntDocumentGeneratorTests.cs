@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Simplification;
 using Sample;
+using Stunts.CodeAnalysis;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -21,38 +22,39 @@ using static WorkspaceHelper;
 
 namespace Stunts.Tests.GeneratorTests
 {
-    public class StuntGeneratorTests
+    public class StuntDocumentGeneratorTests
     {
         readonly ITestOutputHelper output;
 
-        public StuntGeneratorTests(ITestOutputHelper output) => this.output = output;
+        public StuntDocumentGeneratorTests(ITestOutputHelper output) => this.output = output;
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task CanGenerateStuntForInterface(string language, bool trace = false)
         {
-            var generator = new StuntGenerator();
+            var generator = new StuntDocumentGenerator();
             var compilation = await CreateStunt(generator, language, typeof(IFoo), trace);
             var assembly = compilation.Emit();
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(IFoo)), true);
 
             Assert.NotNull(type);
 
-            var instance = Activator.CreateInstance(type);
+            var instance = Activator.CreateInstance(type!);
 
-            Assert.IsAssignableFrom<IFoo>(instance);
-            Assert.IsAssignableFrom<IStunt>(instance);
+            Assert.NotNull(instance);
+            Assert.IsAssignableFrom<IFoo>(instance!);
+            Assert.IsAssignableFrom<IStunt>(instance!);
 
             // If no behavior is configured, invoking it throws.
-            Assert.Throws<NotImplementedException>(() => ((IFoo)instance).Do());
+            Assert.Throws<NotImplementedException>(() => ((IFoo)instance!).Do());
 
             // When we add at least one matching behavior, invocations succeed.
-            instance.AddBehavior(new DefaultValueBehavior());
-            ((IFoo)instance).Do();
+            instance!.AddBehavior(new DefaultValueBehavior());
+            ((IFoo)instance!).Do();
 
             // The IStunt interface is properly implemented.
-            Assert.Single(((IStunt)instance).Behaviors);
+            Assert.Single(((IStunt)instance!).Behaviors);
         }
 
         [InlineData(LanguageNames.CSharp)]
@@ -60,26 +62,26 @@ namespace Stunts.Tests.GeneratorTests
         [Theory]
         public async Task CanGenerateStuntForClass(string language, bool trace = false)
         {
-            var generator = new StuntGenerator();
+            var generator = new StuntDocumentGenerator();
             var compilation = await CreateStunt(generator, language, typeof(Foo), trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetType(StuntNaming.GetFullName(typeof(Foo)), true);
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(Foo)), true)!;
 
             var instance = Activator.CreateInstance(type);
 
-            Assert.IsAssignableFrom<Foo>(instance);
-            Assert.IsAssignableFrom<IStunt>(instance);
-
+            Assert.NotNull(instance);
+            Assert.IsAssignableFrom<Foo>(instance!);
+            Assert.IsAssignableFrom<IStunt>(instance!);
 
             // If no behavior is configured, invoking it throws.
-            Assert.Throws<NotImplementedException>(() => ((Foo)instance).Do());
+            Assert.Throws<NotImplementedException>(() => ((Foo)instance!).Do());
 
             // When we add at least one matching behavior, invocations succeed.
-            instance.AddBehavior(new DefaultValueBehavior());
-            ((Foo)instance).Do();
+            instance!.AddBehavior(new DefaultValueBehavior());
+            ((Foo)instance!).Do();
 
             // The IStunt interface is properly implemented.
-            Assert.Single(((IStunt)instance).Behaviors);
+            Assert.Single(((IStunt)instance!).Behaviors);
         }
 
         [InlineData(LanguageNames.CSharp)]
@@ -87,13 +89,13 @@ namespace Stunts.Tests.GeneratorTests
         [Theory]
         public async Task GeneratedNameContainsAdditionalInterfaceInName(string language, bool trace = false)
         {
-            var compilation = await CreateStunt(new StuntGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
+            var compilation = await CreateStunt(new StuntDocumentGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
             var assembly = compilation.Emit();
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(INotifyPropertyChanged), typeof(IDisposable)), true);
             
             Assert.NotNull(type);
             Assert.True(typeof(IDisposable).IsAssignableFrom(type));
-            Assert.True(type.FullName.Contains(nameof(IDisposable)),
+            Assert.True(type!.FullName!.Contains(nameof(IDisposable)),
                 $"Generated stunt should contain the additional type {nameof(IDisposable)} in its name.");
         }
 
@@ -102,39 +104,39 @@ namespace Stunts.Tests.GeneratorTests
         [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
-            var compilation = await CreateStunt(new StuntGenerator(), language, typeof(ICalculator), trace);
+            var compilation = await CreateStunt(new StuntDocumentGenerator(), language, typeof(ICalculator), trace);
             var assembly = compilation.Emit();
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(ICalculator)), true);
 
             Assert.NotNull(type);
 
             Assert.All(
-                type.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
+                type!.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
                 x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
 
             Assert.All(
-                type.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
+                type!.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
                 x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
 
             Assert.All(
-                type.GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                type!.GetProperties(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
 
             Assert.All(
-                type.GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                type!.GetProperties(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
 
             Assert.All(
-                type.GetEvents(BindingFlags.Instance | BindingFlags.Public),
+                type!.GetEvents(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
 
             Assert.All(
-                type.GetEvents(BindingFlags.Instance | BindingFlags.Public),
+                type!.GetEvents(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
         }
@@ -144,13 +146,13 @@ namespace Stunts.Tests.GeneratorTests
         [Theory]
         public async Task GeneratedTypeOverridesVirtualObjectMembers(string language, bool trace = false)
         {
-            var compilation = await CreateStunt(new StuntGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
+            var compilation = await CreateStunt(new StuntDocumentGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
             var assembly = compilation.Emit();
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(INotifyPropertyChanged), typeof(IDisposable)), true);
 
             Assert.NotNull(type);
 
-            Assert.Contains(type.GetTypeInfo().DeclaredMethods, m =>
+            Assert.Contains(type!.GetTypeInfo().DeclaredMethods, m =>
                 m.Name == nameof(object.GetHashCode) ||
                 m.Name == nameof(object.ToString) ||
                 m.Name == nameof(object.Equals));
@@ -158,39 +160,39 @@ namespace Stunts.Tests.GeneratorTests
 
         [Fact]
         public Task INotifyPropertyChanged()
-            => CreateStunt(new StuntGenerator(), LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
+            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
 
         [Fact]
         public Task ITypeGetter()
-            => CreateStunt(new StuntGenerator(), LanguageNames.VisualBasic, typeof(ITypeGetter));
+            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(ITypeGetter));
 
         [Fact]
         public Task ICustomFormatter()
-            => CreateStunt(new StuntGenerator(), LanguageNames.VisualBasic, typeof(ICustomFormatter));
+            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(ICustomFormatter));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeHasGlobalNamespaceThenItWorks(string language)
-            => CreateStunt(new StuntGenerator(), language, typeof(IGlobal));
+            => CreateStunt(new StuntDocumentGenerator(), language, typeof(IGlobal));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeIsInterface(string language, bool trace = false)
-            => CreateStunt(new StuntGenerator(), language, typeof(ICalculator), trace);
+            => CreateStunt(new StuntDocumentGenerator(), language, typeof(ICalculator), trace);
 
         [InlineData(LanguageNames.VisualBasic)]
         [InlineData(LanguageNames.CSharp)]
         [Theory]
         public Task WhenTypeIsAbstract(string language)
-            => CreateStunt(new StuntGenerator(), language, typeof(CalculatorBase));
+            => CreateStunt(new StuntDocumentGenerator(), language, typeof(CalculatorBase));
 
         [InlineData(LanguageNames.VisualBasic)]
         [InlineData(LanguageNames.CSharp)]
         [Theory]
         public Task WhenTypeHasVirtualMembers(string language)
-            => CreateStunt(new StuntGenerator(), language, typeof(Calculator));
+            => CreateStunt(new StuntDocumentGenerator(), language, typeof(Calculator));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
@@ -204,11 +206,11 @@ namespace Stunts.Tests.GeneratorTests
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
                 string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
 
-            var document = await new StuntGenerator().GenerateDocumentAsync(project, new[]
+            var document = await new StuntDocumentGenerator().GenerateDocumentAsync(project, new[]
             {
-                compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanging).FullName) ?? throw new XunitException(),
-                compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanged).FullName) ?? throw new XunitException(),
-                compilation.GetTypeByMetadataName(typeof(ICalculator).FullName) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanging).FullName!) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanged).FullName!) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(ICalculator).FullName!) ?? throw new XunitException(),
             }, TimeoutToken(5));
 
             var syntax = await document.GetSyntaxRootAsync() ?? throw new XunitException();
@@ -226,11 +228,11 @@ namespace Stunts.Tests.GeneratorTests
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
             var types = new[]
             {
-                compilation.GetTypeByMetadataName(typeof(ICalculator).FullName) ?? throw new XunitException(),
-                compilation.GetTypeByMetadataName(typeof(Calculator).FullName) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(ICalculator).FullName!) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(Calculator).FullName!) ?? throw new XunitException(),
             };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => new StuntGenerator()
+            await Assert.ThrowsAsync<ArgumentException>(() => new StuntDocumentGenerator()
                 .GenerateDocumentAsync(project, types, TimeoutToken(5)));
         }
 
@@ -241,11 +243,11 @@ namespace Stunts.Tests.GeneratorTests
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
             var types = new[]
             {
-                compilation.GetTypeByMetadataName(typeof(object).FullName) ?? throw new XunitException(),
-                compilation.GetTypeByMetadataName(typeof(Calculator).FullName) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(object).FullName!) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(Calculator).FullName!) ?? throw new XunitException(),
             };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => new StuntGenerator()
+            await Assert.ThrowsAsync<ArgumentException>(() => new StuntDocumentGenerator()
                 .GenerateDocumentAsync(project, types, TimeoutToken(5)));
         }
 
@@ -256,10 +258,10 @@ namespace Stunts.Tests.GeneratorTests
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
             var types = new[]
             {
-                compilation.GetTypeByMetadataName(typeof(PlatformID).FullName) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(PlatformID).FullName!) ?? throw new XunitException(),
             };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => new StuntGenerator()
+            await Assert.ThrowsAsync<ArgumentException>(() => new StuntDocumentGenerator()
                 .GenerateDocumentAsync(project, types, TimeoutToken(5)));
         }
 
@@ -270,7 +272,7 @@ namespace Stunts.Tests.GeneratorTests
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
             var types = new[]
             {
-                compilation.GetTypeByMetadataName(typeof(IDisposable).FullName) ?? throw new XunitException(),
+                compilation.GetTypeByMetadataName(typeof(IDisposable).FullName!) ?? throw new XunitException(),
             };
 
             var doc = await new TestGenerator().GenerateDocumentAsync(project, types, TimeoutToken(5));
@@ -292,17 +294,17 @@ End Class")]
             var type = assembly.GetExportedTypes().FirstOrDefault();
 
             Assert.NotNull(type);
-            Assert.Equal("Foo", type.FullName);
+            Assert.Equal("Foo", type!.FullName);
 
-            var instance = Activator.CreateInstance(type);
+            var instance = Activator.CreateInstance(type!);
 
             Assert.NotNull(instance);
         }
 
-        Task<Compilation> CreateStunt(StuntGenerator generator, string language, Type type, bool trace = false)
+        Task<Compilation> CreateStunt(StuntDocumentGenerator generator, string language, Type type, bool trace = false)
             => CreateStunt(generator, language, new[] { type }, trace);
 
-        async Task<Compilation> CreateStunt(StuntGenerator generator, string language, Type[] types, bool trace = false)
+        async Task<Compilation> CreateStunt(StuntDocumentGenerator generator, string language, Type[] types, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language);
             project = project.AddAnalyzerReference(new AnalyzerImageReference(new DiagnosticAnalyzer[] { new OverridableMembersAnalyzer() }.ToImmutableArray()));
@@ -312,7 +314,7 @@ End Class")]
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
                 string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
 
-            var symbols = types.Select(t => compilation.GetTypeByMetadataName(t.FullName) 
+            var symbols = types.Select(t => compilation.GetTypeByMetadataName(t.FullName!) 
                 ?? throw new XunitException($"Could not get type {t.FullName} from compilation.")).ToArray();
             var document = await generator.GenerateDocumentAsync(project, symbols, TimeoutToken(5));
 
@@ -354,10 +356,10 @@ End Class")]
         }
     }
 
-    public class TestGenerator : StuntGenerator
+    public class TestGenerator : StuntDocumentGenerator
     {
         public TestGenerator()
-            : base(new NamingConvention(), GetDefaultProcessors().Concat(new[] { new TestProcessor() }).ToArray()) { }
+            : base(new NamingConvention(), DefaultProcessors.Concat(new[] { new TestProcessor() }).ToArray()) { }
 
         class TestProcessor : CSharpSyntaxRewriter, IDocumentProcessor
         {

@@ -1,6 +1,10 @@
 <Project>
 
-  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes">
+  <ItemGroup>
+    <CompilerVisibleProperty Include="SkipCompilerExecution" />
+  </ItemGroup>
+
+  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(StuntFactory)">
     <ItemGroup>
       <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
         <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
@@ -8,5 +12,12 @@
       </AssemblyAttribute>
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <Compile Update="@(Compile)">
+      <!-- Hide Stunts.cs/vb from the project -->
+      <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Stunts'">false</Visible>
+    </Compile>
+  </ItemGroup>
 
 </Project>

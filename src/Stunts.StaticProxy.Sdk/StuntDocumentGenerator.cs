@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,73 +7,80 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Text;
+using Stunts.CodeAnalysis;
 using Stunts.Processors;
 
 namespace Stunts
 {
     /// <summary>
-    /// Main code generator.
+    /// Generates a <see cref="Document"/> in a project from a set of types and 
+    /// <see cref="IDocumentProcessor"/> that modify the document to implement 
+    /// the stunt.
     /// </summary>
-    public class StuntGenerator
+    public class StuntDocumentGenerator
     {
-        // The naming conventions to use for determining class and namespace names.
-        readonly NamingConvention naming;
-
         // Configured processors, by language, then phase.
         readonly Dictionary<string, Dictionary<ProcessorPhase, IDocumentProcessor[]>> processors;
 
         /// <summary>
         /// Instantiates the set of default <see cref="IDocumentProcessor"/> for the generator, 
-        /// used for example when using the default constructor <see cref="StuntGenerator()"/>.
+        /// used for example when using the default constructor <see cref="StuntDocumentGenerator()"/>.
         /// </summary>
-        public static IDocumentProcessor[] GetDefaultProcessors() => new IDocumentProcessor[]
+        public static IDocumentProcessor[] DefaultProcessors => new IDocumentProcessor[]
         {
             new DefaultImports(),
             new CSharpFileHeader(),
             new CSharpScaffold(),
             new CSharpRewrite(),
             new CSharpStunt(),
-            new CSharpCompilerGenerated(),
+            //new CSharpGenerated(),
             new VisualBasicScaffold(),
             new VisualBasicRewrite(),
             new VisualBasicStunt(),
             new VisualBasicParameterFixup(),
             new VisualBasicFileHeader(),
-            new VisualBasicCompilerGenerated(),
+            //new VisualBasicCompilerGenerated(),
             new FixupImports(),
         };
 
         /// <summary>
-        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// Default naming convention used when generating documents, unless overriden 
+        /// via the corresponding constructor argument.
+        /// </summary>
+        public static NamingConvention DefaultNamingConvention { get; } = new NamingConvention();
+
+        /// <summary>
+        /// Initializes the generator with the default <see cref="Stunts.NamingConvention"/> 
         /// and the <see cref="GetDefaultProcessors"/> default processors.
         /// </summary>
-        public StuntGenerator() : this(new NamingConvention(), GetDefaultProcessors()) { }
+        public StuntDocumentGenerator() : this(new NamingConvention(), DefaultProcessors) { }
 
         /// <summary>
-        /// Initializes the generator with a custom <see cref="NamingConvention"/> and 
+        /// Initializes the generator with a custom <see cref="Stunts.NamingConvention"/> and 
         /// the <see cref="GetDefaultProcessors"/> default processors.
         /// </summary>
-        public StuntGenerator(NamingConvention naming) : this(naming, GetDefaultProcessors()) { }
+        public StuntDocumentGenerator(NamingConvention naming) : this(naming, DefaultProcessors) { }
 
         /// <summary>
-        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// Initializes the generator with the default <see cref="Stunts.NamingConvention"/> 
         /// and the given set of <see cref="IDocumentProcessor"/>s.
         /// </summary>
-        public StuntGenerator(params IDocumentProcessor[] processors) : this(new NamingConvention(), (IEnumerable<IDocumentProcessor>)processors) { }
+        public StuntDocumentGenerator(params IDocumentProcessor[] processors) : this(new NamingConvention(), (IEnumerable<IDocumentProcessor>)processors) { }
 
         /// <summary>
-        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// Initializes the generator with the default <see cref="Stunts.NamingConvention"/> 
         /// and the given set of <see cref="IDocumentProcessor"/>s.
         /// </summary>
-        public StuntGenerator(IEnumerable<IDocumentProcessor> processors) : this(new NamingConvention(), processors) { }
+        public StuntDocumentGenerator(IEnumerable<IDocumentProcessor> processors) : this(new NamingConvention(), processors) { }
 
         /// <summary>
-        /// Initializes the generator with a custom <see cref="NamingConvention"/> and 
+        /// Initializes the generator with a custom <see cref="Stunts.NamingConvention"/> and 
         /// the given set of <see cref="IDocumentProcessor"/>s.
         /// </summary>
-        public StuntGenerator(NamingConvention naming, IEnumerable<IDocumentProcessor> processors)
+        public StuntDocumentGenerator(NamingConvention naming, IEnumerable<IDocumentProcessor> processors)
         {
-            this.naming = naming;
+            this.NamingConvention = naming;
+
             // Splits the processors by supported language and then by phase.
             this.processors = processors
                 .SelectMany(processor => processor.Languages.Select(lang => new { Processor = processor, Language = lang }))
@@ -87,6 +93,9 @@ namespace Stunts
                             byphase => byphase.Key, 
                             byphase => byphase.Select(proclang => proclang.Processor).ToArray()));
         }
+
+        // The naming conventions to use for determining class and namespace names.
+        public NamingConvention NamingConvention { get; }
 
         /// <summary>
         /// Generates a stunt document that implements the given types.
@@ -118,14 +127,17 @@ namespace Stunts
 
             Document document;
 
-            EnsureTargetDirectory(project);
-
+            // This special case supports tests better.
             if (project.Solution.Workspace is AdhocWorkspace workspace)
             {
+                var directory = Path.Combine(Path.GetDirectoryName(project.FilePath) ?? "", 
+                    Path.Combine(NamingConvention.Namespace.Split('.')));
+                Directory.CreateDirectory(directory);
+
                 document = workspace.AddDocument(DocumentInfo.Create(
                     DocumentId.CreateNewId(project.Id),
                     name,
-                    folders: naming.Namespace.Split('.'),
+                    folders: NamingConvention.Namespace.Split('.'),
                     filePath: filePath,
                     loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
             }
@@ -134,7 +146,7 @@ namespace Stunts
                 document = project.AddDocument(
                     name,
                     SourceText.From(code),
-                    folders: naming.Namespace.Split('.'),
+                    folders: NamingConvention.Namespace.Split('.'),
                     filePath: filePath);
             }
 
@@ -161,7 +173,7 @@ namespace Stunts
         /// </summary>
         public (string name, SyntaxNode syntax) CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator)
         {
-            var name = naming.GetName(symbols);
+            var name = NamingConvention.GetName(symbols);
             var imports = new HashSet<string>();
             var (baseType, implementedInterfaces) = symbols.ValidateGeneratorTypes();
 
@@ -177,7 +189,7 @@ namespace Stunts
                 .Select(generator.NamespaceImportDeclaration)
                 .Concat(new[]
                 {
-                    generator.NamespaceDeclaration(naming.Namespace,
+                    generator.NamespaceDeclaration(NamingConvention.Namespace,
                         generator.AddAttributes(
                             generator.ClassDeclaration(name,
                                 modifiers: DeclarationModifiers.Partial,
@@ -264,19 +276,6 @@ namespace Stunts
             }
 
             return document;
-        }
-
-        void EnsureTargetDirectory(Project project)
-        {
-            var autoCodeFixEnabled = bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value;
-            // When running the generator from design-time, ensure the folder exists.
-            if (!autoCodeFixEnabled)
-            {
-                // Ensure target directory exists since a linked file in teh same folder 
-                // may already exist in the project and the file adding fails in that case.
-                var directory = Path.Combine(Path.GetDirectoryName(project.FilePath), Path.Combine(naming.Namespace.Split('.')));
-                Directory.CreateDirectory(directory);
-            }
         }
     }
 }

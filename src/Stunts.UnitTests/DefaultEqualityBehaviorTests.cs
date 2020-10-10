@@ -11,7 +11,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void AppliesToGetHashCode()
         {
-            var method = typeof(Foo).GetMethod(nameof(object.GetHashCode));
+            var method = typeof(Foo).GetMethod(nameof(object.GetHashCode))!;
             var behavior = new DefaultEqualityBehavior();
 
             Assert.True(behavior.AppliesTo(new MethodInvocation(new Foo(), method, new object[0])));
@@ -20,7 +20,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void AppliesToEquals()
         {
-            var method = typeof(Foo).GetMethod(nameof(object.Equals));
+            var method = typeof(Foo).GetMethod(nameof(object.Equals))!;
             var behavior = new DefaultEqualityBehavior();
 
             Assert.True(behavior.AppliesTo(new MethodInvocation(new Foo(), method, new object[] { new Foo() })));
@@ -29,7 +29,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void GetsHashCode()
         {
-            var method = typeof(Foo).GetMethod(nameof(object.GetHashCode));
+            var method = typeof(Foo).GetMethod(nameof(object.GetHashCode))!;
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
@@ -42,7 +42,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void EqualsSameInstance()
         {
-            var method = typeof(Foo).GetMethod(nameof(object.Equals));
+            var method = typeof(Foo).GetMethod(nameof(object.Equals))!;
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
@@ -54,7 +54,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void NotEqualsDifferentInstance()
         {
-            var method = typeof(Foo).GetMethod(nameof(object.Equals));
+            var method = typeof(Foo).GetMethod(nameof(object.Equals))!;
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
@@ -66,7 +66,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void InvokeNextIfNotEqualsOrGetHashCode()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.ToString));
+            var method = typeof(Foo).GetMethod(nameof(Foo.ToString))!;
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
             var nextCalled = false;
@@ -84,7 +84,7 @@ namespace Stunts.UnitTests
 
         public class Foo
         {
-            public override string ToString()
+            public override string? ToString()
             {
                 return base.ToString();
             }
@@ -94,7 +94,7 @@ namespace Stunts.UnitTests
                 return base.GetHashCode();
             }
 
-            public override bool Equals(object obj)
+            public override bool Equals(object? obj)
             {
                 return base.Equals(obj);
             }

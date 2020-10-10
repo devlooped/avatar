@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Superpower;
 using Superpower.Parsers;
 
-namespace Stunts
+namespace Stunts.CodeAnalysis
 {
     /// <summary>
     /// Provides uniform rendering and resolving of symbols from a full name.

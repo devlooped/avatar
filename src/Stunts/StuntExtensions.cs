@@ -6,12 +6,16 @@ namespace Stunts
     /// <summary>
     /// Usability functions for working with stunts.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    //[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class StuntExtensions
     {
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
+        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="name">Optional friendly name for the behavior.</param>
 		public static IStunt AddBehavior(this IStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             stunt.Behaviors.Add(new DelegateStuntBehavior(behavior, appliesTo, name));
@@ -21,7 +25,9 @@ namespace Stunts
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
-		public static IStunt AddBehavior(this IStunt stunt, IStuntBehavior behavior)
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="behavior">A custom behavior to apply to the stunt.</param>
+        public static IStunt AddBehavior(this IStunt stunt, IStuntBehavior behavior)
         {
             stunt.Behaviors.Add(behavior);
             return stunt;
@@ -30,8 +36,12 @@ namespace Stunts
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-		public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
+        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="name">Optional friendly name for the behavior.</param>
+        //[EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             // We can't just add a constraint to the method signature, because 
             // proxies are typically generated and don't expose the IProxy interface directly.
@@ -46,7 +56,9 @@ namespace Stunts
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="behavior">A custom behavior to apply to the stunt.</param>
+        //[EditorBrowsable(EditorBrowsableState.Advanced)]
         public static TStunt AddBehavior<TStunt>(this TStunt stunt, IStuntBehavior behavior)
         {
             if (stunt is IStunt target)
@@ -61,6 +73,11 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified 
         /// index.
         /// </summary>
+        /// <param name="stunt">The stunt to insert the behavior to.</param>
+        /// <param name="index">The index to insert the behavior at.</param>
+        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
+        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="name">Optional friendly name for the behavior.</param>
 		public static IStunt InsertBehavior(this IStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             stunt.Behaviors.Insert(index, new DelegateStuntBehavior(behavior, appliesTo, name));
@@ -71,6 +88,9 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified 
         /// index.
         /// </summary>
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="index">The index to insert the behavior at.</param>
+        /// <param name="behavior">A custom behavior to apply to the stunt.</param>
         public static IStunt InsertBehavior(this IStunt stunt, int index, IStuntBehavior behavior)
         {
             stunt.Behaviors.Insert(index, behavior);
@@ -81,7 +101,12 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="index">The index to insert the behavior at.</param>
+        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
+        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="name">Optional friendly name for the behavior.</param>
+        //[EditorBrowsable(EditorBrowsableState.Advanced)]
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             if (stunt is IStunt target)
@@ -96,7 +121,10 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        /// <param name="stunt">The stunt to add the behavior to.</param>
+        /// <param name="index">The index to insert the behavior at.</param>
+        /// <param name="behavior">A custom behavior to apply to the stunt.</param>
+        //[EditorBrowsable(EditorBrowsableState.Advanced)]
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, IStuntBehavior behavior)
         {
             if (stunt is IStunt target)

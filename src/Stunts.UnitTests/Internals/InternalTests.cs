@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Stunts.UnitTests
         [MemberData(nameof(GetPackageVersions))]
         public void CanAccessRequiredInternalsViaReflection(PackageIdentity package)
         {
-            var projectFile = Path.GetFullPath($"Internals\\test-{package}.csproj");
+            var projectFile = Path.GetFullPath($"Internals\\test-{package}.csproj")!;
             File.WriteAllText(projectFile,
 $@"<Project Sdk='Microsoft.NET.Sdk'>
     <PropertyGroup>    
@@ -107,7 +108,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             Assert.Equal(BuildResultCode.Success, result.OverallResult);
 
             var info = new ProcessStartInfo(Path.Combine(
-                Path.GetDirectoryName(projectFile),
+                Path.GetDirectoryName(projectFile) ?? "",
                 $@"bin\{package.Version}",
                 Path.ChangeExtension(Path.GetFileName(projectFile), ".exe")))
             {
@@ -116,7 +117,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
                 CreateNoWindow = true,
             };
 
-            var process = Process.Start(info);
+            var process = Process.Start(info) ?? throw new InvalidOperationException();
             var error = process.StandardError.ReadToEnd();
             Assert.Equal("", error.Trim());
             process.WaitForExit();
@@ -144,7 +145,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 
         class Logger : NuGet.Common.ILogger
         {
-            ITestOutputHelper? output;
+            readonly ITestOutputHelper? output;
 
             public Logger(ITestOutputHelper? output) => this.output = output;
 

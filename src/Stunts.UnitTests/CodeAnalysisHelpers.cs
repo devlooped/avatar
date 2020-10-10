@@ -16,7 +16,7 @@ namespace Stunts.UnitTests
         private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
         private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
         private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
-        private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true).Assembly.Location);
+        private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true)!.Assembly.Location);
         private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
 
         internal static string DefaultFilePathPrefix = "Test";

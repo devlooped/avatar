@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Stunts
+namespace Stunts.CodeAnalysis
 {
     /// <summary>
     /// Helper methods for dealing with <see cref="ISymbol"/>s.

@@ -22,9 +22,12 @@ namespace Stunts.UnitTests
             Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", Path.Combine(binPath, "MSBuild.exe"), EnvironmentVariableTarget.Process);
         }
 
-        static Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
+        static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name).Name;
+            if (name == null)
+                return null;
+
             var file = Path.Combine(ThisAssembly.Project.MSBuildBinPath, name + ".dll");
 
             File.AppendAllText(logFile, $"Resolving {name}\r\n");
@@ -35,7 +38,7 @@ namespace Stunts.UnitTests
                 return Assembly.LoadFrom(file);
             }
 
-            return null!;
+            return null;
         }
     }
 }

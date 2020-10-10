@@ -1,21 +1,26 @@
 ﻿<Project>
-  
+
   <ItemGroup>
     <ProjectCapability Include="Pack" />
-    <ProjectReference Include="..\**\*.csproj" Exclude="..\**\bin\**\*.*proj" />
+    <ProjectReference Include="..\**\*.csproj" Exclude="..\**\bin\**\*.*;..\**\obj\**\*.*" />
   </ItemGroup>
   
   <!-- Remove IsPackable=false projects from the globing -->
   <Target Name="RemoveNonPackable">
-    <MSBuild Projects="@(ProjectReference)" Targets="GetTargetPathWithTargetPlatformMoniker" SkipNonexistentProjects="$(SkipNonexistentProjects)" SkipNonexistentTargets="$(SkipNonexistentTargets)" StopOnFirstFailure="$(StopOnFirstFailure)">
+    <MSBuild Projects="@(ProjectReference)" 
+             Targets="IsPackable" 
+             SkipNonexistentProjects="$(SkipNonexistentProjects)" 
+             SkipNonexistentTargets="$(SkipNonexistentTargets)">
       <Output TaskParameter="TargetOutputs" ItemName="_ReferencedProjectTargetPath" />
     </MSBuild>
     <ItemGroup>
-      <NonPackableProjectReference Include="@(_ReferencedProjectTargetPath -> '%(OriginalItemSpec)')" Condition="'%(_ReferencedProjectTargetPath.IsPackable)' == 'false'" />
+      <NonPackableProjectReference Include="@(_ReferencedProjectTargetPath -> '%(OriginalItemSpec)')" 
+                                   Condition="'%(_ReferencedProjectTargetPath.IsPackable)' == 'false'" />
       <ProjectReference Remove="@(NonPackableProjectReference)" />
     </ItemGroup>
   </Target>
   
+  <!-- Pending https://github.com/microsoft/MSBuildSdks/pull/211 -->
   <Target Name="CompileDesignTime" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" 
           Condition="'$(DebuggerFlavor)' == '' And Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />

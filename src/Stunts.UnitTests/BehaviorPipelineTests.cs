@@ -338,7 +338,7 @@ namespace Stunts.UnitTests
 
             pipeline.Behaviors.Add(new TestBehavior());
 
-            var invocation = new MethodInvocation(new object(), typeof(object).GetMethod("ToString"));
+            var invocation = new MethodInvocation(new object(), typeof(object).GetMethod("ToString")!);
             invocation.SkipBehavior<TestBehavior>();
 
             Assert.Throws<NotImplementedException>(()

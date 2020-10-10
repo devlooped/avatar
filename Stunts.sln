@@ -37,6 +37,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.DynamicProxy", "src\
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Pack", "src\Pack\Pack.msbuildproj", "{4A1785A4-3CE1-4E13-A267-769574AF4F05}"
 EndProject
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Stunts.Basic", "src\Stunts.Basic\Stunts.Basic.vbproj", "{851DF623-1CD9-4A3A-8EB6-9999710BF40A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stunts.AcceptanceTests", "src\Stunts.AcceptanceTests\Stunts.AcceptanceTests.csproj", "{349999C7-0F55-460C-BBB2-8C45D7BC00E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,14 @@ Global
 		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A1785A4-3CE1-4E13-A267-769574AF4F05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{851DF623-1CD9-4A3A-8EB6-9999710BF40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{851DF623-1CD9-4A3A-8EB6-9999710BF40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{851DF623-1CD9-4A3A-8EB6-9999710BF40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{851DF623-1CD9-4A3A-8EB6-9999710BF40A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349999C7-0F55-460C-BBB2-8C45D7BC00E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349999C7-0F55-460C-BBB2-8C45D7BC00E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349999C7-0F55-460C-BBB2-8C45D7BC00E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349999C7-0F55-460C-BBB2-8C45D7BC00E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

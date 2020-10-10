@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <!--
     <TargetFramework Condition="'$(BuildingInsideVisualStudio)' == 'true'">net472</TargetFramework>
     <TargetFramework Condition="'$(BuildingInsideVisualStudio)' != 'true'">net5.0</TargetFramework>
-    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,8 +20,9 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.console" />
-    <PackageReference Include="xunit.runner.msbuild" />
+    <PackageReference Include="xunit.runner.msbuild" Condition="'$(TargetFramework)' == 'net472'" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
 
     <PackageReference Include="NuGet.Client" />
     <PackageReference Include="NuGet.Protocol.Core.v3" />
@@ -35,7 +38,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
 
-    <PackageReference Include="Superpower" PrivateAssets="all" />
+    <PackageReference Include="TypeNameFormatter.Sources" />
+    <PackageReference Include="Superpower" />
   </ItemGroup>
   
   <ItemGroup>
@@ -53,7 +57,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Range.cs" Condition="'$(TargetFramework)' == 'net5.0'" />
     <Compile Remove="Internals\Program.cs" />
+    <Compile Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Internals\Program.cs" CopyToOutputDirectory="PreserveNewest" />    
     <None Include="..\Stunts.StaticProxy.Sdk\RoslynInternals.cs" Link="Internals\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

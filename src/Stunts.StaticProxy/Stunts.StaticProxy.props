@@ -1,3 +1,21 @@
 <Project>
 
+  <PropertyGroup>
+    <StaticProxyStuntFactory>Stunts.Sdk.StaticProxyFactory, Stunts.StaticProxy, PublicKeyToken=00352124762f2aa5</StaticProxyStuntFactory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="DebugSourceGenerators" />
+    <CompilerVisibleProperty Include="DebugStuntSourceGenerator" />
+    <CompilerVisibleProperty Include="EmitStuntSource" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net472\Stunts*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net5.0\Stunts*.dll" />
+  </ItemGroup>
+
 </Project>

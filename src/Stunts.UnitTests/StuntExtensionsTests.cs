@@ -10,7 +10,7 @@ namespace Stunts.UnitTests
         public void AddAnonymousBehavior()
         {
             IStunt stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.AddBehavior(
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -28,7 +28,7 @@ namespace Stunts.UnitTests
         public void AddBehavior()
         {
             IStunt stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.AddBehavior(new TestBehavior());
 
@@ -43,7 +43,7 @@ namespace Stunts.UnitTests
         public void AddAnonymousBehaviorToObject()
         {
             object stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.AddBehavior(
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -59,7 +59,7 @@ namespace Stunts.UnitTests
         public void AddAnonymousBehaviorToNonStuntThrows()
         {
             object stunt = new object();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => stunt.AddBehavior(
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -71,7 +71,7 @@ namespace Stunts.UnitTests
         public void AddBehaviorToNonStuntThrows()
         {
             object stunt = new object();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => stunt.AddBehavior(new TestBehavior()));
         }
@@ -92,7 +92,7 @@ namespace Stunts.UnitTests
         public void InsertAnonymousBehavior()
         {
             IStunt stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.InsertBehavior(0,
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -110,7 +110,7 @@ namespace Stunts.UnitTests
         public void InsertBehavior()
         {
             IStunt stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.InsertBehavior(0, new TestBehavior());
 
@@ -125,7 +125,7 @@ namespace Stunts.UnitTests
         public void InsertAnonymousBehaviorToObject()
         {
             object stunt = new TestStunt();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             var actual = stunt.InsertBehavior(0,
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -141,7 +141,7 @@ namespace Stunts.UnitTests
         public void InsertAnonymousBehaviorToNonStuntThrows()
         {
             object stunt = new object();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => stunt.InsertBehavior(0,
                 (m, n) => new MethodReturn(m, "foo", null!),
@@ -153,7 +153,7 @@ namespace Stunts.UnitTests
         public void InsertBehaviorToNonStuntThrows()
         {
             object stunt = new object();
-            Func<string> method = ToString;
+            Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => stunt.InsertBehavior(0, new TestBehavior()));
         }

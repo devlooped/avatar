@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <Nullable>annotations</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+
+    <PackageReference Include="Superpower" />
+  </ItemGroup>
+
+  <ItemGroup Label="Targets">
+    <PackageReference Include="Microsoft.ApplicationInsights" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.15.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="net5 Targets" Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="net472 Targets" Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="EntityFramework" />
+    <PackageVersion Include="EntityFramework" Version="6.4.4" />
+
+    <PackageReference Include="Microsoft.AspNet.Mvc" />
+    <PackageVersion Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+
+    <PackageReference Include="Microsoft.AspNet.WebApi" />
+    <PackageVersion Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
