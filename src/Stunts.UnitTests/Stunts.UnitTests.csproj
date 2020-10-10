@@ -7,6 +7,7 @@
     <TargetFramework Condition="'$(BuildingInsideVisualStudio)' != 'true'">net5.0</TargetFramework>
     -->
     <Nullable>annotations</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
 
     <PackageReference Include="TypeNameFormatter.Sources" />
     <PackageReference Include="Superpower" />
