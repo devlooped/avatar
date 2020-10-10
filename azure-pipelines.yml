@@ -2,8 +2,6 @@ variables:
 - group: Sleet
 - name: Configuration
   value: Release
-- name: PackageOutputPath
-  value: $(Build.ArtifactStagingDirectory)
 
 trigger:
   paths:
