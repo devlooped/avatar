@@ -6,19 +6,25 @@
     <SourceGeneratorSupported>true</SourceGeneratorSupported>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <StuntAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Full'">$(MSBuildThisFileDirectory)..\..\tools\net472</StuntAnalyzerDir>
+    <StuntAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\..\tools\net5.0</StuntAnalyzerDir>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true'">
     <CompilerVisibleProperty Include="DebugSourceGenerators" />
     <CompilerVisibleProperty Include="DebugStuntSourceGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
     <CompilerVisibleProperty Include="EmitStuntSource" />
+    <CompilerVisibleProperty Include="StuntAnalyzerDir" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net472\Stunts*.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net472\Stunts*.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net5.0\Stunts*.dll" />
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net5.0\Stunts*.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticStuntFactory)' != 'false'">

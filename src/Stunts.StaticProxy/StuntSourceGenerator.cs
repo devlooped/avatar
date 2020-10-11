@@ -9,7 +9,17 @@ using Stunts.CodeAnalysis;
 
 namespace Stunts
 {
-    [Generator]
+    /// <summary>
+    /// Generates stunts by inspecting the current compilation for 
+    /// invocations to methods annotated with [StuntGenerator].
+    /// </summary>
+    /// <devdoc>
+    /// This generator is not annotated with [Generator] because we 
+    /// need the wrapping <see cref="DependencyResolverGenerator"/> 
+    /// to hook-up the assembly resolution so dependencies resolve 
+    /// from the right tools folder.
+    /// </devdoc>
+    //[Generator]
     public class StuntSourceGenerator : ISourceGenerator
     {
         public void Initialize(GeneratorInitializationContext context)
