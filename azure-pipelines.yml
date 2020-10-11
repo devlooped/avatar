@@ -2,6 +2,8 @@ variables:
 - group: Sleet
 - name: Configuration
   value: Release
+- name: DOTNET_NOLOGO
+  value: 'true'
 
 trigger:
   paths:
@@ -13,7 +15,7 @@ stages:
 
 - stage: build
   jobs:
-  - job:
+  - job: build
     strategy:
       matrix:
         # ubuntu-latest:
@@ -26,7 +28,7 @@ stages:
       vmImage: $(vm)
     steps:
     - checkout: self
-      clean: true
+      clean: 'true'
 
     - task: UseDotNet@2
       inputs:
@@ -56,3 +58,28 @@ stages:
         sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=$(SLEET_FEED_CONNECTIONSTRING)" -p "SLEET_FEED_TYPE=azure"
       displayName: sleet
       condition: eq(variables['vm'], 'windows-latest')
+
+    - publish: bin
+
+  - job: test
+    strategy:
+      matrix:
+        ubuntu-latest:
+          vm: ubuntu-latest
+        macOS-latest:
+          vm: macOS-latest
+        windows-latest:
+          vm: windows-latest
+    pool:
+      vmImage: $(vm)
+    steps:
+    - checkout: self
+    - task: UseDotNet@2
+      inputs:
+        version: 5.0.100-rc.1.20452.10
+        performMultiLevelLookup: true
+
+    - download: bin
+    - bash: dotnet test -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
+      workingDirectory: src/Sample
+      displayName: test
