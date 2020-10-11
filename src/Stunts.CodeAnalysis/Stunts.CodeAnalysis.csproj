@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Stunts\Stunts.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
