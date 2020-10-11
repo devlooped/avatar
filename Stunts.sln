@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CodeAnalysis", "src\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj", "{6668E6C9-128B-4D2C-9041-C3EB573DC9A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.StaticProxy.Sdk", "src\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj", "{E6C7D2A1-E425-4B25-879A-C7EE8B642C1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.StaticProxy", "src\Stunts.StaticProxy\Stunts.StaticProxy.csproj", "{E6C7D2A1-E425-4B25-879A-C7EE8B642C1D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.DynamicProxy", "src\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj", "{EE910E63-2490-434C-961E-83C088ADC5C2}"
 EndProject

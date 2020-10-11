@@ -21,7 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
-    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" />
+    <ProjectReference Include="..\Stunts.StaticProxy\Stunts.StaticProxy.csproj" />
   </ItemGroup>
   <!-- Pending https://github.com/microsoft/MSBuildSdks/pull/211/ -->
   <Target Name="CompileDesignTime" />

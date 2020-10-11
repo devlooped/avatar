@@ -56,15 +56,15 @@
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" EmitMetadata="false" />
     <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" EmitMetadata="false" />
-    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.StaticProxy\Stunts.StaticProxy.csproj" EmitMetadata="false" />
     <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\Stunts.StaticProxy.Sdk\RoslynInternals.cs" Link="InternalAccess\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Stunts.StaticProxy\RoslynInternals.cs" Link="InternalAccess\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
     <None Include="InternalAccess\Program.cs" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="InternalAccess\Directory.Build.props" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="InternalAccess\Directory.Build.props" CopyToOutputDirectory="PreserveNewest" />
     <None Update="InternalAccess\Directory.Build.targets" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

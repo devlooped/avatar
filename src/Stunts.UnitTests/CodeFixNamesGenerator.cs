@@ -65,7 +65,7 @@ namespace Stunts
                     )
                 );
 
-            var file = Path.GetFullPath(@$"{ThisAssembly.Project.MSBuildProjectDirectory}\..\Stunts.StaticProxy.Sdk\Processors\CodeFixNames.g.cs");
+            var file = Path.GetFullPath(@$"{ThisAssembly.Project.MSBuildProjectDirectory}\..\Stunts.StaticProxy\Processors\CodeFixNames.g.cs");
 
             using (var output = new StreamWriter(file, false))
             {

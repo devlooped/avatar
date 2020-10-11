@@ -43,7 +43,7 @@
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" EmitMetadata="false" />
     <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" EmitMetadata="false" />
-    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Stunts.StaticProxy\Stunts.StaticProxy.csproj" EmitMetadata="false" />
     <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
   </ItemGroup>
 
