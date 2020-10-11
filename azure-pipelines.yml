@@ -70,6 +70,7 @@ stages:
           vm: macOS-latest
         windows-latest:
           vm: windows-latest
+    dependsOn: build
     pool:
       vmImage: $(vm)
     steps:
@@ -79,7 +80,7 @@ stages:
         version: 5.0.100-rc.1.20452.10
         performMultiLevelLookup: true
 
-    - download: bin
+    - task: DownloadPipelineArtifact@2
     - bash: dotnet test -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       workingDirectory: src/Sample
       displayName: test
