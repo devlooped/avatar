@@ -7,8 +7,8 @@ namespace Stunts.UnitTests
     public class StuntFactoryTests
     {
         [Fact]
-        public void NullFactoryThrows()
-            => Assert.Throws<NotImplementedException>(() => StuntFactory.Null.CreateStunt(Assembly.GetExecutingAssembly(), typeof(IDisposable), Array.Empty<Type>(), Array.Empty<object>()));
+        public void NotImplementedFactoryThrows()
+            => Assert.Throws<NotImplementedException>(() => StuntFactory.NotImplemented.CreateStunt(Assembly.GetExecutingAssembly(), typeof(IDisposable), Array.Empty<Type>(), Array.Empty<object>()));
 
         [Fact]
         public void ReplaceDefaultFactory()

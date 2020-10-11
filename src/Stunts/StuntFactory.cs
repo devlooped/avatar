@@ -9,16 +9,18 @@ namespace Stunts
     /// </summary>
     public class StuntFactory : IStuntFactory
     {
-        /// <summary>
-        /// Gets or sets the default <see cref="IStuntFactory"/> to use 
-        /// to create stunts. Defaults to the <see cref="Null"/> factory.
-        /// </summary>
-        public static IStuntFactory Default { get; set; } = new StuntFactory();
+        static readonly IStuntFactory nullFactory = new StuntFactory();
 
         /// <summary>
-        /// A factory that always returns <see langword="null"/>.
+        /// Gets or sets the default <see cref="IStuntFactory"/> to use 
+        /// to create stunts. Defaults to the <see cref="NotImplemented"/> factory.
         /// </summary>
-        public static IStuntFactory Null { get; } = new StuntFactory();
+        public static IStuntFactory Default { get; set; } = nullFactory;
+
+        /// <summary>
+        /// A factory that throws <see cref="NotImplementedException"/>.
+        /// </summary>
+        public static IStuntFactory NotImplemented { get; } = nullFactory;
 
         private StuntFactory() { }
 

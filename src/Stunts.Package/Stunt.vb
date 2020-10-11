@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Diagnostics.CodeAnalysis
+﻿Imports System.Diagnostics.CodeAnalysis
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 
@@ -10,7 +9,9 @@ Namespace Global.Stunts
     Partial Friend Class Stunt
 
         Shared Sub New()
-            Dim factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttribute(Of StuntFactoryAttribute)()
+            If StuntFactory.[Default] IsNot StuntFactory.NotImplemented Then Return
+
+            Dim factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttributes(Of StuntFactoryAttribute)().FirstOrDefault()
 
             If factoryAttribute IsNot Nothing Then
                 Dim factoryType = Type.[GetType](factoryAttribute.TypeName)

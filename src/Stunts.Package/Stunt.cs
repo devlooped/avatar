@@ -3,6 +3,7 @@ namespace Stunts
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
@@ -15,7 +16,10 @@ namespace Stunts
     {
         static Stunt()
         {
-            var factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttribute<StuntFactoryAttribute>();
+            if (StuntFactory.Default != StuntFactory.NotImplemented)
+                return;
+
+            var factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttributes<StuntFactoryAttribute>().FirstOrDefault();
             if (factoryAttribute != null)
             {
                 var factoryType = Type.GetType(factoryAttribute.TypeName);

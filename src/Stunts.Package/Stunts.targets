@@ -1,7 +1,8 @@
 <Project>
 
   <!-- If source generators aren't supported, we just won't register the static one -->
-  <PropertyGroup Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview')">
+  <PropertyGroup Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview') and 
+                             $(MSBuildShortVersion) &gt;= '16.8'">
     <SourceGeneratorSupported>true</SourceGeneratorSupported>
   </PropertyGroup>
 
@@ -44,15 +45,19 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="EnsureSingleStuntFactory" BeforeTargets="BeforeCompile;CoreCompile">
+  <Target Name="EnsureStuntFactory" BeforeTargets="BeforeCompile;CoreCompile">
     <PropertyGroup>
       <StuntFactories>@(StuntFactory -> Count())</StuntFactories>
     </PropertyGroup>
     <ItemGroup>
       <StuntFactoryPackage Include="@(StuntFactory -> '%(PackageId)')" />
-    </ItemGroup>    
-    <Error Code="ST001" Condition="$(StuntFactories) &gt; '1'"
-           Text="More than one stunt factory is registered in the current project. Packages providing factories: @(StuntFactoryPackage, ', ')." />
+    </ItemGroup>
+
+    <Warning Code="ST001" Condition="$(StuntFactories) &gt; '1'"
+       Text="More than one stunt factory is registered in the current project. Only the first one will be used unless explicitly set as StuntFactory.Default. Packages providing factories: @(StuntFactoryPackage, ', ')." />
+
+    <Warning Code="ST002" Condition="'@(StuntFactory)' == '' and '$(SourceGeneratorSupported)' != 'true' and '$(RegisterStaticStuntFactory)' != 'false'"
+             Text="Built-in stunt factory requires C# 9.0. Please install Stunt.DynamicFactory package as an alternative." />
   </Target>
 
 </Project>
