@@ -1,0 +1,6 @@
+﻿<Project>
+  <PropertyGroup>
+    <LangVersion>Preview</LangVersion>
+    <VersionPrefix>42.42.42</VersionPrefix>
+  </PropertyGroup>
+</Project>

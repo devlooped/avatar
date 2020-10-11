@@ -1,0 +1,11 @@
+﻿<Project>
+  
+  <!-- Supports the main Stunts Pack project -->
+
+  <Target Name="IsPackable" Returns="@(IsPackable)">
+    <ItemGroup>
+      <IsPackable Include="$(MSBuildProjectFullPath)" IsPackable="false" PackageId="" />
+    </ItemGroup>
+  </Target>
+
+</Project>
