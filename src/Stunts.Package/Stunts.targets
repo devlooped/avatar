@@ -1,17 +1,30 @@
 <Project>
 
-  <ItemGroup>
+  <!-- If source generators aren't supported, we just won't register the static one -->
+  <PropertyGroup Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview')">
+    <SourceGeneratorSupported>true</SourceGeneratorSupported>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true'">
+    <CompilerVisibleProperty Include="DebugSourceGenerators" />
+    <CompilerVisibleProperty Include="DebugStuntSourceGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
+    <CompilerVisibleProperty Include="EmitStuntSource" />
   </ItemGroup>
 
-  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(StuntFactory)">
-    <ItemGroup>
-      <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
-        <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
-        <_Parameter2>%(StuntFactory.PackageId)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net472\Stunts*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\tools\net5.0\Stunts*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticStuntFactory)' != 'false'">
+    <StuntFactory Include="$(StaticStuntFactory)"
+                  PackageId="Stunts"
+                  Condition="'$(RegisterStaticStuntFactory)' != 'false'" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="@(Compile)">
@@ -19,5 +32,27 @@
       <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Stunts'">false</Visible>
     </Compile>
   </ItemGroup>
+
+  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(StuntFactory)">
+    <ItemGroup>
+      <!-- This adds all factories unconditionally, since the specific factories 
+           will actually check for duplicates and warn as needed. -->
+      <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
+        <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
+        <_Parameter2>%(StuntFactory.PackageId)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="EnsureSingleStuntFactory" BeforeTargets="BeforeCompile;CoreCompile">
+    <PropertyGroup>
+      <StuntFactories>@(StuntFactory -> Count())</StuntFactories>
+    </PropertyGroup>
+    <ItemGroup>
+      <StuntFactoryPackage Include="@(StuntFactory -> '%(PackageId)')" />
+    </ItemGroup>    
+    <Error Code="ST001" Condition="$(StuntFactories) &gt; '1'"
+           Text="More than one stunt factory is registered in the current project. Packages providing factories: @(StuntFactoryPackage, ', ')." />
+  </Target>
 
 </Project>

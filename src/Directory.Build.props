@@ -62,5 +62,15 @@
     <PackageReference Include="NuGetizer" PrivateAssets="all" Visible="false" />
     <PackageReference Include="ThisAssembly" PrivateAssets="all" Visible="false" />
   </ItemGroup>
+
+  <!-- Will only apply for cross-targeting, will be overriden by common targets typically. 
+       This is here for packaging projects only, which upon resolving references from dotnet-nugetize 
+       will call GetTargetPath and that would otherwise fail -->
+  <Target Name="GetTargetPath" DependsOnTargets="_SetGetTargetPathInnerTarget;DispatchToInnerBuilds" />
+  <Target Name="_SetGetTargetPathInnerTarget" Returns="@(InnerOutput)">
+    <PropertyGroup  Condition="'$(InnerTargets)' == ''">
+      <InnerTargets>GetTargetPath</InnerTargets>
+    </PropertyGroup>
+  </Target>
   
 </Project>

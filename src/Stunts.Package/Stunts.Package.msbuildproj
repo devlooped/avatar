@@ -11,15 +11,17 @@
   <ItemGroup>
     <Content Include="Stunt.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
     <Content Include="Stunt.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
+    <None Include="Stunts.props" PackFolder="build\netstandard2.0" />
     <None Include="Stunts.targets" PackFolder="build\netstandard2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" Pack="false" />
     <PackageReference Include="NuGetizer" Version="$(NuGetizerVersion)" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Stunts.StaticProxy.Sdk\Stunts.StaticProxy.Sdk.csproj" />
   </ItemGroup>
   <!-- Pending https://github.com/microsoft/MSBuildSdks/pull/211/ -->
   <Target Name="CompileDesignTime" />
