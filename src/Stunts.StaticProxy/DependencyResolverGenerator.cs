@@ -23,8 +23,6 @@ namespace Stunts
 
         static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)
         {
-            Debugger.Launch();
-
             if (resolveDir == null)
                 return null;
 
