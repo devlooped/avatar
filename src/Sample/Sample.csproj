@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <RestoreSources>
-      $(MSBuildProjectDirectory)\..\..\bin;
+      $(MSBuildProjectDirectory)/../../bin;
       https://api.nuget.org/v3/index.json
     </RestoreSources>
   </PropertyGroup>
