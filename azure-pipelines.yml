@@ -87,5 +87,5 @@ stages:
         path: '$(Pipeline.Workspace)/s/bin'
 
     - bash: dotnet test -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
-      workingDirectory: src/Sample
+      workingDirectory: src/Acceptance
       displayName: test

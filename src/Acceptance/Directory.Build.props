@@ -2,5 +2,9 @@
   <PropertyGroup>
     <LangVersion>Preview</LangVersion>
     <VersionPrefix>42.42.42</VersionPrefix>
+    <RestoreSources>
+      $(MSBuildThisFileDirectory)../../bin;
+      https://api.nuget.org/v3/index.json
+    </RestoreSources>
   </PropertyGroup>
 </Project>
