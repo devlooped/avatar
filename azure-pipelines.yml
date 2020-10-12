@@ -59,7 +59,8 @@ stages:
       displayName: sleet
       condition: eq(variables['vm'], 'windows-latest')
 
-    - publish: bin
+    - publish: '$(Pipeline.Workspace)/s/bin'
+      artifact: 'bin'
 
   - job: test
     strategy:
@@ -81,6 +82,10 @@ stages:
         performMultiLevelLookup: true
 
     - task: DownloadPipelineArtifact@2
-    - bash: dotnet test -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
+      inputs:
+        artifact: bin
+        path: '$(Pipeline.Workspace)/s/bin'
+
+    - bash: dotnet test -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       workingDirectory: src/Sample
       displayName: test
