@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace Stunts
 {
@@ -7,14 +6,14 @@ namespace Stunts
     /// Usability functions for working with stunts.
     /// </summary>
     //[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class StuntExtensions
+    public static class StuntExtensions
     {
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
         /// <param name="stunt">The stunt to add the behavior to.</param>
-        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
-        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
+        /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
 		public static IStunt AddBehavior(this IStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
@@ -37,8 +36,8 @@ namespace Stunts
         /// Adds a behavior to a stunt.
         /// </summary>
         /// <param name="stunt">The stunt to add the behavior to.</param>
-        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
-        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
+        /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
         //[EditorBrowsable(EditorBrowsableState.Advanced)]
         public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
@@ -75,8 +74,8 @@ namespace Stunts
         /// </summary>
         /// <param name="stunt">The stunt to insert the behavior to.</param>
         /// <param name="index">The index to insert the behavior at.</param>
-        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
-        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
+        /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
 		public static IStunt InsertBehavior(this IStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
@@ -103,8 +102,8 @@ namespace Stunts
         /// </summary>
         /// <param name="stunt">The stunt to add the behavior to.</param>
         /// <param name="index">The index to insert the behavior at.</param>
-        /// <param name="behavior">(method, next) => method.CreateValueReturn() | method.CreateExceptionReturn() | next().Invoke(method, next)</param>
-        /// <param name="appliesTo">(IMethodInvocation method) => true|false</param>
+        /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
+        /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
         //[EditorBrowsable(EditorBrowsableState.Advanced)]
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
