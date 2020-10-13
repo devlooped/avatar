@@ -23,6 +23,7 @@
   <ItemGroup>
     <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
     <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <None Include="$(MSBuildThisFileDirectory)../docs/img/icon.png" Pack="true" Visible="false" />
   </ItemGroup>
 
   <Target Name="IsPackable" Returns="@(IsPackable)">
