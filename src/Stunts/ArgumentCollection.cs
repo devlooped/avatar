@@ -73,7 +73,7 @@ namespace Stunts
             (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
             " " + parameter.Name +
             (parameter.IsOut ? "" :
-                (" = " +
+                (": " +
                     ((IsString(parameter.ParameterType) && values[index] != null) ? "\"" + values[index] + "\"" :
                         // render boolean as lowercase to match C#
                         (values[index] is bool b) ? b.ToString().ToLowerInvariant() : (values[index] ?? "null"))
