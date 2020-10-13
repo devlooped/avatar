@@ -5,6 +5,7 @@
     <Copyright>Copyright (C) Daniel Cazzulino $([System.DateTime]::Now.Year). All rights reserved.</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
 
     <VersionPrefix>42.42.42</VersionPrefix>
 
