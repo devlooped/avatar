@@ -48,7 +48,7 @@ namespace Samples
         public void TurnOff()
         {
             IsOn = false;
-            TurnedOn?.Invoke(this, EventArgs.Empty);
+            TurnedOff?.Invoke(this, EventArgs.Empty);
         }
     }
 }
