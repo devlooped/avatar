@@ -14,7 +14,7 @@ namespace Stunts.Processors
     /// attribute to all generated members, so that it's possible to distinguish user-authored 
     /// members in a partial class from the generated code.
     /// </summary>
-    public class VisualBasicCompilerGenerated : IDocumentProcessor
+    public class VisualBasicGenerated : IDocumentProcessor
     {
         /// <summary>
         /// Applies to the <see cref="LanguageNames.VisualBasic"/>.
@@ -46,42 +46,17 @@ namespace Stunts.Processors
 
             public VisualBasicRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
 
-            public override SyntaxNode VisitMethodBlock(MethodBlockSyntax node)
+            public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
             {
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitMethodBlock(node);
+                    return base.VisitClassBlock(node);
 
-                return base.VisitMethodBlock((MethodBlockSyntax)AddAttributes(node));
-            }
-
-            public override SyntaxNode VisitPropertyBlock(PropertyBlockSyntax node)
-            {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitPropertyBlock(node);
-
-                return base.VisitPropertyBlock((PropertyBlockSyntax)AddAttributes(node));
-            }
-
-            public override SyntaxNode VisitEventBlock(EventBlockSyntax node)
-            {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitEventBlock(node);
-
-                return base.VisitEventBlock((EventBlockSyntax)AddAttributes(node));
+                return base.VisitClassBlock((ClassBlockSyntax)AddAttributes(node));
             }
 
             SyntaxNode AddAttributes(SyntaxNode node)
                 => generator.AddAttributes(node,
-                    Attribute(IdentifierName("CompilerGenerated")),
-                    Attribute(
-                        null,
-                        IdentifierName("GeneratedCode"),
-                        ArgumentList(SeparatedList<ArgumentSyntax>(new[]
-                        {
-                            SimpleArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(nameof(Stunts)))),
-                            SimpleArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(ThisAssembly.Info.InformationalVersion))),
-                        })))
-                    );
+                    Attribute(IdentifierName("CompilerGenerated")));
         }
     }
 }

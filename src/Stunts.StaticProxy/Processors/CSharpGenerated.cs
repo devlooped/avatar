@@ -46,49 +46,17 @@ namespace Stunts.Processors
 
             public CSharpRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
 
-            public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
+            public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitMethodDeclaration(node);
+                    return base.VisitClassDeclaration(node);
 
-                return base.VisitMethodDeclaration((MethodDeclarationSyntax)AddAttributes(node));
-            }
-
-            public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
-            {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitPropertyDeclaration(node);
-                
-                return base.VisitPropertyDeclaration((PropertyDeclarationSyntax)AddAttributes(node));
-            }
-
-            public override SyntaxNode? VisitIndexerDeclaration(IndexerDeclarationSyntax node)
-            {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitIndexerDeclaration(node);
-
-                return base.VisitIndexerDeclaration((IndexerDeclarationSyntax)AddAttributes(node));
-            }
-
-            public override SyntaxNode? VisitEventDeclaration(EventDeclarationSyntax node)
-            {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
-                    return base.VisitEventDeclaration(node);
-
-                return base.VisitEventDeclaration((EventDeclarationSyntax)AddAttributes(node));
+                return base.VisitClassDeclaration((ClassDeclarationSyntax)AddAttributes(node));
             }
 
             SyntaxNode AddAttributes(SyntaxNode node)
                 => generator.AddAttributes(node,
-                    Attribute(IdentifierName("CompilerGenerated")),
-                    Attribute(IdentifierName("GeneratedCode")),
-                    Attribute(IdentifierName("ExcludeFromCodeCoverage"),
-                        AttributeArgumentList(SeparatedList(new[]
-                        {
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(nameof(Stunts)))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(ThisAssembly.Info.InformationalVersion))),
-                        })))
-                    );
+                    Attribute(IdentifierName("CompilerGenerated")));
         }
     }
 }
