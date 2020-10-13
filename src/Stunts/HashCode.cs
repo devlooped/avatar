@@ -59,7 +59,7 @@ namespace Stunts
     /// </summary>
     [DebuggerNonUserCode]
     [ExcludeFromCodeCoverage]
-    public struct HashCode
+    internal struct HashCode
     {
         private static readonly uint s_seed = (uint)new Random().Next();
 
