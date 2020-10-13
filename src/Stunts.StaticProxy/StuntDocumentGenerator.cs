@@ -41,7 +41,7 @@ namespace Stunts
             new CSharpFileHeader(),
             new CSharpPragmas(),
             new VisualBasicFileHeader(),
-            new VisualBasicCompilerGenerated(),
+            new VisualBasicGenerated(),
         };
 
         /// <summary>
