@@ -53,7 +53,7 @@ namespace Samples.TargetInvocation
 
             if (method is MethodInfo info && info.ReturnType == typeof(void))
             {
-                var delegateType = Type.GetType("System.Action`" + (parameters.Length + 2))
+                var delegateType = Type.GetType("System.Action`" + (parameters.Length + 2), true)!
                     .MakeGenericType(
                         new[] { typeof(CallSite), typeof(object) }
                         .Concat(parameters.Select(p => p.ParameterType))
@@ -62,7 +62,7 @@ namespace Samples.TargetInvocation
                 var site = typeof(CallSite<>).MakeGenericType(delegateType)
                     .InvokeMember("Create", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { binder });
 
-                var target = (Delegate)site.GetType().GetField("Target").GetValue(site);
+                var target = (Delegate)site?.GetType().GetField("Target")?.GetValue(site)!;
 
                 return invocation =>
                 {
@@ -74,13 +74,13 @@ namespace Samples.TargetInvocation
                     }
                     catch (TargetInvocationException tie)
                     {
-                        return invocation.CreateExceptionReturn(tie.InnerException);
+                        return invocation.CreateExceptionReturn(tie.InnerException!);
                     }
                 };
             }
             else
             {
-                var delegateType = Type.GetType("System.Func`" + (parameters.Length + 3))
+                var delegateType = Type.GetType("System.Func`" + (parameters.Length + 3), true)!
                     .MakeGenericType(
                         new[] { typeof(CallSite), typeof(object) }
                         .Concat(parameters.Select(p => p.ParameterType))
@@ -90,7 +90,7 @@ namespace Samples.TargetInvocation
                 var site = typeof(CallSite<>).MakeGenericType(delegateType)
                     .InvokeMember("Create", BindingFlags.Static | BindingFlags.Public | BindingFlags.InvokeMethod, null, null, new[] { binder });
 
-                var target = (Delegate)site.GetType().GetField("Target").GetValue(site);
+                var target = (Delegate)site?.GetType().GetField("Target")?.GetValue(site)!;
 
                 return invocation =>
                 {
@@ -102,7 +102,7 @@ namespace Samples.TargetInvocation
                     }
                     catch (TargetInvocationException tie)
                     {
-                        return invocation.CreateExceptionReturn(tie.InnerException);
+                        return invocation.CreateExceptionReturn(tie.InnerException!);
                     }
                 };
             }

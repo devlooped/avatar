@@ -36,7 +36,7 @@ namespace Samples
             }
             catch (TargetInvocationException tie)
             {
-                return invocation.CreateExceptionReturn(tie.InnerException);
+                return invocation.CreateExceptionReturn(tie.InnerException!);
             }
         }
 
