@@ -27,7 +27,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithInt(int value = 5)", actual);
+            Assert.Equal("void DoWithInt(int value: 5)", actual);
         }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithNullableInt(int? value = 5)", actual);
+            Assert.Equal("void DoWithNullableInt(int? value: 5)", actual);
         }
 
         public void DoWithNullableIntNull(int? value) { }
@@ -85,7 +85,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithNullableIntNull(int? value = null)", actual);
+            Assert.Equal("void DoWithNullableIntNull(int? value: null)", actual);
         }
 
         public void DoWithString(string value) { }
@@ -97,7 +97,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithString(string value = \"foo\")", actual);
+            Assert.Equal("void DoWithString(string value: \"foo\")", actual);
         }
 
         public void DoWithNullString(string value) { }
@@ -109,7 +109,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithNullString(string value = null)", actual);
+            Assert.Equal("void DoWithNullString(string value: null)", actual);
         }
 
         public bool DoReturn() => true;
@@ -133,7 +133,7 @@ namespace Stunts.UnitTests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoRef(ref int i = 5)", actual);
+            Assert.Equal("void DoRef(ref int i: 5)", actual);
         }
 
         public void DoOut(out int value) { value = 5; }
