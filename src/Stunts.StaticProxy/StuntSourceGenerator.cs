@@ -65,6 +65,7 @@ namespace Stunts
                 return;
 
             var generator = new StuntDocumentGenerator();
+            var generatedStunts = new HashSet<string>();
 
             foreach (var invocation in receiver.Invocations)
             {
@@ -84,6 +85,10 @@ namespace Stunts
                 if (!typeArgs.All(CanGenerateFor))
                     continue;
 
+                // Check if the type hasn't been generated already
+                if (generatedStunts.Contains(generator.NamingConvention.GetName(typeArgs.OfType<ITypeSymbol>())))
+                    continue;
+
                 // Convert from real compilation symbols to ad-hoc one for codegen.
                 var finalArgs = typeArgs.Select(x => x!.ToFullName())
                     .Select(compilation.GetTypeByFullName)
@@ -100,19 +105,20 @@ namespace Stunts
                     continue;
 
                 var code = root.NormalizeWhitespace().ToFullString();
-
+                var name = generator.NamingConvention.GetName(finalArgs);
                 if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.EmitStuntSource", out var emitSource) &&
                     bool.TryParse(emitSource, out var shouldEmit) &&
                     shouldEmit)
                 {
-                    var filePath = Path.Combine(Path.GetTempPath(), generator.NamingConvention.GetName(finalArgs) + ".cs");
+                    var filePath = Path.Combine(Path.GetTempPath(), name + ".cs");
                     File.WriteAllText(filePath, code);
                     context.ReportDiagnostic(Diagnostic.Create("ST424242", "Compiler", $"{filePath}", 
                         DiagnosticSeverity.Warning, DiagnosticSeverity.Warning, true, 4, 
                         location: Location.Create(filePath, TextSpan.FromBounds(0, 0), new LinePositionSpan())));
                 }
 
-                context.AddSource(generator.NamingConvention.GetName(finalArgs), code);
+                generatedStunts.Add(name);
+                context.AddSource(name, code);
             }
 
             bool CanGenerateFor(INamedTypeSymbol? symbol)

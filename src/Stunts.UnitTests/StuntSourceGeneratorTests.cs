@@ -19,6 +19,45 @@ namespace Stunts.UnitTests
 {
     public class StuntSourceGeneratorTests
     {
+        [Fact]
+        public void GeneratesOneStuntPerType()
+        {
+            var code = @"
+using System;
+
+namespace Stunts.UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var stunt = Stunt.Of<IDisposable>();
+            var services = Stunt.Of<IServiceProvider>();
+
+            Console.WriteLine(stunt.ToString());
+        }
+        
+        public void DoToo()
+        {
+            var other = Stunt.Of<IDisposable>();
+            var sp = Stunt.Of<IServiceProvider>();
+        }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+            
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetType(StuntNaming.GetFullName(typeof(IDisposable))));
+            Assert.NotNull(assembly.GetType(StuntNaming.GetFullName(typeof(IServiceProvider))));
+        }
+
+        [InlineData(typeof(IDisposable), typeof(IServiceProvider), typeof(IFormatProvider))]
+        [InlineData(typeof(ICollection<string>), typeof(IDisposable))]
+        [InlineData(typeof(IDictionary<IReadOnlyCollection<string>, IReadOnlyList<int>>), typeof(IDisposable))]
         [InlineData(typeof(IDisposable))]
         [Theory]
         public void GenerateCode(params Type[] types)
