@@ -29,18 +29,19 @@ namespace Stunts
         public static IDocumentProcessor[] DefaultProcessors => new IDocumentProcessor[]
         {
             new DefaultImports(),
-            new CSharpFileHeader(),
             new CSharpScaffold(),
             new CSharpRewrite(),
             new CSharpStunt(),
-            //new CSharpGenerated(),
+            new CSharpGenerated(),
             new VisualBasicScaffold(),
             new VisualBasicRewrite(),
             new VisualBasicStunt(),
             new VisualBasicParameterFixup(),
-            new VisualBasicFileHeader(),
-            //new VisualBasicCompilerGenerated(),
             new FixupImports(),
+            new CSharpFileHeader(),
+            new CSharpPragmas(),
+            new VisualBasicFileHeader(),
+            new VisualBasicCompilerGenerated(),
         };
 
         /// <summary>
