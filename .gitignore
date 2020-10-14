@@ -5,7 +5,7 @@ out
 bin
 obj
 TestResults
-dotnet-nugetize.items
+*.items
 *.nupkg
 *.lock.json
 *.nuget.props
@@ -15,4 +15,3 @@ dotnet-nugetize.items
 *.cache
 *.log
 *.binlog
-*.rsp
