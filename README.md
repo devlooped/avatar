@@ -1,6 +1,14 @@
-<h1 id="stunts"><img src="https://github.com/kzu/stunts/raw/main/docs/img/icon.png" alt="Icon" height="48" width="48" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px"> Stunts</h1>
+<h1 id="stunts"><img src="https://github.com/kzu/stunts/raw/main/docs/img/icon.png" alt="Icon" height="48" width="48" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">&nbsp;&nbsp;Stunts</h1>
 
 A modern interception library that runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), through compile-time code generation.
+
+[![Version](https://img.shields.io/nuget/vpre/Stunts.svg?color=royalblue)](https://www.nuget.org/packages/Stunts)
+[![Downloads](https://img.shields.io/nuget/dt/Stunts?color=darkmagenta)](https://www.nuget.org/packages/Stunts)
+[![Build Status](https://dev.azure.com/kzu/oss/_apis/build/status/stunts?branchName=main)](http://build.azdo.io/kzu/oss/45)
+[![License](https://img.shields.io/github/license/kzu/stunts.svg?color=blue)](https://github.com/kzu/stunts/blob/main/LICENSE)
+[![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
+
 
 > The **Stunts** name was inspired by the [Test Double](http://xunitpatterns.com/Test%20Double.html) naming in the mock objects literature, which in turn comes from the [Stunt Double](https://en.wikipedia.org/wiki/Stunt_double) concept from film making. This project allows your objects to pull arbitrary *stunts* based on your instructions/choreography 😉.
 
@@ -104,4 +112,6 @@ The `samples` folder in the repository contains a few interesting examples of ho
 
 * Forwarding calls to a target object using the DLR (that backs the *dynamic* keyword in C#) API for high-performance late binding. 
  
+* Custom `Stub.Of<T>` factory that creates stunts that have common behaviors configured automatically.
+
 * Logging all calls to a stunt to the Xunit output helper.
