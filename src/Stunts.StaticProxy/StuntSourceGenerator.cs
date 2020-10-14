@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,21 +16,47 @@ namespace Stunts
     /// Generates stunts by inspecting the current compilation for 
     /// invocations to methods annotated with [StuntGenerator].
     /// </summary>
-    /// <devdoc>
-    /// This generator is not annotated with [Generator] because we 
-    /// need the wrapping <see cref="DependencyResolverGenerator"/> 
-    /// to hook-up the assembly resolution so dependencies resolve 
-    /// from the right tools folder.
-    /// </devdoc>
-    //[Generator]
+    [Generator]
     public class StuntSourceGenerator : ISourceGenerator
     {
-        public void Initialize(GeneratorInitializationContext context)
-            => context.RegisterForSyntaxNotifications(() => new StuntGeneratorReceiver());
+        static string? resolveDir;
+        ISourceGenerator? generator;
 
+        static StuntSourceGenerator() => AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+
+        static Assembly? OnAssemblyResolve(object? sender, ResolveEventArgs args)
+        {
+            if (resolveDir == null)
+                return null;
+
+            var name = new AssemblyName(args.Name).Name;
+            if (name == null)
+                return null;
+
+            var file = Path.GetFullPath(Path.Combine(resolveDir, name + ".dll"));
+
+            if (File.Exists(file))
+                return Assembly.LoadFrom(file);
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Execute(GeneratorExecutionContext context)
         {
             context.AnalyzerConfigOptions.CheckDebugger(nameof(StuntSourceGenerator));
+
+            if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.StuntAnalyzerDir", out var analyerDir))
+                resolveDir = analyerDir;
+
+            OnExecute(context);
+        }
+
+        public void Initialize(GeneratorInitializationContext context) 
+            => context.RegisterForSyntaxNotifications(() => new StuntGeneratorReceiver());
+
+        void OnExecute(GeneratorExecutionContext context)
+        {
 
             if (context.SyntaxReceiver is not StuntGeneratorReceiver receiver)
                 return;
