@@ -38,11 +38,11 @@ stages:
     - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       displayName: build
 
-    - bash: dotnet test --no-build
+    - bash: dotnet test --no-build -p:CollectCoverage=true 
       displayName: test
       condition: eq(variables['vm'], 'windows-latest')
 
-    - bash: dotnet test --no-build -f net5.0
+    - bash: dotnet test --no-build -f net5.0 -p:CollectCoverage=true
       displayName: test
       workingDirectory: src/Stunts.UnitTests
       condition: ne(variables['vm'], 'windows-latest')
