@@ -20,7 +20,6 @@ namespace Stunts
     public class StuntSourceGenerator : ISourceGenerator
     {
         static string? resolveDir;
-        ISourceGenerator? generator;
 
         static StuntSourceGenerator() => AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
 
