@@ -18,7 +18,8 @@
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-
+    <PackageReference Include="coverlet.collector" />
+    
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />

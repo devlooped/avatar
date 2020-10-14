@@ -37,6 +37,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
     <ItemGroup>
         <PackageReference Include='{package.Id}' Version='{package.Version}' />
         <PackageReference Include='System.Runtime' Version='4.3.1' />
+        <PackageReference Include='Microsoft.CodeCoverage' Version='16.7.1' />
     </ItemGroup>
 </Project>");
 
