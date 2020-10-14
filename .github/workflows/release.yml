@@ -5,6 +5,7 @@ on:
 
 env:
   DOTNET_NOLOGO: true
+  Configuration: Release
 
 jobs:
   build:
@@ -13,6 +14,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100-rc.1.20452.10
-      - run: dotnet msbuild -r -m:1 -p:configuration=Release -p:version=${GITHUB_REF#refs/*/v}
+          dotnet-version: 5.0.100-rc.2.20479.15
+      - run: dotnet msbuild -r -m:1 -p:version=${GITHUB_REF#refs/*/v}
       - run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
