@@ -65,7 +65,7 @@
     <Delete Files="@(MSBuildAssembly)">
       <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
     </Delete>
-    <Message Text="Deleted: @(DeletedFiles)" Importance="high" />
+    <Message Text="Deleted: @(DeletedFiles)" Condition="'@(DeletedFiles)' != ''" />
   </Target>
 
   <ItemDefinitionGroup>
