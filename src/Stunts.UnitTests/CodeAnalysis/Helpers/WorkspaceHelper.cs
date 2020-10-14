@@ -38,7 +38,7 @@ public static class WorkspaceHelper
     {
         var suffix = language == LanguageNames.CSharp ? "CS" : "VB";
         var options = language == LanguageNames.CSharp ?
-                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default) :
+                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default) :
                 (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
         var parse = language == LanguageNames.CSharp ?
                 (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
