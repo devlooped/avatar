@@ -1,5 +1,4 @@
-![Icon](docs/img/icon-32.png) Stunts
-============
+<h1 id="stunts"><img src="https://github.com/kzu/stunts/raw/main/docs/img/icon.png" alt="Icon" height="48" width="48" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px"> Stunts</h1>
 
 A modern interception library that runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), through compile-time code generation.
 
