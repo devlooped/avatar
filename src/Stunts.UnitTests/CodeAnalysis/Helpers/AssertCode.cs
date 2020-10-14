@@ -18,7 +18,7 @@ public static class AssertCode
     {
         // TODO: see how the VB side can be done
         var compilation = CSharpCompilation.Create("codegen")
-            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable))
             .WithReferences(AppDomain.CurrentDomain.GetAssemblies()
                 .Where(asm => File.Exists(asm.ManifestModule.FullyQualifiedName))
                 .Select(asm => MetadataReference.CreateFromFile(asm.ManifestModule.FullyQualifiedName)))
