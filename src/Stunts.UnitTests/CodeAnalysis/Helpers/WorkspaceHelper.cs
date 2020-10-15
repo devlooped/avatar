@@ -20,14 +20,7 @@ public static class WorkspaceHelper
     public static (AdhocWorkspace workspace, Project project) CreateWorkspaceAndProject(
         string language, string assemblyName = "Code", bool includeStuntApi = true, bool includeMockApi = false)
     {
-        var workspace = new AdhocWorkspace(MefHostServices.Create(
-            MefHostServices.DefaultAssemblies.Concat(new[]
-            {
-                typeof(IStunt).Assembly,
-                typeof(NamingConvention).Assembly,
-                typeof(Superpower.Parse).Assembly,
-                typeof(ICodeFix).Assembly,
-            })));
+        var workspace = new AdhocWorkspace(WorkspaceServices.HostServices);
         var projectInfo = CreateProjectInfo(language, assemblyName, includeStuntApi, includeMockApi);
         var project = workspace.AddProject(projectInfo);
 
@@ -44,15 +37,11 @@ public static class WorkspaceHelper
                 (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
                 (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
 
-        var referencePaths =
-#pragma warning disable CS0436 // Type conflicts with imported type
-            ThisAssembly.Project.BuildReferencePaths.Split('|')
-#pragma warning restore CS0436 // Type conflicts with imported type
-            .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
-            .Distinct(FileNameEqualityComparer.Default);
-
         var projectId = ProjectId.CreateNewId();
         var documents = new List<DocumentInfo>();
+        var references = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
+            .Select(assembly => MetadataReference.CreateFromFile(assembly.Location));
 
         var projectDir = Path.Combine(Path.GetTempPath(), "Test", projectId.Id.ToString());
 
@@ -67,8 +56,7 @@ public static class WorkspaceHelper
                 : Path.Combine(projectDir, "code.vbproj"),
             compilationOptions: options,
             parseOptions: parse,
-            metadataReferences: referencePaths
-                .Select(path => MetadataReference.CreateFromFile(path)),
+            metadataReferences: references,
             documents: documents.ToArray());
     }
 
