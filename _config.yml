@@ -1,7 +1,7 @@
 remote_theme: pages-themes/slate
 plugins:
   - jekyll-remote-theme
-
+baseurl: stunts
 exclude: 
   - src
   - samples
