@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Compile Remove="InternalAccess\Program.cs" />
+    <ProjectProperty Include="TargetFramework" />
   </ItemGroup>
 
   <ItemGroup>
