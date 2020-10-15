@@ -1,0 +1,36 @@
+name: pages
+
+on:
+  push:
+    branches:
+      - main
+      - pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🤘
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install 💎
+        uses: actions/setup-ruby@v1
+        with: 
+          ruby-version: '2.6'
+      - name: Install 🧪
+        run: |
+          gem install jekyll bundler
+          bundle install
+      - name: Build 🙏
+        run: bundle exec jekyll build
+      - name: Deploy 🚀
+        uses: appleboy/gh-pages-action@v0.0.2
+        with:
+          pages_directory: _site
+          commit_author: helloclarius
+          commit_author_email: hello@clarius.org
+          username: helloclarius
+          password: ${{ secrets.ACCESS_TOKEN }}
+          remote_url: https://github.com/clarius/stunts.git
+          target_branch: main
