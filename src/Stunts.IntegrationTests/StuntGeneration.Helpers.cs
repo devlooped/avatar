@@ -29,7 +29,7 @@ namespace Stunts.AcceptanceTests
                 new SyntaxTree[]
                 {
                     syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText(@"Stunts\Stunt.cs"), path: "Stunt.cs"),
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Stunts/Stunt.cs"), path: "Stunt.cs"),
                 }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var diagnostics = compilation.GetDiagnostics();
