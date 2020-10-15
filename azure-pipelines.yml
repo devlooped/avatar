@@ -35,11 +35,6 @@ stages:
         version: 5.0.100-rc.2.20479.15
         performMultiLevelLookup: true
 
-    - task: UseDotNet@2
-      inputs:
-        version: 2.1.x
-        performMultiLevelLookup: true
-
     - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       displayName: build
 
