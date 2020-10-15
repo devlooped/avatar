@@ -1,1 +1,7 @@
-theme: jekyll-theme-slate
+remote_theme: pages-themes/slate
+plugins:
+  - jekyll-remote-theme
+
+exclude: 
+  - src
+  - samples
