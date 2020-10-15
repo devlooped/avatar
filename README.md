@@ -38,7 +38,7 @@ calc.AddBehavior((invocation, next) => ...);
 
 `AddBehavior`/`InsertBehavior` overloads allow granular control of the stunt's behavior pipeline, which basically a [chain of responsibility](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) that invokes all configured behaviors that apply to the current invocation. Individual behaviors can determine whether to short-circuit the call or call the next behavior in the chain. 
 
-![Stunts Overloads](./docs/img/AddInsertBehavior.png)
+![Stunts Overloads](docs/img/AddInsertBehavior.png)
 
 Behaviors can also dynamically determine whether they apply to a given invocation by providing the optional `appliesTo` argument when registering a behavior. In addition to the  delegate-based overloads (called *anonymous behaviors*), you can also create behaviors by implementing the `IStuntBehavior` interface:
 
@@ -77,7 +77,7 @@ If you want to centrally configure all your stunts, the easiest way is to simply
 
 The `[StuntGenerator]` attribute is required if you want to leverage the built-in compile-time code generation (i.e. you are not using the *Stunts.DynamicProxy* package), since that flags the source generator that calls to your API end up creating a stunt and therefore a generated type will be needed for it during compile-time. You can actually explore how this very same behavior is implemented in the built-in Stunts API which is provided as content files:
 
-![stunts API source](./docs/img/StuntsApi.png)
+![stunts API source](docs/img/StuntsApi.png)
 
 The `Stunts.cs` contains, for example:
 
@@ -96,11 +96,11 @@ As you can see, the Stunts API itself uses the same extensibility mechanism that
 
 There is nothing more frustrating than a proxy/stunt you have carefully configured that doesn't behave the way you expect it to. In order to make this a less frustrating experience, Stunts is carefully optimized for debugger display and inspection, so that it's clear what behaviors are configured and invocations and results are displayed clearly and concisely. Here's the debugging display of the `RecordingBehavior` that just keeps track of invocations and their return values for example:
 
-![debugging display](./docs/img/DebuggerDisplay.png)
+![debugging display](docs/img/DebuggerDisplay.png)
 
 And here's the invocation debugger display when debugging an anonymous behavior:
 
-![behavior debugging](./docs/img/DebuggingBehavior.png)
+![behavior debugging](docs/img/DebuggingBehavior.png)
 
 
 
