@@ -18,10 +18,10 @@ stages:
   - job: build
     strategy:
       matrix:
-        # ubuntu-latest:
-        #  vm: ubuntu-latest
-        #macOS-latest:
-        #  vm: macOS-latest
+         ubuntu-latest:
+          vm: ubuntu-latest
+        macOS-latest:
+          vm: macOS-latest
         windows-latest:
           vm: windows-latest
     pool:
@@ -43,26 +43,13 @@ stages:
     - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       displayName: build
 
-    - task: VSTest@2
-      displayName: Test
-      inputs:
-        testAssemblyVer2: '**/bin/**/*Tests.dll'
-        runInParallel: true
-        codeCoverageEnabled: false
-        publishRunAttachments: true
-        diagnosticsEnabled: false
-        rerunFailedTests: true
-
-    - bash: |
-        dotnet tool install -g --version 2.3.33 sleet
-        sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=$(SLEET_FEED_CONNECTIONSTRING)" -p "SLEET_FEED_TYPE=azure"
-      displayName: sleet
-      condition: eq(variables['vm'], 'windows-latest')
+    - bash: dotnet test --no-build
+      displayName: test
 
     - publish: '$(Pipeline.Workspace)/s/bin'
       artifact: 'bin'
 
-  - job: test
+  - job: acceptance
     strategy:
       matrix:
         ubuntu-latest:
