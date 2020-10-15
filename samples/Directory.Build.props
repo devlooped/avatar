@@ -4,14 +4,14 @@
     <LangVersion>Preview</LangVersion>
     <VersionPrefix>42.42.42</VersionPrefix>
     <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
-    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)../../bin')">
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)../bin')">
       $(MSBuildThisFileDirectory)../bin;
       $(RestoreSources)
     </RestoreSources>
   </PropertyGroup>
   
   <PropertyGroup Label="Use latest CI build from main"
-                 Condition="!Exists('$(MSBuildThisFileDirectory)../../bin')">
+                 Condition="!Exists('$(MSBuildThisFileDirectory)../bin')">
     <VersionSuffix>-main.*</VersionSuffix>
     <RestoreSources>
       https://kzu.blob.core.windows.net/nuget/index.json;

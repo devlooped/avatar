@@ -27,7 +27,7 @@ jobs:
         with:
           dotnet-version: 5.0.100-rc.2.20479.15
       - uses: actions/setup-dotnet@v1
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'ubuntu-latest'
         with:
           dotnet-version: 2.1.x
       - run: dotnet msbuild -r -m:1 -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER"
@@ -37,7 +37,7 @@ jobs:
         working-directory: src/Stunts.UnitTests
         if: matrix.os != 'windows-latest'
       - name: sleet
-        if: matrix.os == 'windows-latest'
+        if: matrix.os == 'ubuntu-latest'
         run: |
           dotnet tool install -g --version 2.3.33 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
