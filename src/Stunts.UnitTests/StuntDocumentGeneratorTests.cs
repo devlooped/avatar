@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.IO;
@@ -307,7 +308,12 @@ End Class")]
         async Task<Compilation> CreateStunt(StuntDocumentGenerator generator, string language, Type[] types, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language);
-            project = project.AddAnalyzerReference(new AnalyzerImageReference(new DiagnosticAnalyzer[] { new OverridableMembersAnalyzer() }.ToImmutableArray()));
+
+            var loader = new AssemblyLoader();
+            var references = PopulateReferences(typeof(OverridableMembersAnalyzer).Assembly, new Dictionary<string, Assembly>());
+            //project = project.WithAnalyzerReferences(references.Select(asm => new AnalyzerFileReference(asm.Value.Location, loader)));
+
+            project = project.AddAnalyzerReference(new AnalyzerFileReference(typeof(OverridableMembersAnalyzer).Assembly.Location, loader));
 
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
 
@@ -333,6 +339,21 @@ End Class")]
             return await document.Project.GetCompilationAsync() ?? throw new XunitException();
         }
 
+        Dictionary<string, Assembly> PopulateReferences(Assembly assembly, Dictionary<string, Assembly> references)
+        {
+            if (references.ContainsKey(assembly.FullName))
+                return references;
+
+            references[assembly.FullName] = assembly;
+            foreach (var name in assembly.GetReferencedAssemblies())
+            {
+                if (!references.ContainsKey(name.FullName))
+                    PopulateReferences(Assembly.Load(name), references);
+            }
+
+            return references;
+        }
+
         async Task<Compilation> Compile(string language, string code, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language);
@@ -353,6 +374,13 @@ End Class")]
             }
 
             return await document.Project.GetCompilationAsync() ?? throw new XunitException();
+        }
+
+        class AssemblyLoader : IAnalyzerAssemblyLoader
+        {
+            public void AddDependencyLocation(string fullPath) { }
+
+            public Assembly LoadFromPath(string fullPath) => Assembly.Load(AssemblyName.GetAssemblyName(fullPath));
         }
     }
 
