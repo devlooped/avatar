@@ -49,6 +49,7 @@ stages:
 
     - publish: '$(Pipeline.Workspace)/s/bin'
       artifact: 'bin'
+      condition: eq(variables['vm'], 'ubuntu-latest')
 
   - job: acceptance
     strategy:
