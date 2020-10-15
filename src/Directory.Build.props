@@ -16,11 +16,8 @@
 
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <LangVersion>Preview</LangVersion>
     <Nullable>enable</Nullable>
     
-    <!--<UseSharedCompilation>true</UseSharedCompilation>-->
-
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;*.items</DefaultItemExcludes>
 
     <!-- Use Directory.Packages.props -->
@@ -37,6 +34,11 @@
     <!-- Allows source control information to always be present in ThisAssembly -->
     <EnableSourceLink>true</EnableSourceLink>
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Preview - To be removed by .NET 5.0 RTW">
+    <LangVersion>Preview</LangVersion>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
