@@ -49,6 +49,7 @@ stages:
 
     - bash: dotnet test --no-build -f net5.0
       displayName: test
+      workingDirectory: src/Stunts.UnitTests
       condition: ne(variables['vm'], 'windows-latest')
 
     - publish: '$(Pipeline.Workspace)/s/bin'

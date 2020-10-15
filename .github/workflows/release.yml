@@ -16,4 +16,6 @@ jobs:
         with:
           dotnet-version: 5.0.100-rc.2.20479.15
       - run: dotnet msbuild -r -m:1 -p:version=${GITHUB_REF#refs/*/v}
+      - run: dotnet test --no-build -f net5.0
+        working-directory: src/Stunts.UnitTests
       - run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
