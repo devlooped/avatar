@@ -124,11 +124,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             return metadata
                 .Select(m => m.Identity)
                 .Where(m => m.Version >= new NuGetVersion("3.1.0"))
-                .SelectMany(v => new[]
-                {
-                    new object[] { v, "net472" },
-                    new object[] { v, "net5.0" }
-                })
+                .Select(v => new object[] { v, ThisAssembly.Project.TargetFramework })
                 .Take(2);
         }
 
