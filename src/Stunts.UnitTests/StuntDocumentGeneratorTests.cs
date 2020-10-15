@@ -102,7 +102,7 @@ namespace Stunts.UnitTests.GeneratorTests
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
-        [Theory(Skip = "With source generators, we likely don't need the attributes anymore.")]
+        [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
             var compilation = await CreateStunt(new StuntDocumentGenerator(), language, typeof(ICalculator), trace);
@@ -110,36 +110,7 @@ namespace Stunts.UnitTests.GeneratorTests
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(ICalculator)), true);
 
             Assert.NotNull(type);
-
-            Assert.All(
-                type!.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
-                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
-
-            Assert.All(
-                type!.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
-                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
-
-            Assert.All(
-                type!.GetProperties(BindingFlags.Instance | BindingFlags.Public),
-                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
-
-            Assert.All(
-                type!.GetProperties(BindingFlags.Instance | BindingFlags.Public),
-                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
-
-            Assert.All(
-                type!.GetEvents(BindingFlags.Instance | BindingFlags.Public),
-                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
-
-            Assert.All(
-                type!.GetEvents(BindingFlags.Instance | BindingFlags.Public),
-                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
-                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
+            Assert.NotNull(type.GetCustomAttribute<CompilerGeneratedAttribute>());
         }
 
         [InlineData(LanguageNames.CSharp)]
@@ -308,12 +279,7 @@ End Class")]
         async Task<Compilation> CreateStunt(StuntDocumentGenerator generator, string language, Type[] types, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language);
-
-            var loader = new AssemblyLoader();
-            var references = PopulateReferences(typeof(OverridableMembersAnalyzer).Assembly, new Dictionary<string, Assembly>());
-            //project = project.WithAnalyzerReferences(references.Select(asm => new AnalyzerFileReference(asm.Value.Location, loader)));
-
-            project = project.AddAnalyzerReference(new AnalyzerFileReference(typeof(OverridableMembersAnalyzer).Assembly.Location, loader));
+            project = project.AddAnalyzerReference(new AnalyzerFileReference(typeof(OverridableMembersAnalyzer).Assembly.Location, new AssemblyLoader()));
 
             var compilation = await project.GetCompilationAsync(TimeoutToken(5)) ?? throw new XunitException();
 
@@ -337,21 +303,6 @@ End Class")]
             }
 
             return await document.Project.GetCompilationAsync() ?? throw new XunitException();
-        }
-
-        Dictionary<string, Assembly> PopulateReferences(Assembly assembly, Dictionary<string, Assembly> references)
-        {
-            if (references.ContainsKey(assembly.FullName))
-                return references;
-
-            references[assembly.FullName] = assembly;
-            foreach (var name in assembly.GetReferencedAssemblies())
-            {
-                if (!references.ContainsKey(name.FullName))
-                    PopulateReferences(Assembly.Load(name), references);
-            }
-
-            return references;
         }
 
         async Task<Compilation> Compile(string language, string code, bool trace = false)
