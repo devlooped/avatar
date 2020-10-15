@@ -27,6 +27,7 @@ jobs:
         with:
           dotnet-version: 5.0.100-rc.2.20479.15
       - uses: actions/setup-dotnet@v1
+        if: matrix.os == 'windows-latest'
         with:
           dotnet-version: 2.1.x
       - run: dotnet msbuild -r -m:1 -p:versionsuffix="$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER"
