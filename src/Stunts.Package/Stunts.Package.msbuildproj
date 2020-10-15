@@ -4,9 +4,11 @@
     <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
     <PackageId>Stunts</PackageId>
     <Title>Stunts</Title>
-    <Summary>"Dynamic proxies" that can run everywhere, including mobile!</Summary>
-    <Description>Design-time generated classes whose behavior can be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
-    <PackageTags>proxy runtime dynamic</PackageTags>
+    <Description>
+      A modern interception library that runs everywhere, even where run-time code 
+      generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), 
+      through compile-time code generation.</Description>
+    <PackageTags>dotnet proxy runtime dynamic</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Stunt.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />

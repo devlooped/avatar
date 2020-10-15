@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>true</IsPackable>
+    <Description>
+      Provides run-time stunt generation using Castle DynamicProxy, for projects that 
+      cannot use the compile-time stunt generation provided built-in Stunts, which 
+      requires C# 9.0.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
