@@ -18,7 +18,7 @@ stages:
   - job: build
     strategy:
       matrix:
-         ubuntu-latest:
+        ubuntu-latest:
           vm: ubuntu-latest
         macOS-latest:
           vm: macOS-latest
@@ -45,6 +45,11 @@ stages:
 
     - bash: dotnet test --no-build
       displayName: test
+      condition: eq(variables['vm'], 'windows-latest')
+
+    - bash: dotnet test --no-build -f net5.0
+      displayName: test
+      condition: ne(variables['vm'], 'windows-latest')
 
     - publish: '$(Pipeline.Workspace)/s/bin'
       artifact: 'bin'
