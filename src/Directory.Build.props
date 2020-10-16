@@ -1,4 +1,4 @@
-<Project>
+<Project TreatAsLocalProperty="VersionSuffix">
 
   <PropertyGroup>
     <Authors>kzu</Authors>
@@ -8,7 +8,8 @@
     <PackageIcon>icon.png</PackageIcon>
 
     <VersionPrefix>42.42.42</VersionPrefix>
-
+    <VersionSuffix>$(VersionSuffix.Replace('/', '-'))</VersionSuffix>
+    
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateRepositoryUrlAttribute>true</GenerateRepositoryUrlAttribute>
 
