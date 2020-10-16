@@ -184,11 +184,18 @@ namespace Stunts
         /// Gets the hash code for the current invocation, including the <see cref="Target"/>, <see cref="MethodBase"/> 
         /// and <see cref="Arguments"/>.
         /// </summary>
-        public override int GetHashCode() 
-            => new HashCode()
-                .Combine(RuntimeHelpers.GetHashCode(Target))
-                .Add(MethodBase)
-                .AddRange(Arguments.Select(x => x ?? NullArgument)).ToHashCode();
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Target);
+            hash.Add(MethodBase);
+            foreach (var arg in Arguments)
+            {
+                hash.Add(arg ?? NullArgument);
+            }
+
+            return hash.ToHashCode();
+        }
 
         #endregion
     }
