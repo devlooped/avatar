@@ -30,7 +30,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           dotnet-version: 2.1.x
-      - run: dotnet msbuild -r -m:1 -p:versionsuffix="${GITHUB_REF#refs/heads/}.$GITHUB_RUN_NUMBER"
+      - run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - run: dotnet test --no-build
         if: matrix.os == 'windows-latest'
       - run: dotnet test --no-build -f net5.0
