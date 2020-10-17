@@ -39,6 +39,8 @@
     <!-- Allows source control information to always be present in ThisAssembly -->
     <EnableSourceLink>true</EnableSourceLink>
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <UseSourceLink>true</UseSourceLink>
   </PropertyGroup>
 
   <PropertyGroup Label="Preview - To be removed by .NET 5.0 RTW">
@@ -48,10 +50,11 @@
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
     <CI>false</CI>
-    <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
+    <CI Condition="'$(TF_BUILD)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">true</CI>
   </PropertyGroup>
 
   <PropertyGroup>
+    <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
     <PackOnBuild Condition="'$(PackOnBuild)' == ''">$(CI)</PackOnBuild>
   </PropertyGroup>
 
