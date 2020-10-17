@@ -36,10 +36,10 @@ jobs:
       - name: 🙏 build
         run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - name: 🧪 test win
-        run: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+        run: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage" --settings $GITHUB_WORKSPACE/src/Tests.runsettings
         if: matrix.os == 'windows-latest'
       - name: 🧪 test !win
-        run: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+        run: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage" --settings $GITHUB_WORKSPACE/src/Tests.runsettings
         working-directory: src/Stunts.UnitTests
         if: matrix.os != 'windows-latest'
       - name: 🔍 coverage
