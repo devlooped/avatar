@@ -26,6 +26,15 @@
     <None Include="$(MSBuildThisFileDirectory)../docs/img/icon.png" Pack="true" Visible="false" />
   </ItemGroup>
 
+  <Target Name="CoverletGetPathMap"
+          DependsOnTargets="InitializeSourceRootMappedPaths"
+          Returns="@(_LocalTopLevelSourceRoot)"
+          Condition="'$(DeterministicSourcePaths)' == 'true'">
+    <ItemGroup>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition="'%(SourceRoot.NestedRoot)' == ''"/>
+    </ItemGroup>
+  </Target>
+
   <Target Name="IsPackable" Returns="@(IsPackable)">
     <ItemGroup>
       <IsPackable Include="$(MSBuildProjectFullPath)" IsPackable="$(IsPackable)" PackageId="$(PackageId)" />

@@ -22,6 +22,7 @@
     <PackageReference Include="xunit.runner.msbuild" Condition="'$(TargetFramework)' == 'net472'" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="coverlet.msbuild" />
 
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
