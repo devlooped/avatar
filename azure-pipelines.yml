@@ -1,9 +1,11 @@
-variables:
+﻿variables:
 - group: Sleet
 - name: Configuration
   value: Release
 - name: DOTNET_NOLOGO
   value: 'true'
+- name: CODECOV_TOKEN
+  value: '0233b65f-9b88-419f-bf57-a6baba02ca38'
 
 trigger:
   paths:
@@ -28,26 +30,32 @@ stages:
       vmImage: $(vm)
     steps:
     - checkout: self
+      displayName: 🤘 checkout
       clean: 'true'
 
     - task: UseDotNet@2
+      displayName: ⚙ dotnet 5.0 rc2
       inputs:
         version: 5.0.100-rc.2.20479.15
         performMultiLevelLookup: true
 
     - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
-      displayName: build
+      displayName: 🙏 build
 
-    - bash: dotnet test --no-build -m:1 -p:CollectCoverage=true --settings src/Tests.runsettings
-      displayName: test
+    - bash: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+      displayName: 🧪 test win
       condition: eq(variables['vm'], 'windows-latest')
 
-    - bash: dotnet test --no-build -f net5.0  -m:1 -p:CollectCoverage=true --settings src/Tests.runsettings
-      displayName: test
+    - bash: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+      displayName: 🧪 test !win
       workingDirectory: src/Stunts.UnitTests
       condition: ne(variables['vm'], 'windows-latest')
 
+    - bash: bash <(curl -s https://codecov.io/bash)
+      displayName: 🔍 coverage
+
     - publish: '$(Pipeline.Workspace)/s/bin'
+      displayName: 🔼 artifacts
       artifact: 'bin'
       condition: eq(variables['vm'], 'ubuntu-latest')
 
@@ -66,15 +74,17 @@ stages:
     steps:
     - checkout: self
     - task: UseDotNet@2
+      displayName: ⚙ dotnet 5.0 rc2
       inputs:
         version: 5.0.100-rc.2.20479.15
         performMultiLevelLookup: true
 
     - task: DownloadPipelineArtifact@2
+      displayName: 🔽 artifacts
       inputs:
         artifact: bin
         path: '$(Pipeline.Workspace)/s/bin'
 
     - bash: dotnet test -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       workingDirectory: src/Acceptance
-      displayName: test
+      displayName: 🧪 test
