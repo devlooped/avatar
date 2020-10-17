@@ -42,11 +42,11 @@ stages:
     - bash: dotnet msbuild -r -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
       displayName: 🙏 build
 
-    - bash: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+    - pwsh: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage" --settings "$(Pipeline.Workspace)\s\src\Tests.runsettings"
       displayName: 🧪 test win
       condition: eq(variables['vm'], 'windows-latest')
 
-    - bash: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage" --settings src/Tests.runsettings
+    - bash: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage" --settings $(Pipeline.Workspace)/s/src/Tests.runsettings
       displayName: 🧪 test !win
       workingDirectory: src/Stunts.UnitTests
       condition: ne(variables['vm'], 'windows-latest')
