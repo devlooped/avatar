@@ -8,6 +8,9 @@
     <PackageIcon>icon.png</PackageIcon>
 
     <VersionPrefix>42.42.42</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix.Replace('refs/heads', ''))</VersionSuffix>
+    <VersionSuffix>$(VersionSuffix.Replace('refs/pull/', 'pr'))</VersionSuffix>
+    <VersionSuffix>$(VersionSuffix.Replace('/merge', ''))</VersionSuffix>
     <VersionSuffix>$(VersionSuffix.Replace('/', '-'))</VersionSuffix>
     
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
