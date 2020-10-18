@@ -1,10 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <Nullable>annotations</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
   <ItemGroup>
