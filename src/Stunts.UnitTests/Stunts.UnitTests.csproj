@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectProperty Include="MSBuildProjectDirectory" />
     <ProjectProperty Include="MSBuildBinPath" />
-    <ProjectProperty Include="BuildReferencePaths" />
   </ItemGroup>
   
   <ItemGroup>
@@ -70,26 +69,4 @@
     <Message Text="Deleted: @(DeletedFiles)" Condition="'@(DeletedFiles)' != ''" />
   </Target>
 
-  <ItemDefinitionGroup>
-    <ReferencePath>
-      <FrameworkFile />
-      <FusionName />
-      <EmitMetadata />
-    </ReferencePath>
-  </ItemDefinitionGroup>
-
-  <Target Name="AddBuildReferencePaths" AfterTargets="ResolveReferences" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="ResolveReferences;GetTargetPath" Returns="@(BuildReferencePath)">
-
-    <ItemGroup>
-      <BuildReferencePath Include="@(ReferencePath)" Condition="$([MSBuild]::ValueOrDefault('%(EmitMetadata)', 'true')) != 'false'" />
-      <TargetPath Include="$(TargetPath)" />
-      <BuildReferencePath Include="@(TargetPath -> '%(FullPath)')" />
-    </ItemGroup>
-
-    <PropertyGroup>
-      <BuildReferencePaths>@(BuildReferencePath, '|')</BuildReferencePaths>
-    </PropertyGroup>
-    
-  </Target>
-  
 </Project>
