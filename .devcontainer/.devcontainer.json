@@ -1,0 +1,18 @@
+{
+  "name": "stunts",
+  "dockerFile": "./Dockerfile",
+  "extensions": [
+    "ms-vscode.csharp",
+    "jongrant.csharpsortusings",
+    "k--kato.docomment",
+    "kreativ-software.csharpextensions",
+    "editorconfig.editorconfig",
+    "pflannery.vscode-versionlens",
+    "github.vscode-pull-request-github",
+    "eamodio.gitlens",
+    "ms-vsliveshare.vsliveshare",
+    "vscode-icons-team.vscode-icons",
+    "visualstudioexptteam.vscodeintellicode",
+    "yzhang.markdown-all-in-one"
+  ]
+}
