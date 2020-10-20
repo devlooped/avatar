@@ -2,6 +2,10 @@
 
 A modern interception library that runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), through compile-time code generation.
 
+> The **Stunts** name was inspired by the [Test Double](http://xunitpatterns.com/Test%20Double.html) naming in the mock objects literature, which in turn comes from the [Stunt Double](https://en.wikipedia.org/wiki/Stunt_double) concept from film making. This project allows your objects to pull arbitrary *stunts* based on your instructions/choreography 😉.
+
+Stunts essentially implements the [proxy design pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and adds the capability of configuring those proxies via code using what we call a *behavior pipeline*. 
+
 [![Version](https://img.shields.io/nuget/vpre/Stunts.svg?color=royalblue)](https://www.nuget.org/packages/Stunts)
 [![Downloads](https://img.shields.io/nuget/dt/Stunts?color=darkmagenta)](https://www.nuget.org/packages/Stunts)
 [![License](https://img.shields.io/github/license/kzu/stunts.svg?color=blue)](https://github.com/kzu/stunts/blob/main/LICENSE)
@@ -11,10 +15,6 @@ A modern interception library that runs everywhere, even where run-time code gen
 [![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Stunts/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
 [![GH CI Status](https://github.com/kzu/stunts/workflows/build/badge.svg?branch=main)](https://github.com/kzu/stunts/actions?query=branch%3Amain+workflow%3Abuild+)
 [![AzDO CI Status](https://dev.azure.com/kzu/oss/_apis/build/status/stunts?branchName=main)](http://build.azdo.io/kzu/oss/45)
-
-> The **Stunts** name was inspired by the [Test Double](http://xunitpatterns.com/Test%20Double.html) naming in the mock objects literature, which in turn comes from the [Stunt Double](https://en.wikipedia.org/wiki/Stunt_double) concept from film making. This project allows your objects to pull arbitrary *stunts* based on your instructions/choreography 😉.
-
-Stunts essentially implements the [proxy design pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and adds the capability of configuring those proxies via code using what we call a *behavior pipeline*. 
 
 > NOTE: Stunts is a fairly low-level API, which enables higher-level APIs (like the upcoming Moq vNext API) to be based on top of it.
 
