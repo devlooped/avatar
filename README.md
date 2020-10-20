@@ -4,11 +4,13 @@ A modern interception library that runs everywhere, even where run-time code gen
 
 [![Version](https://img.shields.io/nuget/vpre/Stunts.svg?color=royalblue)](https://www.nuget.org/packages/Stunts)
 [![Downloads](https://img.shields.io/nuget/dt/Stunts?color=darkmagenta)](https://www.nuget.org/packages/Stunts)
-[![Build Status](https://dev.azure.com/kzu/oss/_apis/build/status/stunts?branchName=main)](http://build.azdo.io/kzu/oss/45)
 [![License](https://img.shields.io/github/license/kzu/stunts.svg?color=blue)](https://github.com/kzu/stunts/blob/main/LICENSE)
 [![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
 [![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
 
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Stunts/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![GH CI Status](https://github.com/kzu/stunts/workflows/build/badge.svg?branch=main)](https://github.com/kzu/stunts/actions?query=branch%3Amain+workflow%3Abuild+)
+[![AzDO CI Status](https://dev.azure.com/kzu/oss/_apis/build/status/stunts?branchName=main)](http://build.azdo.io/kzu/oss/45)
 
 > The **Stunts** name was inspired by the [Test Double](http://xunitpatterns.com/Test%20Double.html) naming in the mock objects literature, which in turn comes from the [Stunt Double](https://en.wikipedia.org/wiki/Stunt_double) concept from film making. This project allows your objects to pull arbitrary *stunts* based on your instructions/choreography 😉.
 
