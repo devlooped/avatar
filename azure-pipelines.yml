@@ -1,5 +1,4 @@
 ﻿variables:
-- group: Sleet
 - name: DOTNET_NOLOGO
   value: 'true'
 - name: CODECOV_TOKEN
