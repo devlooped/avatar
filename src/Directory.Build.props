@@ -61,11 +61,7 @@
 
   <PropertyGroup>
     <NuGetizerVersion>0.4.5</NuGetizerVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="!$(CI)">
-    <NuGetizerVersion>42.42.42</NuGetizerVersion>
-    <NuGetizerVersion Condition="!Exists('C:\Code\kzu\NuGetizer\bin')">42.42.42-dev.*</NuGetizerVersion>
+    <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
