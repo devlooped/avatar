@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Stunts.UnitTests
@@ -182,7 +182,7 @@ namespace Stunts.UnitTests
 
         class TestStunt : IStunt
         {
-            public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();
+            public IList<IStuntBehavior> Behaviors { get; } = new BehaviorsCollection();
         }
     }
 }

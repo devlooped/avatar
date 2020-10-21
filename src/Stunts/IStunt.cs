@@ -1,5 +1,5 @@
 ﻿using System.CodeDom.Compiler;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Stunts
@@ -16,6 +16,6 @@ namespace Stunts
         /// <summary>
         /// Behaviors configured for the stunt.
         /// </summary>
-		ObservableCollection<IStuntBehavior> Behaviors { get; }
+		IList<IStuntBehavior> Behaviors { get; }
 	}
 }

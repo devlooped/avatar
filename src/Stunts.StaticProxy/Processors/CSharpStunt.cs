@@ -66,7 +66,7 @@ namespace Stunts.Processors
                     node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
                         PropertyDeclaration(
                             GenericName(
-                                Identifier("ObservableCollection"),
+                                Identifier("IList"),
                                 TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IStuntBehavior))))),
                             Identifier(nameof(IStunt.Behaviors)))
                             .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IStunt))))

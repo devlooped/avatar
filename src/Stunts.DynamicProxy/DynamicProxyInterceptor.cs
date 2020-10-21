@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Castle.DynamicProxy;
 
 namespace Stunts.Sdk
@@ -15,7 +15,7 @@ namespace Stunts.Sdk
             pipeline = new BehaviorPipeline();
         }
 
-        public ObservableCollection<IStuntBehavior> Behaviors => pipeline.Behaviors;
+        public IList<IStuntBehavior> Behaviors => pipeline.Behaviors;
 
         public virtual void Intercept(IInvocation invocation)
         {
