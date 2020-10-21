@@ -28,9 +28,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticStuntFactory)' != 'false'">
-    <StuntFactory Include="$(StaticStuntFactory)"
-                  PackageId="Stunts"
-                  Condition="'$(RegisterStaticStuntFactory)' != 'false'" />
+    <StuntFactory Include="$(StaticStuntFactory)" PackageId="Stunts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,10 +57,10 @@
       <StuntFactoryPackage Include="@(StuntFactory -> '%(PackageId)')" />
     </ItemGroup>
 
-    <Warning Code="ST001" Condition="$(StuntFactories) &gt; '1'"
+    <Warning Code="STB001" Condition="$(StuntFactories) &gt; '1'"
        Text="More than one stunt factory is registered in the current project. Only the first one will be used unless explicitly set as StuntFactory.Default. Packages providing factories: @(StuntFactoryPackage, ', ')." />
 
-    <Warning Code="ST002" Condition="'@(StuntFactory)' == '' and '$(SourceGeneratorSupported)' != 'true' and '$(RegisterStaticStuntFactory)' != 'false'"
+    <Warning Code="STB002" Condition="'@(StuntFactory)' == '' and '$(SourceGeneratorSupported)' != 'true' and '$(RegisterStaticStuntFactory)' != 'false'"
              Text="Built-in stunt factory requires C# 9.0. Please install Stunt.DynamicFactory package as an alternative." />
   </Target>
 
