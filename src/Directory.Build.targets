@@ -11,15 +11,6 @@
     <DefineConstants Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">$(DefineConstants);$(TargetFramework.ToUpperInvariant().TrimEnd('0').TrimEnd('.'))</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Label="NuGet Pack">
-    <HttpNuGetCache>$(LocalAppData)\NuGet\v3-cache</HttpNuGetCache>
-    <!-- By default, we clear the HTTP cache if our project is packable. This does *not* clear the cached installed packages -->
-    <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">$(IsPackable)</ClearHttpNuGetCacheOnPack>
-    <ClearHttpNuGetCacheOnPack Condition="'$(ClearHttpNuGetCacheOnPack)' == ''">false</ClearHttpNuGetCacheOnPack>
-    <!-- The actual NuGet cache is only cleared for the *current* PackageId, so no need to turn off its clearing on build/pack -->
-    <NuGetCache>$(UserProfile)\.nuget\packages</NuGetCache>
-  </PropertyGroup>
-
   <ItemGroup>
     <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
     <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
@@ -59,47 +50,6 @@
     <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
   </Target>
 
-  <UsingTask TaskName="Dump" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
-    <ParameterGroup>
-      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-      <ItemName />
-    </ParameterGroup>
-    <Task>
-      <Reference Include="Microsoft.Build" />
-      <Reference Include="Microsoft.CSharp" />
-      <Reference Include="System" />
-      <Reference Include="System.Core" />
-      <Using Namespace="Microsoft.Build.Framework" />
-      <Using Namespace="Microsoft.Build.Utilities" />
-      <Using Namespace="System" />
-      <Using Namespace="System.Linq" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
-			var itemName = ItemName ?? "Item";
-			if (Items.Length == 0)
-				Log.LogMessage(MessageImportance.High, "No {0} items received to dump.", ItemName ?? "");
-			else
-				Log.LogMessage(MessageImportance.High, "Dumping {0} {1} items.", Items.Length, ItemName ?? "");
-
-			foreach (var item in Items.OrderBy(i => i.ItemSpec))
-			{
-				Log.LogMessage(MessageImportance.High, "{0}: {1}", itemName, item.ItemSpec);
-				foreach (var name in item.MetadataNames.OfType<string>().OrderBy(_ => _))
-				{
-					try
-					{
-						Log.LogMessage(MessageImportance.High, "\t{0}={1}", name, item.GetMetadata(name));
-					}
-					catch
-					{
-					}
-				}
-			}
-      ]]>
-      </Code>
-    </Task>
-  </UsingTask>
-
   <Target Name="UpdatePackageMetadata" 
           BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack" 
           DependsOnTargets="InitializeSourceControlInformation"
@@ -118,40 +68,6 @@
       <!--<PackageProjectUrl>$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryUrl)', '^(http.*)github\.com/(.+?)/(.*)', '$1$2.github.io/$3'))</PackageProjectUrl>-->
       <PackageDescription>$(Description)</PackageDescription>
     </PropertyGroup>
-  </Target>
-
-  <Target Name="ClearPackageOutput"
-        Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-        BeforeTargets="Build">
-    <ItemGroup>
-      <_ExistingPackage Include="$(PackageOutputPath)\$(PackageId)*.nupkg" />
-      <_PackageToDelete Include="@(_ExistingPackage)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d\.\d\.\d.*'))" />
-    </ItemGroup>
-    <Delete Files="@(_PackageToDelete)" ContinueOnError="true">
-      <Output TaskParameter="DeletedFiles" ItemName="_DeletedPackages" />
-    </Delete>
-    <Message Text="Nuked existing packages: @(_DeletedPackages -> '%(Filename)%(Extension)')" Condition="'@(_DeletedPackages)' != ''" Importance="high" />
-  </Target>
-
-  <!-- Clears nuget cache for the current project package id -->
-  <Target Name="ClearCachedPackageId"
-          Condition="!$(CI) And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack">
-    <PropertyGroup>
-      <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())</PackageFolder>
-    </PropertyGroup>
-
-    <Message Text="Nuking $(PackageFolder)" Condition="Exists($(PackageFolder))" Importance="high" />
-    <Exec Command='rd "$(PackageFolder)" /q /s' Condition="Exists($(PackageFolder)) And '$(OS)' == 'Windows_NT'" />
-    <Exec Command='rm -rf "$(PackageFolder)"' Condition="Exists($(PackageFolder)) And '$(OS)' != 'Windows_NT'" />
-  </Target>
-
-  <Target Name="ClearHttpNuGetCache"
-          Condition="$(CI) And $(ClearHttpNuGetCacheOnPack) And Exists('$(HttpNuGetCache)') And '$(PackageId)' != '' And '$(IsPackable)' == 'true'"
-          AfterTargets="Build;Pack" DependsOnTargets="Pack">
-    <Message Text="Nuking $(HttpNuGetCache)" Importance="high" />
-    <Exec Command='rd "$(HttpNuGetCache)" /q /s' Condition="'$(OS)' == 'Windows_NT'" />
-    <Exec Command='rm -rf "$(HttpNuGetCache)"' Condition="'$(OS)' != 'Windows_NT'" />
   </Target>
 
 </Project>

@@ -1,5 +1,10 @@
 <Project>
 
+  <PropertyGroup>
+    <NuGetizerVersion>0.4.6</NuGetizerVersion>
+    <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
+  </PropertyGroup>
+
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />

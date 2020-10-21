@@ -42,6 +42,9 @@
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <UseSourceLink>true</UseSourceLink>
+
+    <!-- Generate satellite assemblies using csc.exe to avoid some al.exe issues. See https://github.com/dotnet/msbuild/pull/2726 -->
+    <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
   </PropertyGroup>
 
   <PropertyGroup Label="Preview - To be removed by .NET 5.0 RTW">
@@ -51,17 +54,19 @@
 
   <PropertyGroup Label="CI" Condition="'$(CI)' == ''">
     <CI>false</CI>
-    <CI Condition="'$(TF_BUILD)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">true</CI>
+    <!-- GH, CircleCI, GitLab and BitBucket already use CI -->
+    <CI Condition="'$(TF_BUILD)' == 'true' or 
+                   '$(TEAMCITY_VERSION)' != '' or 
+                   '$(APPVEYOR)' != '' or 
+                   '$(BuildRunner)' == 'MyGet' or 
+                   '$(JENKINS_URL)' != '' or 
+                   '$(TRAVIS)' == 'true' or 
+                   '$(BUDDY)' == 'true'">true</CI>
   </PropertyGroup>
 
   <PropertyGroup>
     <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
     <PackOnBuild Condition="'$(PackOnBuild)' == ''">$(CI)</PackOnBuild>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <NuGetizerVersion>0.4.5</NuGetizerVersion>
-    <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
