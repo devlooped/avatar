@@ -23,4 +23,4 @@ jobs:
         run: dotnet test --no-build -f net5.0 -m:1
         working-directory: src/Stunts.UnitTests
       - name: 🚀 nuget
-        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: rm ./bin/ManualStunts*.nupkg && dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
