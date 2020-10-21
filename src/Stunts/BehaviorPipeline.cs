@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Stunts
@@ -45,18 +46,26 @@ namespace Stunts
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
         public BehaviorPipeline(IEnumerable<IStuntBehavior> behaviors)
-            => Behaviors = new ObservableCollection<IStuntBehavior>(behaviors);
+            => Behaviors = new BehaviorsCollection(behaviors);
 
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/>.
         /// </summary>
         public BehaviorPipeline() 
-            => Behaviors = new ObservableCollection<IStuntBehavior>();
+            => Behaviors = new BehaviorsCollection();
 
         /// <summary>
         /// Gets the collection of behaviors applied to this instance.
         /// </summary>
-        public ObservableCollection<IStuntBehavior> Behaviors { get; }
+        /// <remarks>
+        /// The behaviors in the pipeline can be modified freely at 
+        /// any time, but changes to the list are not visible to in-flight 
+        /// invocations. Additionally, the list implements <see cref="INotifyCollectionChanged"/> 
+        /// to allow components to monitor changes to the pipeline, as well as <see cref="ISupportInitialize"/> 
+        /// to perform batches of changes to the behaviors and avoid excesive collection change 
+        /// notifications.
+        /// </remarks>
+        public IList<IStuntBehavior> Behaviors { get; }
 
         /// <summary>
         /// Invoke the pipeline with the given input.

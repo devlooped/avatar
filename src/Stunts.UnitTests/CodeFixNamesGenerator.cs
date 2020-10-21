@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;

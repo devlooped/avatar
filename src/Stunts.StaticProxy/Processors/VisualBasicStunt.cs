@@ -70,7 +70,7 @@ namespace Stunts.Processors
                 {
                     var property = (PropertyBlockSyntax)generator.PropertyDeclaration(
                         nameof(IStunt.Behaviors),
-                        GenericName("ObservableCollection", TypeArgumentList(IdentifierName(nameof(IStuntBehavior)))),
+                        GenericName("IList", TypeArgumentList(IdentifierName(nameof(IStuntBehavior)))),
                         modifiers: DeclarationModifiers.ReadOnly,
                         getAccessorStatements: new[]
                         {

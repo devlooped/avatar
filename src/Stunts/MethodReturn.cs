@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using TypeNameFormatter;
 
 namespace Stunts
 {
-	/// <summary>
-	/// Default implementation of <see cref="IMethodReturn"/>.
-	/// </summary>
-	class MethodReturn : IMethodReturn
+    /// <summary>
+    /// Default implementation of <see cref="IMethodReturn"/>.
+    /// </summary>
+    class MethodReturn : IMethodReturn
 	{
         readonly IMethodInvocation invocation;
         readonly object?[] allArguments;

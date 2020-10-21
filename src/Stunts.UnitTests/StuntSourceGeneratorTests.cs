@@ -5,15 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Stunts.CodeAnalysis;
 using TypeNameFormatter;
 using Xunit;
-using Xunit.Sdk;
-using static WorkspaceHelper;
 
 namespace Stunts.UnitTests
 {

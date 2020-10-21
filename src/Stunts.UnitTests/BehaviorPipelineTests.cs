@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Reflection;
 using Xunit;
 
@@ -343,6 +346,28 @@ namespace Stunts.UnitTests
 
             Assert.Throws<NotImplementedException>(()
                 => pipeline.Execute<string>(invocation));
+        }
+
+        [Fact]
+        public void WhenAddingMultipleBehaviors_ThenCanOptimizeCollectionChanges()
+        {
+            var changes = new List<NotifyCollectionChangedAction>();
+
+            var pipeline = new BehaviorPipeline();
+            ((INotifyCollectionChanged)pipeline.Behaviors).CollectionChanged += (sender, args) => changes.Add(args.Action);
+
+            (pipeline.Behaviors as ISupportInitialize)?.BeginInit();
+
+            pipeline.Behaviors.Add(new TestBehavior());
+            pipeline.Behaviors.Add(new TestBehavior());
+            pipeline.Behaviors.Add(new TestBehavior());
+
+            Assert.Empty(changes);
+
+            (pipeline.Behaviors as ISupportInitialize)?.EndInit();
+
+            Assert.Single(changes);
+            Assert.Equal(NotifyCollectionChangedAction.Reset, changes[0]);
         }
 
         class TestBehavior : IStuntBehavior
