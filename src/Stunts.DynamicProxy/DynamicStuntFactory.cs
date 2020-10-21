@@ -10,12 +10,12 @@ namespace Stunts.Sdk
     /// <summary>
     /// Provides a <see cref="IStuntFactory"/> that creates types at run-time using Castle DynamicProxy.
     /// </summary>
-    public class DynamicProxyFactory : IStuntFactory
+    public class DynamicStuntFactory : IStuntFactory
     {
         static readonly ProxyGenerator generator;
         static readonly ProxyGenerationOptions options;
 
-        static DynamicProxyFactory()
+        static DynamicStuntFactory()
         {
 #pragma warning disable 618
             AttributesToAvoidReplicating.Add<SecurityPermissionAttribute>();
@@ -60,21 +60,21 @@ namespace Stunts.Sdk
             {
                 var mixinOptions = new ProxyGenerationOptions();
                 mixinOptions.AddDelegateTypeMixin(baseType);
-                var proxy = CreateProxy(typeof(object), implementedInterfaces, Array.Empty<object>(), mixinOptions, new DynamicProxyInterceptor(notImplemented));
+                var proxy = CreateProxy(typeof(object), implementedInterfaces, Array.Empty<object>(), mixinOptions, () => new DynamicStuntInterceptor(notImplemented));
                 return Delegate.CreateDelegate(baseType, proxy, proxy.GetType().GetMethod("Invoke"));
             }
             else
             {
-                return CreateProxy(baseType, implementedInterfaces, constructorArguments!, options, new DynamicProxyInterceptor(notImplemented));
+                return CreateProxy(baseType, implementedInterfaces, constructorArguments!, options, () => new DynamicStuntInterceptor(notImplemented));
             }
         }
 
         /// <summary>
         /// Creates the proxy with the <see cref="Generator"/>, using the given default interceptor to implement its behavior.
         /// </summary>
-        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, ProxyGenerationOptions options, IInterceptor defaultInteceptor)
+        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, ProxyGenerationOptions options, Func<IInterceptor> getDefaultInteceptor)
             // TODO: bring the approach from https://github.com/moq/moq4/commit/806e9919eab9c1f3879b9e9bda895fa76ecf9d92 for performance.
-            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, defaultInteceptor);
+            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, getDefaultInteceptor());
 
         /// <summary>
         /// The <see cref="ProxyGenerator"/> used to create proxy types.
