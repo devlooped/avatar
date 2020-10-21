@@ -187,7 +187,7 @@ namespace Stunts
         public override int GetHashCode()
         {
             var hash = new HashCode();
-            hash.Add(Target);
+            hash.Add(RuntimeHelpers.GetHashCode(Target));
             hash.Add(MethodBase);
             foreach (var arg in Arguments)
             {
