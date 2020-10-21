@@ -60,21 +60,21 @@ namespace Stunts.Sdk
             {
                 var mixinOptions = new ProxyGenerationOptions();
                 mixinOptions.AddDelegateTypeMixin(baseType);
-                var proxy = CreateProxy(typeof(object), implementedInterfaces, mixinOptions, Array.Empty<object>(), notImplemented);
+                var proxy = CreateProxy(typeof(object), implementedInterfaces, Array.Empty<object>(), mixinOptions, new DynamicProxyInterceptor(notImplemented));
                 return Delegate.CreateDelegate(baseType, proxy, proxy.GetType().GetMethod("Invoke"));
             }
             else
             {
-                return CreateProxy(baseType, implementedInterfaces, options, constructorArguments!, notImplemented);
+                return CreateProxy(baseType, implementedInterfaces, constructorArguments!, options, new DynamicProxyInterceptor(notImplemented));
             }
         }
 
         /// <summary>
-        /// Creates the proxy with the <see cref="Generator"/>, adding interceptors to implement its behavior.
+        /// Creates the proxy with the <see cref="Generator"/>, using the given default interceptor to implement its behavior.
         /// </summary>
-        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, ProxyGenerationOptions options, object[] constructorArguments, bool notImplemented)
+        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, ProxyGenerationOptions options, IInterceptor defaultInteceptor)
             // TODO: bring the approach from https://github.com/moq/moq4/commit/806e9919eab9c1f3879b9e9bda895fa76ecf9d92 for performance.
-            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, new DynamicProxyInterceptor(notImplemented));
+            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, defaultInteceptor);
 
         /// <summary>
         /// The <see cref="ProxyGenerator"/> used to create proxy types.
