@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Stunts.UnitTests
 {
-    public class DynamicProxyTests
+    public class DynamicStuntFactoryTests
     {
-        public void test() => Console.WriteLine(typeof(DynamicProxyFactory).AssemblyQualifiedName);
+        public void test() => Console.WriteLine(typeof(DynamicStuntFactory).AssemblyQualifiedName);
 
         [Fact]
         public void TestFactory()
         {
-            var factory = new DynamicProxyFactory();
+            var factory = new DynamicStuntFactory();
 
 
             var calculator = (ICalculator)factory.CreateStunt(Assembly.GetExecutingAssembly(), 

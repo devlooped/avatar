@@ -4,12 +4,12 @@ using Castle.DynamicProxy;
 
 namespace Stunts.Sdk
 {
-    internal class DynamicProxyInterceptor : IInterceptor, IStunt // Implemented to detect breaking changes in Stunts
+    internal class DynamicStuntInterceptor : IInterceptor, IStunt // Implemented to detect breaking changes in Stunts
     {
         readonly bool notImplemented;
         readonly BehaviorPipeline pipeline;
 
-        internal DynamicProxyInterceptor(bool notImplemented)
+        internal DynamicStuntInterceptor(bool notImplemented)
         {
             this.notImplemented = notImplemented;
             pipeline = new BehaviorPipeline();

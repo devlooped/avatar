@@ -1,14 +1,14 @@
 <Project>
 
   <ItemGroup>
-    <StuntFactory Include="$(DynamicProxyStuntFactory)" 
+    <StuntFactory Include="$(DynamicStuntFactory)" 
                   PackageId="Stunts.DynamicProxy"
-                  Condition="'$(RegisterDynamicProxyFactory)' != 'false'" />
+                  Condition="'$(RegisterDynamicStuntFactory)' != 'false'" />
   </ItemGroup>
 
-  <Target Name="EnsureDynamicProxyFactory" 
+  <Target Name="EnsureDynamicStuntFactory" 
           BeforeTargets="BeforeCompile;CoreCompile"
-          Condition="'$(RegisterDynamicProxyFactory)' != 'false'">
+          Condition="'$(RegisterDynamicStuntFactory)' != 'false'">
 
     <!-- NOTE: we do this in a targets rather than just making StuntFactoryAttribute AllowMultiple=false 
          because this will be significantly user-friendlier, since the attribute is a generated one and 
@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <Error Code="STB003" Condition="$(StuntFactories) &gt; '1'"
-           Text="More than one stunt factory is registered in the current project. Set RegisterDynamicProxyFactory=false or remove the other package(s) providing factories: @(_OtherStuntFactories, ', ')." />
+           Text="More than one stunt factory is registered in the current project. Set RegisterDynamicStuntFactory=false or remove the other package(s) providing factories: @(_OtherStuntFactories, ', ')." />
 
   </Target>
 
