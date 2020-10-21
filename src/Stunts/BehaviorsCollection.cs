@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Stunts
 {
@@ -17,7 +19,7 @@ namespace Stunts
     /// is invoked, a single notification with <see cref="NotifyCollectionChangedAction.Reset"/> 
     /// will be raised instead.
     /// </remarks>
-    internal class BehaviorsCollection : ObservableCollection<IStuntBehavior>, ISupportInitialize
+    internal class BehaviorsCollection : ObservableCollection<IStuntBehavior>, ISupportInitialize, ICloneable
     {
         bool initializing;
 
@@ -31,6 +33,11 @@ namespace Stunts
         /// Suspends collection change notifications until <see cref="EndInit"/> is called.
         /// </summary>
         public void BeginInit() => initializing = true;
+
+        /// <summary>
+        /// Creates a copy of the collection.
+        /// </summary>
+        public object Clone() => new BehaviorsCollection(this.ToArray());
 
         /// <summary>
         /// Raises a single collection change notification with 

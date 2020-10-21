@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using Xunit;
 
@@ -368,6 +369,26 @@ namespace Stunts.UnitTests
 
             Assert.Single(changes);
             Assert.Equal(NotifyCollectionChangedAction.Reset, changes[0]);
+        }
+
+        [Fact]
+        public void WhenCloningBehaviors_ThenCanManipulateCopyWithoutAffectingOriginal()
+        {
+            var changes = new List<NotifyCollectionChangedAction>();
+
+            var pipeline = new BehaviorPipeline();
+            pipeline.Behaviors.Add(new TestBehavior());
+            pipeline.Behaviors.Add(new TestBehavior());
+            pipeline.Behaviors.Add(new TestBehavior());
+
+            var clone = (IList<IStuntBehavior>)((ICloneable)pipeline.Behaviors).Clone();
+
+            Assert.True(pipeline.Behaviors.SequenceEqual(clone));
+
+            clone.Clear();
+
+            Assert.NotEmpty(pipeline.Behaviors);
+            Assert.Empty(clone);
         }
 
         class TestBehavior : IStuntBehavior
