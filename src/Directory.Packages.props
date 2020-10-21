@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <NuGetizerVersion>0.4.6</NuGetizerVersion>
+    <NuGetizerVersion>0.4.7</NuGetizerVersion>
     <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
   </PropertyGroup>
 
