@@ -51,6 +51,10 @@ stages:
     - bash: bash <(curl -s https://codecov.io/bash)
       displayName: 🔍 coverage
 
+    - bash: dotnet msbuild -t:pack -m:1 -p:versionsuffix="$BUILD_SOURCEBRANCHNAME.$BUILD_BUILDID"
+      workingDirectory: src/Pack
+      displayName: 📦 pack
+
     - publish: '$(Pipeline.Workspace)/s/bin'
       displayName: 🔼 artifacts
       artifact: 'bin'
