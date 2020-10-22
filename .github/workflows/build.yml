@@ -1,7 +1,7 @@
 ﻿name: build
 on: 
   push:
-    branches: [ '*' ]
+    branches: [ main, dev, 'feature/*', 'rel/*' ]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -33,7 +33,7 @@ jobs:
         with:
           dotnet-version: 2.1.x
       - name: 🙏 build
-        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:packonbuild=true
+        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - name: 🧪 test win
         run: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage"
         if: matrix.os == 'windows-latest'
@@ -43,6 +43,9 @@ jobs:
         if: matrix.os != 'windows-latest'
       - name: 🔍 coverage
         run: bash <(curl -s https://codecov.io/bash)
+      - name: 📦 pack
+        run: dotnet msbuild -t:pack -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        working-directory: src/Pack
       - name: 🚀 sleet
         if: matrix.os == 'ubuntu-latest'
         run: |

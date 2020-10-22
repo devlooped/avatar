@@ -22,5 +22,8 @@ jobs:
       - name: 🧪 test net5.0
         run: dotnet test --no-build -f net5.0 -m:1
         working-directory: src/Stunts.UnitTests
+      - name: 📦 pack
+        run: dotnet msbuild -t:pack -m:1 -p:version=${GITHUB_REF#refs/*/v}
+        working-directory: src/Pack
       - name: 🚀 nuget
         run: rm ./bin/ManualStunts*.nupkg && dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
