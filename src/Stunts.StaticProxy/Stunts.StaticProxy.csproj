@@ -3,10 +3,19 @@
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <RootNamespace>Stunts</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <Description>
+      An extensible source generator library for arbitrary stunt code generation 
+      during compile-time.
+    </Description>
+    <PackageTags>dotnet roslyn proxy generator</PackageTags>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPackable)' != 'true'">
+    <PackFolder>tools\$(TargetFramework)</PackFolder>
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
     <DisableTransitiveFrameworkReferences>true</DisableTransitiveFrameworkReferences>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PackFolder>tools\$(TargetFramework)</PackFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,39 +37,29 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
-    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" Pack="!$(IsPackable)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx" Generator="">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <ProjectProperty Include="PrivateRepositoryUrl" />
-    <InternalsVisibleTo Include="Stunts.UnitTests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsPackable)' != 'true'">
     <PackageReference Update="@(PackageReference)" Pack="false" />
     <ProjectReference Update="@(ProjectReference)" Pack="false" />
   </ItemGroup>
 
-  <Target Name="AddDependencies" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="Build">
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx" />
+    <InternalsVisibleTo Include="Stunts.UnitTests" />
+  </ItemGroup>
+
+  <!-- Replaced by common targets, required for the multitargeting DependsOnTargets below -->
+  <Target Name="ResolveReferences" />
+  <Target Name="AddDependencies"  Condition="'$(IsPackable)' != 'true'"
+          AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
     <ItemGroup Condition="'$(TargetFramework)' != ''">
-      <AnalyzerFile Include="$(OutputPath)\Stunts*.dll;
-                             $(OutputPath)\Microsoft.*.dll;
-                             $(OutputPath)\System.*.dll;
-                             $(OutputPath)\Humanizer.dll" 
-                    Exclude="$(OutputPath)\Microsoft.CodeAnalysis.dll;
-                             $(OutputPath)\Microsoft.CodeAnalysis.CSharp.dll;
-                             $(OutputPath)\Microsoft.CodeAnalysisVisualBasic.dll;" />
+      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)"
+                    Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' or 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' or 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'"
+                    Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'"/>
       <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>

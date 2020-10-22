@@ -7,7 +7,8 @@
     <Description>
       A modern interception library that runs everywhere, even where run-time code 
       generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), 
-      through compile-time code generation.</Description>
+      through compile-time code generation.
+    </Description>
     <PackageTags>dotnet proxy runtime dynamic</PackageTags>
   </PropertyGroup>
   <ItemGroup>
@@ -23,8 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
-    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
-    <ProjectReference Include="..\Stunts.StaticProxy\Stunts.StaticProxy.csproj" />
-    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" AdditionalProperties="IsPackable=false" />
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" AdditionalProperties="IsPackable=false" />
+    <ProjectReference Include="..\Stunts.StaticProxy\Stunts.StaticProxy.csproj" AdditionalProperties="IsPackable=false" />
   </ItemGroup>
 </Project>
