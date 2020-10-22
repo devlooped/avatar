@@ -15,8 +15,4 @@
     <InternalsVisibleTo Include="Stunts.UnitTests" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx" Generator="" />
-  </ItemGroup>
-  
 </Project>

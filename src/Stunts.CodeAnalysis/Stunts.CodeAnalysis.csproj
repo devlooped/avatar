@@ -24,8 +24,7 @@
   <ItemGroup>
     <!-- When not packed standalone, include the build targets/sources too -->
     <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" Condition="'$(IsPackable)' != 'true'" />
-    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
-    <EmbeddedResource Update="Resources.resx">
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <InternalsVisibleTo Include="Stunts.UnitTests" />

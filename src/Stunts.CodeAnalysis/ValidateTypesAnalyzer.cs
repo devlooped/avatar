@@ -47,7 +47,6 @@ namespace Stunts.CodeAnalysis
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
             context.RegisterOperationAction(AnalyzeOperation, OperationKind.Invocation);
         }
 

@@ -48,5 +48,14 @@ namespace Stunts.CodeAnalysis
             DiagnosticSeverity.Error,
             true,
             Strings.SealedBaseType.Description);
+
+        public static DiagnosticDescriptor NestedType { get; } = new DiagnosticDescriptor(
+            "ST009",
+            Strings.NestedType.Title,
+            Resources.NestedType_Message,
+            "Build",
+            DiagnosticSeverity.Error,
+            true,
+            Strings.NestedType.Description);
     }
 }
