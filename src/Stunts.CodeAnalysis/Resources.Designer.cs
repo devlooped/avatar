@@ -133,6 +133,33 @@ namespace Stunts.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nested types are not supported yet..
+        /// </summary>
+        internal static string NestedType_Description {
+            get {
+                return ResourceManager.GetString("NestedType_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot generate code for nested types yet: {0}.
+        /// </summary>
+        internal static string NestedType_Message {
+            get {
+                return ResourceManager.GetString("NestedType_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nested types not supported.
+        /// </summary>
+        internal static string NestedType_Title {
+            get {
+                return ResourceManager.GetString("NestedType_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot specify sealed base type..
         /// </summary>
         internal static string SealedBaseType_Description {
