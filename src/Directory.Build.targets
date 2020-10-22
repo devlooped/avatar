@@ -7,13 +7,22 @@
     <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
   </PropertyGroup>
 
+  <!-- Append $(PackFolder) directory to output and intermediate paths to prevent bin clashes between targets. -->
+  <PropertyGroup Condition="'$(AppendPackFolderToOutputPath)' == 'true' and '$(PackFolder)' != ''">
+    <PackFolderPath>$(PackFolder)</PackFolderPath>
+    <PackFolderPath Condition="'$(TargetFramework)' != ''">$(PackFolderPath.Replace('\$(TargetFramework)', ''))</PackFolderPath>
+    <IntermediateOutputPath>$(IntermediateOutputPath)$(PackFolderPath)\</IntermediateOutputPath>
+    <OutputPath>$(OutputPath)$(PackFolderPath)\</OutputPath>
+    <OutDir>$(OutputPath)</OutDir>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <DefineConstants Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">$(DefineConstants);$(TargetFramework.ToUpperInvariant().TrimEnd('0').TrimEnd('.'))</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
-    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <EmbeddedResource Update="@(EmbeddedResource)" />
     <None Include="$(MSBuildThisFileDirectory)../docs/img/icon.png" Pack="true" Visible="false" />
   </ItemGroup>
 

@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackFolder>analyzers\dotnet</PackFolder>
+    <IsPackable>true</IsPackable>
+    <!-- When the packaging project references it for embedding -->
+    <PackFolder Condition="'$(IsPackable)' != 'true'">analyzers\dotnet</PackFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,22 +22,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- When not packed standalone, include the build targets/sources too -->
+    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" Condition="'$(IsPackable)' != 'true'" />
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <EmbeddedResource Update="Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <InternalsVisibleTo Include="Stunts.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
-    <InternalsVisibleTo Include="Stunts.UnitTests" />
   </ItemGroup>
 
 </Project>

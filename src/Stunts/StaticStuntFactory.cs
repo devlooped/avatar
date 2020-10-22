@@ -20,13 +20,13 @@ namespace Stunts
         /// <param name="stuntsAssembly">The assembly containing the compile-time generated stunts.</param>
         /// <param name="baseType">Base type of the stunt.</param>
         /// <param name="implementedInterfaces">Additional interfaces the stunt implements.</param>
-        /// <param name="construtorArguments">Optional additional constructor arguments for the stunt.</param>
-        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments)
+        /// <param name="constructorArguments">Optional additional constructor arguments for the stunt.</param>
+        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
         {
             var name = StuntNaming.GetFullName(baseType, implementedInterfaces);
             var type = stuntsAssembly.GetType(name, true, false);
 
-            return Activator.CreateInstance(type, construtorArguments);
+            return Activator.CreateInstance(type, constructorArguments);
         }
     }
 }

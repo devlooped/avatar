@@ -33,7 +33,7 @@ jobs:
         with:
           dotnet-version: 2.1.x
       - name: 🙏 build
-        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:packonbuild=true
       - name: 🧪 test win
         run: dotnet test --no-build -m:1 --collect:"XPlat Code Coverage"
         if: matrix.os == 'windows-latest'
