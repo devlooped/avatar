@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Sample;
-using Stunts.Sdk;
 using Xunit;
 
 namespace Stunts.UnitTests

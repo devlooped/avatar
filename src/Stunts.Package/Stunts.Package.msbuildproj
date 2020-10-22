@@ -13,6 +13,7 @@
   <ItemGroup>
     <Content Include="Stunt.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
     <Content Include="Stunt.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
+    <None Include="Stunt.StaticFactory.*" PackFolder="build\netstandard2.0" />
     <None Include="Stunts.props" PackFolder="build\netstandard2.0" />
     <None Include="Stunts.targets" PackFolder="build\netstandard2.0" />
   </ItemGroup>

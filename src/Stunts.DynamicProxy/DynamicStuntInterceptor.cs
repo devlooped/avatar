@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Castle.DynamicProxy;
 
-namespace Stunts.Sdk
+namespace Stunts
 {
     internal class DynamicStuntInterceptor : IInterceptor, IStunt // Implemented to detect breaking changes in Stunts
     {

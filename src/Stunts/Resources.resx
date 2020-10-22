@@ -121,6 +121,6 @@
     <value>Behavior pipeline ultimate target cannot get the next delegate because there never is one.</value>
   </data>
   <data name="StuntFactoryNotImplemented" xml:space="preserve">
-    <value>Default factory does not implement stunt creation.</value>
+    <value>Default factory does not implement stunt creation. Please ensure StuntFactory.Default is assigned to a valid factory before usage.</value>
   </data>
 </root>

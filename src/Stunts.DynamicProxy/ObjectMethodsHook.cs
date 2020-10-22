@@ -2,7 +2,7 @@
 using System.Reflection;
 using Castle.DynamicProxy;
 
-namespace Stunts.Sdk
+namespace Stunts
 {
     /// <summary>
     /// Hook used to tells Castle which methods to proxy in mocked classes.

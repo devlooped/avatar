@@ -1,15 +1,17 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators;
 
-namespace Stunts.Sdk
+namespace Stunts
 {
     /// <summary>
     /// Provides a <see cref="IStuntFactory"/> that creates types at run-time using Castle DynamicProxy.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class DynamicStuntFactory : IStuntFactory
     {
         static readonly ProxyGenerator generator;
