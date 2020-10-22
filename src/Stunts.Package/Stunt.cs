@@ -24,9 +24,13 @@ namespace Stunts
             {
                 var factoryType = Type.GetType(factoryAttribute.TypeName);
                 if (factoryType == null)
-                    throw new ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded.");
+                    throw new ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded from {factoryAttribute.TypeName}.");
 
                 StuntFactory.Default = (IStuntFactory)Activator.CreateInstance(factoryType);
+            }
+            else
+            {
+                throw new InvalidOperationException($"A valid stunt factory was not set as {nameof(StuntFactory)}.{nameof(StuntFactory.Default)} or registered for the current assembly with an [{nameof(StuntFactoryAttribute)}] attribute.");
             }
         }
 

@@ -15,8 +15,10 @@ Namespace Global.Stunts
 
             If factoryAttribute IsNot Nothing Then
                 Dim factoryType = Type.[GetType](factoryAttribute.TypeName)
-                If factoryType Is Nothing Then Throw New ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded.")
+                If factoryType Is Nothing Then Throw New ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded from {factoryAttribute.TypeName}.")
                 StuntFactory.[Default] = CType(Activator.CreateInstance(factoryType), IStuntFactory)
+            Else
+                Throw New InvalidOperationException($"A valid stunt factory was not set as {NameOf(StuntFactory)}.{NameOf(StuntFactory.Default)} or registered for the current assembly with an [{NameOf(StuntFactoryAttribute)}] attribute.")
             End If
         End Sub
 

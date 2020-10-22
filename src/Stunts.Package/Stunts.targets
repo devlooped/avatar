@@ -1,9 +1,11 @@
 <Project>
 
   <!-- If source generators aren't supported, we just won't register the static one -->
-  <PropertyGroup Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview') and 
-                             $(MSBuildShortVersion) &gt;= '16.8'">
-    <SourceGeneratorSupported>true</SourceGeneratorSupported>
+  <PropertyGroup>
+    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview') and 
+                                          $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
+    <RegisterStaticStuntFactory Condition="'$(RegisterStaticStuntFactory)' == '' and 
+                                           '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticStuntFactory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,7 +13,7 @@
     <StuntAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\..\tools\net5.0</StuntAnalyzerDir>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true'">
+  <ItemGroup Condition="'$(RegisterStaticStuntFactory)' == 'true'">
     <CompilerVisibleProperty Include="DebugSourceGenerators" />
     <CompilerVisibleProperty Include="DebugStuntSourceGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
@@ -19,15 +21,15 @@
     <CompilerVisibleProperty Include="StuntAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(RegisterStaticStuntFactory)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net472\Stunts*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticStuntFactory)' != 'false' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net5.0\Stunts*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticStuntFactory)' != 'false'">
+  <ItemGroup Condition="'$(RegisterStaticStuntFactory)' == 'true'">
     <StuntFactory Include="$(StaticStuntFactory)" PackageId="Stunts" />
   </ItemGroup>
 
@@ -41,7 +43,7 @@
   <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(StuntFactory)">
     <ItemGroup>
       <!-- This adds all factories unconditionally, since the specific factories 
-           will actually check for duplicates and warn as needed. -->
+           will actually check for duplicates and warn if needed. -->
       <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
         <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
         <_Parameter2>%(StuntFactory.PackageId)</_Parameter2>
@@ -59,9 +61,9 @@
 
     <Warning Code="STB001" Condition="$(StuntFactories) &gt; '1'"
        Text="More than one stunt factory is registered in the current project. Only the first one will be used unless explicitly set as StuntFactory.Default. Packages providing factories: @(StuntFactoryPackage, ', ')." />
-
-    <Warning Code="STB002" Condition="'@(StuntFactory)' == '' and '$(SourceGeneratorSupported)' != 'true' and '$(RegisterStaticStuntFactory)' != 'false'"
-             Text="Built-in stunt factory requires C# 9.0. Please install Stunt.DynamicFactory package as an alternative." />
   </Target>
+
+  <Import Project="Stunts.DynamicProxy.targets"
+          Condition="'$(RegisterStaticStuntFactory)' != 'true' and  Exists('Stunts.DynamicProxy.targets')" />
 
 </Project>

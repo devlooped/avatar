@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>
       Provides run-time stunt generation using Castle DynamicProxy, for projects that 
       cannot use the compile-time stunt generation provided built-in Stunts, which 
@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" Pack="false" />
-    <ProjectReference Include="..\Stunts.Package\Stunts.Package.msbuildproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   
   <ItemGroup>

@@ -1,9 +1,0 @@
-<Project>
-
-  <PropertyGroup>
-    <DynamicStuntFactory>Stunts.Sdk.DynamicStuntFactory, Stunts.DynamicProxy, PublicKeyToken=$(StuntsPublicKeyToken)</DynamicStuntFactory>
-    <!-- Installing the dynamic one turns off the static built-in one -->
-    <RegisterStaticStuntFactory>false</RegisterStaticStuntFactory>
-  </PropertyGroup>
-
-</Project>
