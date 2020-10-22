@@ -2,13 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <RegisterStaticStuntFactory>false</RegisterStaticStuntFactory>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\..\ManualStunts\CalculatorMode.cs" Link="CalculatorMode.cs" />
-    <Compile Include="..\..\ManualStunts\ICalculator.cs" Link="ICalculator.cs" />
-    <Compile Include="..\..\ManualStunts\ICalculatorMemory.cs" Link="ICalculatorMemory.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
@@ -16,7 +11,8 @@
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="Stunts" Version="$(Version)" />
-    <PackageReference Include="Stunts.DynamicProxy" Version="$(Version)" />
+    <PackageReference Include="ManualStunts" Version="$(Version)" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

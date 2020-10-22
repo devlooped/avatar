@@ -2,6 +2,7 @@
   <PropertyGroup>
     <LangVersion>Preview</LangVersion>
     <VersionPrefix>42.42.42</VersionPrefix>
+    <Nullable>annotations</Nullable>
     <RestoreSources>
       $(MSBuildThisFileDirectory)../../bin;
       https://api.nuget.org/v3/index.json
