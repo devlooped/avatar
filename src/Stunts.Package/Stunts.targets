@@ -30,7 +30,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(RegisterStaticStuntFactory)' == 'true'">
-    <StuntFactory Include="$(StaticStuntFactory)" PackageId="Stunts" />
+    <Compile Include="$(MSBuildThisFileDirectory)Stunt.StaticFactory$(DefaultLanguageSourceExtension)"
+             Condition="Exists('$(MSBuildThisFileDirectory)Stunt.StaticFactory$(DefaultLanguageSourceExtension)')"
+             Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,29 +41,6 @@
       <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Stunts'">false</Visible>
     </Compile>
   </ItemGroup>
-
-  <Target Name="GetStuntFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(StuntFactory)">
-    <ItemGroup>
-      <!-- This adds all factories unconditionally, since the specific factories 
-           will actually check for duplicates and warn if needed. -->
-      <AssemblyAttribute Include="Stunts.StuntFactoryAttribute" Condition="'%(StuntFactory.Identity)' != ''">
-        <_Parameter1>%(StuntFactory.Identity)</_Parameter1>
-        <_Parameter2>%(StuntFactory.PackageId)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="EnsureStuntFactory" BeforeTargets="BeforeCompile;CoreCompile">
-    <PropertyGroup>
-      <StuntFactories>@(StuntFactory -> Count())</StuntFactories>
-    </PropertyGroup>
-    <ItemGroup>
-      <StuntFactoryPackage Include="@(StuntFactory -> '%(PackageId)')" />
-    </ItemGroup>
-
-    <Warning Code="STB001" Condition="$(StuntFactories) &gt; '1'"
-       Text="More than one stunt factory is registered in the current project. Only the first one will be used unless explicitly set as StuntFactory.Default. Packages providing factories: @(StuntFactoryPackage, ', ')." />
-  </Target>
 
   <Import Project="Stunts.DynamicProxy.targets"
           Condition="'$(RegisterStaticStuntFactory)' != 'true' and  Exists('Stunts.DynamicProxy.targets')" />

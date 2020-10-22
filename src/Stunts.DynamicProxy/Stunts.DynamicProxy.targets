@@ -1,11 +1,9 @@
 <Project>
 
-  <PropertyGroup>
-    <DynamicStuntFactory>Stunts.Sdk.DynamicStuntFactory, Stunts.DynamicProxy, PublicKeyToken=$(StuntsPublicKeyToken)</DynamicStuntFactory>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(RegisterDynamicStuntFactory)' != 'false'">
-    <StuntFactory Include="$(DynamicStuntFactory)" PackageId="Stunts" />
+    <Compile Include="$(MSBuildThisFileDirectory)Stunt.DynamicFactory$(DefaultLanguageSourceExtension)"
+             Condition="Exists('$(MSBuildThisFileDirectory)Stunt.DynamicFactory$(DefaultLanguageSourceExtension)')"
+             Visible="false" />
   </ItemGroup>
 
 </Project>

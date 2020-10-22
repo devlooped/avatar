@@ -7,21 +7,6 @@ Namespace Global.Stunts
     <CompilerGenerated>
     <ExcludeFromCodeCoverage>
     Partial Friend Class Stunt
-
-        Shared Sub New()
-            If StuntFactory.[Default] IsNot StuntFactory.NotImplemented Then Return
-
-            Dim factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttributes(Of StuntFactoryAttribute)().FirstOrDefault()
-
-            If factoryAttribute IsNot Nothing Then
-                Dim factoryType = Type.[GetType](factoryAttribute.TypeName)
-                If factoryType Is Nothing Then Throw New ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded from {factoryAttribute.TypeName}.")
-                StuntFactory.[Default] = CType(Activator.CreateInstance(factoryType), IStuntFactory)
-            Else
-                Throw New InvalidOperationException($"A valid stunt factory was not set as {NameOf(StuntFactory)}.{NameOf(StuntFactory.Default)} or registered for the current assembly with an [{NameOf(StuntFactoryAttribute)}] attribute.")
-            End If
-        End Sub
-
         Private Shared Function Create(Of T)(ByVal constructorArgs As Object(), ParamArray interfaces As Type()) As T
             Return DirectCast(StuntFactory.[Default].CreateStunt(GetType(Stunt).GetTypeInfo().Assembly, GetType(T), interfaces, constructorArgs), T)
         End Function

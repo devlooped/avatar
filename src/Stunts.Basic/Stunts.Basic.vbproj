@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Stunts.Basic</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
@@ -13,8 +14,9 @@
   <ItemGroup>
     <Compile Include="..\Stunts.Package\Stunt.vb" Link="Stunt.vb" />
   </ItemGroup>
-  
+
   <ItemGroup>
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
   </ItemGroup>
 

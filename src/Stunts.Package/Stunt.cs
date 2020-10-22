@@ -3,7 +3,6 @@ namespace Stunts
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
@@ -14,26 +13,6 @@ namespace Stunts
     [ExcludeFromCodeCoverage]
     internal partial class Stunt
     {
-        static Stunt()
-        {
-            if (StuntFactory.Default != StuntFactory.NotImplemented)
-                return;
-
-            var factoryAttribute = Assembly.GetExecutingAssembly().GetCustomAttributes<StuntFactoryAttribute>().FirstOrDefault();
-            if (factoryAttribute != null)
-            {
-                var factoryType = Type.GetType(factoryAttribute.TypeName);
-                if (factoryType == null)
-                    throw new ArgumentException($"Stunt factory from provider {factoryAttribute.ProviderId} could not be loaded from {factoryAttribute.TypeName}.");
-
-                StuntFactory.Default = (IStuntFactory)Activator.CreateInstance(factoryType);
-            }
-            else
-            {
-                throw new InvalidOperationException($"A valid stunt factory was not set as {nameof(StuntFactory)}.{nameof(StuntFactory.Default)} or registered for the current assembly with an [{nameof(StuntFactoryAttribute)}] attribute.");
-            }
-        }
-
         private static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
             (T)StuntFactory.Default.CreateStunt(typeof(Stunt).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
 
