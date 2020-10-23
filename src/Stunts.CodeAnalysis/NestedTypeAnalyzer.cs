@@ -29,29 +29,25 @@ namespace Stunts
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class NestedTypeAnalyzer : DiagnosticAnalyzer
     {
-        readonly NamingConvention naming;
         Type generatorAttribute;
 
         /// <summary>
-        /// Instantiates the analyzer with the default <see cref="NamingConvention"/> and 
-        /// for method invocations annotated with <see cref="StuntGeneratorAttribute"/>.
+        /// Instantiates the analyzer for method invocations annotated with <see cref="StuntGeneratorAttribute"/>.
         /// </summary>
-        public NestedTypeAnalyzer() : this(new NamingConvention(), typeof(StuntGeneratorAttribute)) { }
+        public NestedTypeAnalyzer() : this(typeof(StuntGeneratorAttribute)) { }
 
         /// <summary>
-        /// Customizes the analyzer by specifying a custom <see cref="NamingConvention"/> and 
+        /// Customizes the analyzer by specifying a custom 
         /// <see cref="generatorAttribute"/> to lookup in method invocations.
         /// </summary>
-        protected NestedTypeAnalyzer(NamingConvention naming, Type generatorAttribute)
-        {
-            this.naming = naming;
-            this.generatorAttribute = generatorAttribute;
-        }
+        protected NestedTypeAnalyzer(Type generatorAttribute) 
+            => this.generatorAttribute = generatorAttribute;
 
         /// <summary>
         /// Returns the single descriptor this analyzer supports.
         /// </summary>
-        public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(StuntDiagnostics.NestedType);
+        public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics 
+            => ImmutableArray.Create(StuntDiagnostics.NestedType);
 
         /// <summary>
         /// Registers the analyzer to take action on method invocation expressions.
