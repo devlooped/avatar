@@ -160,6 +160,33 @@ namespace Stunts.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Types containing members that use pointer types are not supported yet..
+        /// </summary>
+        internal static string PointerMember_Description {
+            get {
+                return ResourceManager.GetString("PointerMember_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot generate code for types containing members that use pointer types yet: {0}.
+        /// </summary>
+        internal static string PointerMember_Message {
+            get {
+                return ResourceManager.GetString("PointerMember_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Types using pointer parameters are not supported.
+        /// </summary>
+        internal static string PointerMember_Title {
+            get {
+                return ResourceManager.GetString("PointerMember_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot specify sealed base type..
         /// </summary>
         internal static string SealedBaseType_Description {
