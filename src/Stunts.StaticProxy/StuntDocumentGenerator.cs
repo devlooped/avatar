@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -51,6 +52,12 @@ namespace Stunts
         public static NamingConvention DefaultNamingConvention { get; } = new NamingConvention();
 
         /// <summary>
+        /// Default method attribute used to flag a generic method as stunt-generating,
+        /// meaning invocations to that method are used to trigger source generation.
+        /// </summary>
+        public static Type DefaultGeneratorAttribute { get; } = typeof(StuntGeneratorAttribute);
+
+        /// <summary>
         /// Initializes the generator with the default <see cref="Stunts.NamingConvention"/> 
         /// and the <see cref="GetDefaultProcessors"/> default processors.
         /// </summary>
@@ -80,7 +87,7 @@ namespace Stunts
         /// </summary>
         public StuntDocumentGenerator(NamingConvention naming, IEnumerable<IDocumentProcessor> processors)
         {
-            this.NamingConvention = naming;
+            NamingConvention = naming;
 
             // Splits the processors by supported language and then by phase.
             this.processors = processors
@@ -97,6 +104,12 @@ namespace Stunts
 
         // The naming conventions to use for determining class and namespace names.
         public NamingConvention NamingConvention { get; }
+
+        /// <summary>
+        /// Attribute used to flag a generic method as stunt-generating,
+        /// meaning invocations to that method are used to trigger source generation.
+        /// </summary>
+        public Type GeneratorAttribute { get; protected set; } = DefaultGeneratorAttribute;
 
         /// <summary>
         /// Generates a stunt document that implements the given types.
