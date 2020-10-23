@@ -50,6 +50,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
+          name: ${{ matrix.os }}
           path: '*.binlog'
       - name: 🚀 sleet
         if: matrix.os == 'ubuntu-latest'
