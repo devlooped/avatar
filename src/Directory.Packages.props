@@ -1,15 +1,12 @@
 <Project>
 
-  <PropertyGroup>
-    <NuGetizerVersion>0.4.7</NuGetizerVersion>
-    <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
-  </PropertyGroup>
-
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
-    <PackageVersion Include="ThisAssembly" Version="1.0.0-beta" />
-    <PackageVersion Include="NuGetizer" Version="$(NuGetizerVersion)" />
+    <PackageVersion Include="ThisAssembly" Version="1.0.0-rc" />
+    <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
+    <PackageVersion Include="NuGetizer" Version="0.4.7" />
+    <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn">

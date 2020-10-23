@@ -3,7 +3,8 @@
   <Import Project="Pack.props" />
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" />
-    <PackageReference Include="NuGetizer" Version="$(NuGetizerVersion)" Visible="false" />
+    <PackageReference Include="NuGetizer" Version="0.4.7" Visible="false" />
+    <PackageReference Update="NuGetizer" Version="42.42.42" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
     <None Include="Pack.props" />
   </ItemGroup>
 </Project>

@@ -58,7 +58,7 @@
     <Compile Remove="Range.cs" Condition="'$(TargetFramework)' == 'net5.0'" />
     <Compile Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-  
+
   <Target Name="ClearMSBuild" AfterTargets="Build">
     <ItemGroup>
       <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
@@ -67,6 +67,13 @@
       <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
     </Delete>
     <Message Text="Deleted: @(DeletedFiles)" Condition="'@(DeletedFiles)' != ''" />
+  </Target>
+  
+  <Target Name="AddConstants" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+    <ItemGroup>
+      <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('CodeAnalysis\ST'))" />
+      <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('CodeAnalysis/ST'))" />
+    </ItemGroup>
   </Target>
 
 </Project>

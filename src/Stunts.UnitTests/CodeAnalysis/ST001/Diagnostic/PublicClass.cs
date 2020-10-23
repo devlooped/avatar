@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace Stunts.UnitTests.CodeAnalysis.ST005.Diagnostic
+namespace Stunts.UnitTests.CodeAnalysis.ST001.Diagnostic
 {
     public partial class MyClass
     {
         public MyClass()
         {
-            var stunt = Stunt.Of<BaseType>();
+            var stunt = Stunt.Of<IDisposable, BaseType>();
 
             Console.WriteLine(stunt);
         }
     }
 
-    public sealed class BaseType { }
+    public class BaseType { }
 }

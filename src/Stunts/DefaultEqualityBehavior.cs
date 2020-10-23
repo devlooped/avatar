@@ -24,7 +24,7 @@ namespace Stunts
             if (invocation.MethodBase.Name == nameof(GetHashCode))
                 return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target));
             if (invocation.MethodBase.Name == nameof(Equals))
-                return invocation.CreateValueReturn(object.ReferenceEquals(invocation.Target, invocation.Arguments[0]));
+                return invocation.CreateValueReturn(ReferenceEquals(invocation.Target, invocation.Arguments[0]));
 
             return next().Invoke(invocation, next);
         }
