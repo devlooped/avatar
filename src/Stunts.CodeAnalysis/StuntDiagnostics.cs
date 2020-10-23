@@ -15,7 +15,7 @@ namespace Stunts.CodeAnalysis
         /// the compiler requirement of having the base class as the first type too.
         /// </summary>
         public static DiagnosticDescriptor BaseTypeNotFirst { get; } = new DiagnosticDescriptor(
-            "ST003",
+            "ST001",
             nameof(Strings.BaseTypeNotFirst.Title),
             Resources.BaseTypeNotFirst_Message,
             "Build",
@@ -28,7 +28,7 @@ namespace Stunts.CodeAnalysis
         /// <see cref="StuntGeneratorAttribute"/>-annotated method is duplicated.
         /// </summary>
         public static DiagnosticDescriptor DuplicateBaseType { get; } = new DiagnosticDescriptor(
-            "ST004",
+            "ST002",
             Strings.DuplicateBaseType.Title,
             Resources.DuplicateBaseType_Message,
             "Build",
@@ -41,7 +41,7 @@ namespace Stunts.CodeAnalysis
         /// <see cref="StuntGeneratorAttribute"/>-annotated method sealed.
         /// </summary>
         public static DiagnosticDescriptor SealedBaseType { get; } = new DiagnosticDescriptor(
-            "ST005",
+            "ST003",
             Strings.SealedBaseType.Title,
             Resources.SealedBaseType_Message,
             "Build",
@@ -50,7 +50,7 @@ namespace Stunts.CodeAnalysis
             Strings.SealedBaseType.Description);
 
         public static DiagnosticDescriptor NestedType { get; } = new DiagnosticDescriptor(
-            "ST009",
+            "ST004",
             Strings.NestedType.Title,
             Resources.NestedType_Message,
             "Build",

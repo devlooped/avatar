@@ -6,18 +6,18 @@ using Xunit;
 
 namespace Stunts.UnitTests
 {
-    public class ST005_SealedBaseType : DiagnosticVerifier
+    public class ST001_BaseTypeNotFist : DiagnosticVerifier
     {
         protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new ValidateTypesAnalyzer();
 
         [Theory]
-        [InlineData("CodeAnalysis/ST005/Diagnostic/PublicClass.cs", 9, 25)]
+        [InlineData(ThisAssembly.Constants.CodeAnalysis.ST001.Diagnostic.PublicClass, 9, 25)]
         public void Verify_Diagnostic(string path, int line, int column)
         {
             var expected = new DiagnosticResult
             {
-                Id = "ST005",
-                Message = string.Format(Stunts.CodeAnalysis.Resources.SealedBaseType_Message, "BaseType"),
+                Id = StuntDiagnostics.BaseTypeNotFirst.Id,
+                Message = string.Format(Resources.BaseTypeNotFirst_Message, "BaseType"),
                 Severity = DiagnosticSeverity.Error,
                 Locations = new[] {
                     new DiagnosticResultLocation("Test0.cs", line, column)

@@ -6,11 +6,11 @@ namespace Stunts.UnitTests.CodeAnalysis.ST003.Diagnostic
     {
         public MyClass()
         {
-            var stunt = Stunt.Of<IDisposable, BaseType>();
+            var stunt = Stunt.Of<BaseType>();
 
             Console.WriteLine(stunt);
         }
     }
 
-    public class BaseType { }
+    public sealed class BaseType { }
 }

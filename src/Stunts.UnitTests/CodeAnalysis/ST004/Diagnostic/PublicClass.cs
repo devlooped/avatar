@@ -6,12 +6,17 @@ namespace Stunts.UnitTests.CodeAnalysis.ST004.Diagnostic
     {
         public MyClass()
         {
-            var stunt = Stunt.Of<BaseType, OtherBaseType>();
+            var stunt = Stunt.Of<ContainingType.INested>();
 
             Console.WriteLine(stunt);
         }
     }
 
-    public class BaseType { }
-    public class OtherBaseType { }
+    public class ContainingType
+    {
+        public interface INested
+        {
+            void Do();
+        }
+    }
 }
