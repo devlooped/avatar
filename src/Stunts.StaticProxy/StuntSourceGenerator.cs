@@ -97,7 +97,7 @@ namespace Stunts
 
             IEnumerable<INamedTypeSymbol[]> GetCandidates()
             {
-                foreach (var invocation in receiver.Invocations)
+                foreach (var invocation in receiver!.Invocations)
                 {
                     var semantic = context.Compilation.GetSemanticModel(invocation.Node.SyntaxTree);
                     var symbol = semantic.GetSymbolInfo(invocation.Node, context.CancellationToken);

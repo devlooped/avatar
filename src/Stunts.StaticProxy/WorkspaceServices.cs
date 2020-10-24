@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Stunts.CodeAnalysis;
@@ -9,6 +11,9 @@ namespace Stunts
     {
         static WorkspaceServices()
         {
+            if (Environment.GetEnvironmentVariable("DEBUG_STUNTS") == "1")
+                Debugger.Break();
+
             HostServices = MefHostServices.Create(
                 MefHostServices.DefaultAssemblies.Concat(new[]
                 {
