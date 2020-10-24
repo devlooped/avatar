@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -9,7 +10,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Stunts.CodeAnalysis;
 
 namespace Stunts
 {
@@ -50,10 +50,8 @@ namespace Stunts
         /// <returns>Whether the directory was added or it was already registered.</returns>
         public static bool AddResolveDirectory(string resolveDirectory) => resolveDirs.Add(resolveDirectory);
 
-        protected virtual StuntDocumentGenerator DocumentGenerator => new StuntDocumentGenerator();
-
         public virtual void Initialize(GeneratorInitializationContext context)
-            => context.RegisterForSyntaxNotifications(() => new StuntGeneratorReceiver());
+            => context.RegisterForSyntaxNotifications(() => new AggregateSyntaxReceiver(CreateSyntaxReceivers()));
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public virtual void Execute(GeneratorExecutionContext context)
@@ -63,15 +61,17 @@ namespace Stunts
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.StuntAnalyzerDir", out var analyerDir))
                 AddResolveDirectory(analyerDir);
 
-            if (context.SyntaxReceiver is not StuntGeneratorReceiver receiver)
-                return;
-
-             OnExecute(context, DocumentGenerator);
+            OnExecute(context, DocumentGenerator);
         }
+
+        protected virtual StuntDocumentGenerator DocumentGenerator => new StuntDocumentGenerator();
+
+        protected virtual IEnumerable<ISyntaxReceiver> CreateSyntaxReceivers() => new[] { new StuntGeneratorReceiver() };
 
         void OnExecute(GeneratorExecutionContext context, StuntDocumentGenerator generator)
         {
-            if (context.SyntaxReceiver is not StuntGeneratorReceiver receiver)
+            if (context.SyntaxReceiver is not IEnumerable enumerable ||
+                enumerable.OfType<StuntGeneratorReceiver>().FirstOrDefault() is not StuntGeneratorReceiver receiver)
                 return;
 
             if (generator.GeneratorAttribute.FullName == null)
@@ -182,6 +182,23 @@ namespace Stunts
             }
         }
 
+        class AggregateSyntaxReceiver : ISyntaxReceiver, IEnumerable
+        {
+            public AggregateSyntaxReceiver(IEnumerable<ISyntaxReceiver> receivers) => SyntaxReceivers = receivers.ToArray();
+
+            public ISyntaxReceiver[] SyntaxReceivers { get; }
+
+            public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+            {
+                foreach (var receiver in SyntaxReceivers)
+                {
+                    receiver.OnVisitSyntaxNode(syntaxNode);
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => SyntaxReceivers.GetEnumerator();
+        }
+
         class StuntGeneratorReceiver : ISyntaxReceiver
         {
             public List<(InvocationExpressionSyntax Node, GenericNameSyntax Name)> Invocations { get; } = new();
@@ -189,7 +206,7 @@ namespace Stunts
             public void OnVisitSyntaxNode(SyntaxNode node)
             {
                 // TODO: C# in the future?
-                if (node.IsKind(SyntaxKind.InvocationExpression) && 
+                if (node.IsKind(SyntaxKind.InvocationExpression) &&
                     node is InvocationExpressionSyntax invocation)
                 {
                     // Both Class.Method<T, ...>()
