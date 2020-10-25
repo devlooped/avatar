@@ -116,6 +116,8 @@ The `samples` folder in the repository contains a few interesting examples of ho
  
 * Custom `Stub.Of<T>` factory that creates stunts that have common behaviors configured automatically.
 
+* Custom stunt factory that adds an int return value randomizer.
+
 * Configuring the built-in *DefaultValueBehavior* so that every time a string property is retrieved, it gets a random lorem ipsum value.
 
 * Logging all calls to a stunt to the Xunit output helper.
