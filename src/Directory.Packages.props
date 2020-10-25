@@ -5,7 +5,7 @@
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
     <PackageVersion Include="ThisAssembly" Version="1.0.0-rc" />
     <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
-    <PackageVersion Include="NuGetizer" Version="0.4.7" />
+    <PackageVersion Include="NuGetizer" Version="0.4.9" />
     <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
   </ItemGroup>
 

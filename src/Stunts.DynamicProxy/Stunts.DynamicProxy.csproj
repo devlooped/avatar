@@ -27,7 +27,7 @@
   <ItemGroup>
     <!-- When not packed standalone, include the build targets/sources too -->
     <None Update="@(None)" PackFolder="build\netstandard2.0" Condition="'$(IsPackable)' != 'true'" />
-    <PackageFile Include="@(None -> '%(FullPath)')" PackFolder="buildTransitive\netstandard2.0" Condition="'$(IsPackable)' != 'true'" />
+    <PackageFile Include="@(None)" PackFolder="buildTransitive\netstandard2.0" Condition="'$(IsPackable)' != 'true'" />
   </ItemGroup>
 
 </Project>
