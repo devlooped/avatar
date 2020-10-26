@@ -38,11 +38,11 @@ namespace Stunts
             new VisualBasicRewrite(),
             new VisualBasicStunt(),
             new VisualBasicParameterFixup(),
+            new VisualBasicGenerated(),
             new FixupImports(),
             new CSharpFileHeader(),
             new CSharpPragmas(),
             new VisualBasicFileHeader(),
-            new VisualBasicGenerated(),
         };
 
         /// <summary>
