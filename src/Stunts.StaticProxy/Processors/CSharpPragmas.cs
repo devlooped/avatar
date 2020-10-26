@@ -44,6 +44,7 @@ namespace Stunts.Processors
                         IdentifierName("CS8603"),
                         IdentifierName("CS8604"),
                         IdentifierName("CS8605"),
+                        IdentifierName("CS8618"),
                         IdentifierName("CS8765"),
                     }), true)))
             ));
