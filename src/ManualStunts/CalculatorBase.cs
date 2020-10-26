@@ -1,11 +1,12 @@
-﻿using System;
+﻿#nullable disable
+using System;
 
 namespace Sample
 {
     public abstract class CalculatorBase
     {
 #pragma warning disable CS0067
-        public virtual event EventHandler? TurnedOn;
+        public virtual event EventHandler TurnedOn;
 #pragma warning restore CS0067
 
         public abstract bool IsOn { get; }
