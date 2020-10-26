@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Stunts;
@@ -11,7 +12,7 @@ namespace Sample
 
         public IList<IStuntBehavior> Behaviors => pipeline.Behaviors;
 
-        public override event EventHandler? TurnedOn
+        public override event EventHandler TurnedOn
         {
             add => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value), (m, n) => { base.TurnedOn += value; return m.CreateValueReturn(null, value); });
             remove => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value), (m, n) => { base.TurnedOn -= value; return m.CreateValueReturn(null, value); });

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Collections.Generic;
 
 namespace Sample
@@ -8,7 +9,7 @@ namespace Sample
         CalculatorMemory memory = new CalculatorMemory();
         Dictionary<string, int> namedMemory = new Dictionary<string, int>();
 
-        public virtual event EventHandler? TurnedOn;
+        public virtual event EventHandler TurnedOn;
 
         public bool TurnOnCalled { get; set; }
 
