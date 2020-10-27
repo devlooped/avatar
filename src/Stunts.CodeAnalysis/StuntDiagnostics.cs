@@ -50,18 +50,6 @@ namespace Stunts.CodeAnalysis
             Strings.SealedBaseType.Description);
 
         /// <summary>
-        /// Diagnostic reported when type used is nested, which is unsupported at the moment.
-        /// </summary>
-        public static DiagnosticDescriptor NestedType { get; } = new DiagnosticDescriptor(
-            "ST004",
-            Strings.NestedType.Title,
-            Resources.NestedType_Message,
-            "Build",
-            DiagnosticSeverity.Error,
-            true,
-            Strings.NestedType.Description);
-
-        /// <summary>
         /// Diagnostic reported when type used contains at least one member that uses 
         /// pointer type arguments, which are unsupported at the moment.
         /// </summary>
