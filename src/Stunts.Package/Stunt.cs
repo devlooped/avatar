@@ -1,11 +1,11 @@
 #nullable disable // So we can keep a single file regardless of the nullability of the calling project.
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 namespace Stunts
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-
     /// <summary>
     /// Instantiates stunts for the specified types.
     /// </summary>

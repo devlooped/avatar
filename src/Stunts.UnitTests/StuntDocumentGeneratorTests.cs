@@ -83,7 +83,7 @@ namespace Stunts.UnitTests.GeneratorTests
         }
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedNameContainsAdditionalInterfaceInName(string language, bool trace = false)
         {
@@ -111,7 +111,7 @@ namespace Stunts.UnitTests.GeneratorTests
         }
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedTypeOverridesVirtualObjectMembers(string language, bool trace = false)
         {
@@ -127,17 +127,15 @@ namespace Stunts.UnitTests.GeneratorTests
                 m.Name == nameof(object.Equals));
         }
 
-        [Fact]
-        public Task INotifyPropertyChanged()
-            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
-
-        [Fact]
-        public Task ITypeGetter()
-            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(ITypeGetter));
-
-        [Fact]
-        public Task ICustomFormatter()
-            => CreateStunt(new StuntDocumentGenerator(), LanguageNames.VisualBasic, typeof(ICustomFormatter));
+        [InlineData(LanguageNames.CSharp, typeof(INotifyPropertyChanged))]
+        [InlineData(LanguageNames.CSharp, typeof(ITypeGetter))]
+        [InlineData(LanguageNames.CSharp, typeof(ICustomFormatter))]
+        //[InlineData(LanguageNames.VisualBasic, typeof(INotifyPropertyChanged))]
+        //[InlineData(LanguageNames.VisualBasic, typeof(ITypeGetter))]
+        //[InlineData(LanguageNames.VisualBasic, typeof(ICustomFormatter))]
+        [Theory]
+        public Task SpecificTypes(string language, Type type)
+            => CreateStunt(new StuntDocumentGenerator(), language, type);
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
@@ -164,7 +162,7 @@ namespace Stunts.UnitTests.GeneratorTests
             => CreateStunt(new StuntDocumentGenerator(), language, typeof(Calculator));
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task CanGenerateProxyWithMultipleInterfaces(string language)
         {

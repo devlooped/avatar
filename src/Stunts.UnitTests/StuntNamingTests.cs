@@ -20,7 +20,7 @@ namespace Stunts.UnitTests
         {
             var name = StuntNaming.GetFullName(typeof(ICalculator));
 
-            Assert.Equal(StuntNaming.DefaultNamespace + "." + nameof(ICalculator) + StuntNaming.DefaultSuffix, name);
+            Assert.Equal($"{StuntNaming.DefaultRootNamespace}.{typeof(ICalculator).Namespace}.{nameof(ICalculator)}{StuntNaming.DefaultSuffix}", name);
         }
 
         [Fact]
@@ -28,15 +28,23 @@ namespace Stunts.UnitTests
         {
             var name = StuntNaming.GetFullName("Test", typeof(ICalculator), typeof(IDisposable), typeof(IServiceProvider));
 
-            Assert.Equal("Test.ICalculatorIDisposableIServiceProvider" + StuntNaming.DefaultSuffix, name);
+            Assert.Equal($"Test.{typeof(ICalculator).Namespace}.ICalculatorIDisposableIServiceProvider" + StuntNaming.DefaultSuffix, name);
         }
 
         [Fact]
         public void FullNameWithInterfaces()
         {
             var name = StuntNaming.GetFullName(typeof(ICalculator), typeof(IDisposable), typeof(IServiceProvider));
+            
+            Assert.Equal($"{StuntNaming.DefaultRootNamespace}.{typeof(ICalculator).Namespace}.ICalculatorIDisposableIServiceProvider{StuntNaming.DefaultSuffix}", name);
+        }
 
-            Assert.Equal(StuntNaming.DefaultNamespace + ".ICalculatorIDisposableIServiceProvider" + StuntNaming.DefaultSuffix, name);
+        [Fact]
+        public void NamespaceForGlobalType()
+        {
+            var name = StuntNaming.GetFullName(typeof(IGlobal));
+
+            Assert.Equal($"{StuntNaming.DefaultRootNamespace}.{nameof(IGlobal)}{StuntNaming.DefaultSuffix}", name);
         }
 
         [Fact]

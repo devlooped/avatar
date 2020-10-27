@@ -48,12 +48,8 @@ namespace Stunts.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
-            var generator = SyntaxGenerator.GetGenerator(document);
-
             foreach (var codeFixName in codeFixNames)
-            {
                 document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken: cancellationToken);
-            }
 
             return document;
         }

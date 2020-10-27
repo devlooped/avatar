@@ -49,9 +49,7 @@ namespace Stunts.Processors
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             foreach (var codeFixName in codeFixNames)
-            {
                 document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken: cancellationToken);
-            }
 
             return document;
         }

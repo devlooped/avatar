@@ -145,13 +145,13 @@ namespace Stunts
             if (project.Solution.Workspace is AdhocWorkspace workspace)
             {
                 var directory = Path.Combine(Path.GetDirectoryName(project.FilePath) ?? "", 
-                    Path.Combine(NamingConvention.Namespace.Split('.')));
+                    Path.Combine(NamingConvention.RootNamespace.Split('.')));
                 Directory.CreateDirectory(directory);
 
                 document = workspace.AddDocument(DocumentInfo.Create(
                     DocumentId.CreateNewId(project.Id),
                     name,
-                    folders: NamingConvention.Namespace.Split('.'),
+                    folders: NamingConvention.RootNamespace.Split('.'),
                     filePath: filePath,
                     loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
             }
@@ -160,7 +160,7 @@ namespace Stunts
                 document = project.AddDocument(
                     name,
                     SourceText.From(code),
-                    folders: NamingConvention.Namespace.Split('.'),
+                    folders: NamingConvention.RootNamespace.Split('.'),
                     filePath: filePath);
             }
 
@@ -203,7 +203,8 @@ namespace Stunts
                 .Select(generator.NamespaceImportDeclaration)
                 .Concat(new[]
                 {
-                    generator.NamespaceDeclaration(NamingConvention.Namespace,
+                    generator.NamespaceDeclaration(
+                        NamingConvention.GetNamespace(symbols),
                         generator.AddAttributes(
                             generator.ClassDeclaration(name,
                                 modifiers: DeclarationModifiers.Partial,
@@ -238,7 +239,7 @@ namespace Stunts
             if (symbol is INamedTypeSymbol named && named.IsGenericType)
                 return generator.GenericName(prefix + symbol.Name, named.TypeArguments.Select(arg => AsSyntaxNode(generator, arg)));
 
-            return generator.IdentifierName(prefix = symbol.Name);
+            return generator.IdentifierName(prefix + symbol.Name);
         }
 
         /// <summary>

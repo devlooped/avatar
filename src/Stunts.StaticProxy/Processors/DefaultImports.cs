@@ -24,11 +24,8 @@ namespace Stunts.Processors
         {
             typeof(EventArgs).Namespace!,
             typeof(IList<>).Namespace!,
-            typeof(DebuggerDisplayAttribute).Namespace!,
             typeof(MethodBase).Namespace!,
             typeof(CompilerGeneratedAttribute).Namespace!,
-            typeof(GeneratedCodeAttribute).Namespace!,
-            typeof(ExcludeFromCodeCoverageAttribute).Namespace!,
             typeof(IStunt).Namespace!,
         };
 

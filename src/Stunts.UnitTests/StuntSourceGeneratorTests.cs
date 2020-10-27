@@ -15,6 +15,39 @@ namespace Stunts.UnitTests
     public class StuntSourceGeneratorTests
     {
         [Fact]
+        public void GenerateStuntNestedType()
+        {
+            var code = @"
+using System;
+using Stunts;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var stunt = Stunt.Of<IFoo>();
+        }
+        
+        public interface IFoo 
+        {
+            void Do();
+        }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetTypes().FirstOrDefault(t => t.Name == "IFooStunt"));
+        }
+
+
+        [Fact]
         public void GeneratesOneStuntPerType()
         {
             var code = @"
@@ -59,8 +92,9 @@ namespace Stunts.UnitTests
         {
             var code = @"
 using System;
+using Stunts;
 
-namespace Stunts.UnitTests
+namespace UnitTests
 {
     public class Test
     {
@@ -111,7 +145,7 @@ namespace Stunts.UnitTests
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Stunts/Stunt.cs"), path: "Stunt.cs"),
                 }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            var diagnostics = compilation.GetDiagnostics();
+            var diagnostics = compilation.GetDiagnostics().RemoveAll(d => d.Severity == DiagnosticSeverity.Hidden || d.Severity == DiagnosticSeverity.Info);
             if (diagnostics.Any())
                 return (diagnostics, compilation);
 

@@ -11,9 +11,9 @@ namespace Stunts.CodeAnalysis
     public class NamingConvention
     {
         /// <summary>
-        /// The namespace of the generated code.
+        /// The root or base namespace of the generated code.
         /// </summary>
-        public virtual string Namespace => StuntNaming.DefaultNamespace;
+        public virtual string RootNamespace => StuntNaming.DefaultRootNamespace;
 
         /// <summary>
         /// Suffix appended to the type name, i.e. <c>IFooStunt</c>.
@@ -23,13 +23,10 @@ namespace Stunts.CodeAnalysis
         /// <summary>
         /// The type name to generate for the given (optional) base type and implemented interfaces.
         /// </summary>
-        public string GetName(IEnumerable<ITypeSymbol> symbols)
+        public string GetName(IEnumerable<INamedTypeSymbol> symbols)
         {
             var builder = new StringBuilder();
-            // First add the base class
-            AddNames(builder, symbols.Where(x => x.TypeKind == TypeKind.Class));
-            // Then the interfaces
-            AddNames(builder, symbols.Where(x => x.TypeKind == TypeKind.Interface).OrderBy(x => x.Name));
+            AddNames(builder, Sorted(symbols));
             return builder.Append(NameSuffix).ToString();
         }
 
@@ -50,6 +47,19 @@ namespace Stunts.CodeAnalysis
         /// The full type name for the given (optional) base type and implemented interfaces.
         /// </summary>
         public string GetFullName(IEnumerable<INamedTypeSymbol> symbols)
-            => Namespace + "." + GetName(symbols);
+            => GetNamespace(RootNamespace, symbols.FirstOrDefault()?.ContainingNamespace) + "." + GetName(symbols);
+
+        /// <summary>
+        /// The namespace for the given (optional) base type and implemented interfaces.
+        /// </summary>
+        public string GetNamespace(IEnumerable<INamedTypeSymbol> symbols)
+            => GetNamespace(RootNamespace, symbols.FirstOrDefault()?.ContainingNamespace);
+
+        string GetNamespace(string rootNamespace, INamespaceSymbol? containingNamespace)
+            => containingNamespace == null || containingNamespace.IsGlobalNamespace ? rootNamespace : rootNamespace + "." + containingNamespace.ToString();
+
+        IEnumerable<INamedTypeSymbol> Sorted(IEnumerable<INamedTypeSymbol> symbols)
+            => symbols.Where(x => x.TypeKind == TypeKind.Class)
+                .Concat(symbols.Where(x => x.TypeKind == TypeKind.Interface).OrderBy(x => x.Name));
     }
 }

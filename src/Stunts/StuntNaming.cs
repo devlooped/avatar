@@ -11,9 +11,9 @@ namespace Stunts
     public static class StuntNaming
     {
         /// <summary>
-        /// The default namespace where generated stunts are declared.
+        /// The default root or base namespace where generated stunts are declared.
         /// </summary>
-        public const string DefaultNamespace = "Stunts";
+        public const string DefaultRootNamespace = "Stunts";
 
         /// <summary>
         /// The default suffix added to stunt type names.
@@ -54,10 +54,10 @@ namespace Stunts
 
         /// <summary>
         /// Gets the runtime stunt full name from its base type and optional additional interfaces,
-        /// using the <see cref="DefaultNamespace"/> and <see cref="DefaultSuffix"/>.
+        /// using the <see cref="DefaultRootNamespace"/> and <see cref="DefaultSuffix"/>.
         /// </summary>
         public static string GetFullName(Type baseType, params Type[] additionalInterfaces)
-            => GetFullName(DefaultNamespace, DefaultSuffix, baseType, additionalInterfaces);
+            => GetFullName(DefaultRootNamespace, DefaultSuffix, baseType, additionalInterfaces);
 
         /// <summary>
         /// Gets the runtime stunt full name from its base type and implemented interfaces.
@@ -68,8 +68,11 @@ namespace Stunts
         /// <summary>
         /// Gets the runtime stunt full name from its base type and implemented interfaces.
         /// </summary>
-        public static string GetFullName(string @namespace, string suffix, Type baseType, params Type[] additionalInterfaces)
-            => @namespace + "." + GetName(suffix, baseType, additionalInterfaces);
+        public static string GetFullName(string rootNamespace, string suffix, Type baseType, params Type[] additionalInterfaces)
+            => GetNamespace(rootNamespace, baseType.Namespace) + "." + GetName(suffix, baseType, additionalInterfaces);
+
+        static string GetNamespace(string rootNamespace, string typeNamespace)
+            => string.IsNullOrEmpty(typeNamespace) ? rootNamespace : rootNamespace + "." + typeNamespace;
     }
 
     internal static class StringBuilderExtensions
