@@ -14,7 +14,7 @@ namespace Stunts
     internal partial class Stunt
     {
         private static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
-            (T)StuntFactory.Default.CreateStunt(typeof(Stunt).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
+            (T)StuntFactory.Default.CreateStunt(typeof(Stunt).Assembly, typeof(T), interfaces, constructorArgs);
 
         /// <summary>
         /// Creates a stunt that inherits or implements the type <typeparamref name="T"/>.

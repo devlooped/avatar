@@ -57,7 +57,6 @@ namespace Stunts
             // If type is by ref, we need to get the actual element type of the ref. 
             // i.e. Object[]& has ElementType = Object[]
             var valueType = type.IsByRef && type.HasElementType ? type.GetElementType()! : type;
-            var info = valueType.GetTypeInfo();
             var typeKey = valueType.IsArray ? typeof(Array) : valueType;
 
             // Try get a handler with the concrete type first.
@@ -65,7 +64,7 @@ namespace Stunts
                 return factory.Invoke(valueType);
 
             // Fallback to getting one for the generic type, if available
-            if (info.IsGenericType && factories.TryGetValue(valueType.GetGenericTypeDefinition(), out factory))
+            if (valueType.IsGenericType && factories.TryGetValue(valueType.GetGenericTypeDefinition(), out factory))
                 return factory.Invoke(valueType);
 
             return GetFallbackDefaultValue(valueType);
@@ -99,10 +98,10 @@ namespace Stunts
         /// <param name="type">The type of which to produce a value.</param>
         protected virtual object? GetFallbackDefaultValue(Type type)
         {
-            if (type.GetTypeInfo().IsValueType)
+            if (type.IsValueType)
             {
                 // For nullable value types, return null.
-                if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     return null;
 
                 return Activator.CreateInstance(type);
@@ -118,7 +117,7 @@ namespace Stunts
 
         private static object CreateEnumerable(Type type) => Enumerable.Empty<object>();
 
-        private static object CreateEnumerableOf(Type type) => Array.CreateInstance(type.GetTypeInfo().GenericTypeArguments[0], 0);
+        private static object CreateEnumerableOf(Type type) => Array.CreateInstance(type.GenericTypeArguments[0], 0);
 
         private static object CreateQueryable(Type type) => Enumerable.Empty<object>().AsQueryable();
 
@@ -145,15 +144,15 @@ namespace Stunts
             return Activator.CreateInstance(type, items);
 
         }
-        private object CreateTaskOf(Type type) => GetCompletedTaskForType(type.GetTypeInfo().GenericTypeArguments[0]);
+        private object CreateTaskOf(Type type) => GetCompletedTaskForType(type.GenericTypeArguments[0]);
 
         private Task GetCompletedTaskForType(Type type)
         {
             var tcs = Activator.CreateInstance(typeof(TaskCompletionSource<>).MakeGenericType(type))
                 ?? throw new NotSupportedException();
-            var setResultMethod = tcs.GetType().GetTypeInfo().GetDeclaredMethod(nameof(TaskCompletionSource<object>.SetResult))
+            var setResultMethod = tcs.GetType().GetMethod(nameof(TaskCompletionSource<object>.SetResult))
                 ?? throw new NotSupportedException();
-            var taskProperty = tcs.GetType().GetTypeInfo().GetDeclaredProperty(nameof(TaskCompletionSource<object>.Task))
+            var taskProperty = tcs.GetType().GetProperty(nameof(TaskCompletionSource<object>.Task))
                 ?? throw new NotSupportedException();
 
             var result = GetDefault(type);

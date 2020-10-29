@@ -121,7 +121,7 @@ namespace Stunts.UnitTests.GeneratorTests
 
             Assert.NotNull(type);
 
-            Assert.Contains(type!.GetTypeInfo().DeclaredMethods, m =>
+            Assert.Contains(type!.GetMethods(), m =>
                 m.Name == nameof(object.GetHashCode) ||
                 m.Name == nameof(object.ToString) ||
                 m.Name == nameof(object.Equals));
