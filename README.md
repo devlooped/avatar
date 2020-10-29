@@ -9,7 +9,7 @@ Stunts essentially implements the [proxy design pattern](https://en.wikipedia.or
 [![Version](https://img.shields.io/nuget/vpre/Stunts.svg?color=royalblue)](https://www.nuget.org/packages/Stunts)
 [![Downloads](https://img.shields.io/nuget/dt/Stunts?color=darkmagenta)](https://www.nuget.org/packages/Stunts)
 [![License](https://img.shields.io/github/license/kzu/stunts.svg?color=blue)](https://github.com/kzu/stunts/blob/main/LICENSE)
-[![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
+[![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/3EeAbjA)
 [![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/stunts)
 
 [![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Stunts/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
