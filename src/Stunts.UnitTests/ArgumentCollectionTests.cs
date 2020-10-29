@@ -99,10 +99,10 @@ namespace Stunts.UnitTests
             Assert.Equal(5, new ArgumentCollection(new object[] { 5 }, valueTypeMethod.GetParameters()).Get<int>("value"));
 
             // If nullable annotations are ignored and we request a nullable int, it should still work.
-#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#nullable disable
             Assert.Equal((int?)null, new ArgumentCollection(new object[] { null }, nullableValueTypeMethod.GetParameters()).Get<int?>(0));
             Assert.Equal((int?)null, new ArgumentCollection(new object[] { null }, nullableValueTypeMethod.GetParameters()).Get<int?>("value"));
-#pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#nullable restore
 
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).Get<string>(0));
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).Get<string>("value"));
@@ -111,29 +111,27 @@ namespace Stunts.UnitTests
         [Fact]
         public void GetOptionalTyped()
         {
-            var i = new ArgumentCollection(new object[] { 5 }, valueTypeMethod.GetParameters()).GetNullable<int>(0);
-
             Assert.Equal(5, new ArgumentCollection(new object[] { 5 }, valueTypeMethod.GetParameters()).GetNullable<int>(0));
             Assert.Equal(5, new ArgumentCollection(new object[] { 5 }, valueTypeMethod.GetParameters()).GetNullable<int>("value"));
 
-            Assert.Equal((int?)null, new ArgumentCollection(new object[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>(0));
-            Assert.Equal((int?)null, new ArgumentCollection(new object[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>("value"));
+            Assert.Equal((int?)null, new ArgumentCollection(new object?[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>(0));
+            Assert.Equal((int?)null, new ArgumentCollection(new object?[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>("value"));
                 
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).GetNullable<string>(0));
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).GetNullable<string>("value"));
 
-            Assert.Null(new ArgumentCollection(new object[] { null }, referenceTypeMethod.GetParameters()).GetNullable<string>(0));
-            Assert.Null(new ArgumentCollection(new object[] { null }, referenceTypeMethod.GetParameters()).GetNullable<string>("value"));
+            Assert.Null(new ArgumentCollection(new object?[] { null }, referenceTypeMethod.GetParameters()).GetNullable<string>(0));
+            Assert.Null(new ArgumentCollection(new object?[] { null }, referenceTypeMethod.GetParameters()).GetNullable<string>("value"));
         }
 
         [Fact]
         public void GetTypedThrowsIfNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object[] { null }, valueTypeMethod.GetParameters()).Get<int>(0));
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object[] { null }, valueTypeMethod.GetParameters()).Get<int>("value"));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object?[] { null }, valueTypeMethod.GetParameters()).Get<int>(0));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object?[] { null }, valueTypeMethod.GetParameters()).Get<int>("value"));
 
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object[] { null }, valueTypeMethod.GetParameters()).Get<string>(0));
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object[] { null }, valueTypeMethod.GetParameters()).Get<string>("value"));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object?[] { null }, valueTypeMethod.GetParameters()).Get<string>(0));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new object?[] { null }, valueTypeMethod.GetParameters()).Get<string>("value"));
         }
 
         [Fact]

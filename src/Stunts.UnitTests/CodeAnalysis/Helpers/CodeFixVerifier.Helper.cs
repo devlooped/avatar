@@ -75,7 +75,7 @@ public abstract partial class CodeFixVerifier : DiagnosticVerifier
     private static string GetStringFromDocument(Document document)
     {
         var simplifiedDoc = Simplifier.ReduceAsync(document, Simplifier.Annotation).Result;
-        var root = simplifiedDoc.GetSyntaxRootAsync().Result;
+        var root = simplifiedDoc.GetSyntaxRootAsync().Result ?? throw new InvalidOperationException();
         root = Formatter.Format(root, Formatter.Annotation, simplifiedDoc.Project.Solution.Workspace);
         return root.GetText().ToString();
     }

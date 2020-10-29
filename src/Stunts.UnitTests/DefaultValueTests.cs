@@ -12,11 +12,11 @@ namespace Stunts.UnitTests
         [Fact]
         public void DoesNotSetRefValue()
         {
-            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef))!;
             IStuntBehavior behavior = new DefaultValueBehavior();
             var value = new object();
 
-            var result = behavior.Execute(new MethodInvocation(new object(), method, value), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, value), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -26,11 +26,11 @@ namespace Stunts.UnitTests
         [Fact]
         public void DoesNotSetsRefEnumValue()
         {
-            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRefEnum));
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRefEnum))!;
             IStuntBehavior behavior = new DefaultValueBehavior();
             var platform = PlatformID.Xbox;
 
-            var result = behavior.Execute(new MethodInvocation(new object(), method, platform), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, platform), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -40,10 +40,10 @@ namespace Stunts.UnitTests
         [Fact]
         public void SetsOutValue()
         {
-            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut));
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut))!;
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[1]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[1]), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -53,10 +53,10 @@ namespace Stunts.UnitTests
         [Fact]
         public void SetsReturnEnum()
         {
-            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum));
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum))!;
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null!);
 
             Assert.Equal(default(PlatformID), result.ReturnValue);
         }
@@ -67,7 +67,7 @@ namespace Stunts.UnitTests
             var ctor = typeof(Foo).GetConstructors().First();
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            behavior.Execute(new MethodInvocation(new object(), ctor, new object[1]), () => null);
+            behavior.Execute(new MethodInvocation(new object(), ctor, new object[1]), () => null!);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Stunts.UnitTests
 
             Assert.NotNull(value);
             Assert.IsType<object[]>(value);
-            Assert.Empty(((Array)value));
+            Assert.Empty((Array)value!);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Stunts.UnitTests
         [Fact]
         public void DefaultForRefIsElementType()
         {
-            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef))!;
             var parameter = method.GetParameters()[0];
 
             Assert.True(parameter.ParameterType.IsByRef);
@@ -131,7 +131,7 @@ namespace Stunts.UnitTests
 
             Assert.NotNull(value);
             Assert.True(value is object[]);
-            Assert.Empty((object[])value);
+            Assert.Empty((object[])value!);
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace Stunts.UnitTests
 
             Assert.Empty(providers);
             Assert.True(formatter.IsCompleted);
-            Assert.Equal(default(PlatformID), platform);
+            Assert.Equal(default, platform);
         }
 
         [Fact]

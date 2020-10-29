@@ -129,7 +129,8 @@ public abstract partial class CodeFixVerifier : DiagnosticVerifier
             if (!allowNewCompilerDiagnostics && newCompilerDiagnostics.Any())
             {
                 // Format and get the compiler diagnostics again so that the locations make sense in the output
-                document = document.WithSyntaxRoot(Formatter.Format(document.GetSyntaxRootAsync().Result, Formatter.Annotation, document.Project.Solution.Workspace));
+                document = document.WithSyntaxRoot(Formatter.Format(document.GetSyntaxRootAsync().Result
+                     ?? throw new InvalidOperationException(), Formatter.Annotation, document.Project.Solution.Workspace));
                 newCompilerDiagnostics = GetNewDiagnostics(compilerDiagnostics, GetCompilerDiagnostics(document));
 
                 Assert.True(false,
