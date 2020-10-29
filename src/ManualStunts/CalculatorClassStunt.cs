@@ -48,9 +48,9 @@ namespace Sample
             var result = pipeline.Invoke(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z),
                 (m, n) => m.CreateValueReturn(base.TryAdd(ref local_x, ref local_y, out local_z), local_x, local_y, local_z), true);
 
-            x = (int)result.Outputs["x"]!;
-            y = (int)result.Outputs["y"]!;
-            z = (int)result.Outputs["z"]!;
+            x = result.Outputs.GetNullable<int>("x");
+            y = result.Outputs.GetNullable<int>("y");
+            z = result.Outputs.GetNullable<int>("z");
 
             return (bool)result.ReturnValue!;
         }
