@@ -56,14 +56,13 @@ namespace Stunts.Processors
             statements.AddRange(refOutParams.Select(x =>
                 generator.AssignmentStatement(
                     generator.IdentifierName(generator.GetName(x)),
-                    generator.CastExpression(
-                        generator.GetType(x),
-                        generator.ElementAccessExpression(
+                    generator.InvocationExpression(
+                        generator.MemberAccessExpression(
                             generator.MemberAccessExpression(
                                 generator.IdentifierName("returns"),
                                 nameof(IMethodReturn.Outputs)),
-                            generator.LiteralExpression(generator.GetName(x))
-                        )
+                            generator.GenericName("GetNullable", generator.GetType(x))),
+                        generator.LiteralExpression(generator.GetName(x))
                     )
                 )
             ));

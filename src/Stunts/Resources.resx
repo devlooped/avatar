@@ -123,4 +123,13 @@
   <data name="StuntFactoryNotImplemented" xml:space="preserve">
     <value>Default factory does not implement stunt creation. Please ensure StuntFactory.Default is assigned to a valid factory before usage.</value>
   </data>
+  <data name="ValueIsNull" xml:space="preserve">
+    <value>Expected argument {arg} to be non-null.</value>
+  </data>
+  <data name="ValueNotCompatible" xml:space="preserve">
+    <value>Requested {arg} has a value of type {actualType} which cannot be converted to the requested type {requestedType}.</value>
+  </data>
+  <data name="ValueTypeIsNull" xml:space="preserve">
+    <value>Argument {arg} is null and cannot be converted to requested type {type} because it is not a nullable value type.</value>
+  </data>
 </root>

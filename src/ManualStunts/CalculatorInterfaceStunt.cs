@@ -43,10 +43,10 @@ namespace Sample
         {
             z = default;
             var returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z));
-            
-            x = (int)returns.Outputs["x"]!;
-            y = (int)returns.Outputs["y"]!;
-            z = (int)returns.Outputs["z"]!;
+
+            x = returns.Outputs.GetNullable<int>("x");
+            y = returns.Outputs.GetNullable<int>("y");
+            z = returns.Outputs.GetNullable<int>("z");
 
             return (bool)returns.ReturnValue!;
         }
