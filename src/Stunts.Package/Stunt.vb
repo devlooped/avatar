@@ -8,7 +8,7 @@ Namespace Global.Stunts
     <ExcludeFromCodeCoverage>
     Partial Friend Class Stunt
         Private Shared Function Create(Of T)(ByVal constructorArgs As Object(), ParamArray interfaces As Type()) As T
-            Return DirectCast(StuntFactory.[Default].CreateStunt(GetType(Stunt).GetTypeInfo().Assembly, GetType(T), interfaces, constructorArgs), T)
+            Return DirectCast(StuntFactory.[Default].CreateStunt(GetType(Stunt).Assembly, GetType(T), interfaces, constructorArgs), T)
         End Function
 
         <StuntGenerator>
