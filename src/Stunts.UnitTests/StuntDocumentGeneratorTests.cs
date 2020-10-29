@@ -107,7 +107,7 @@ namespace Stunts.UnitTests.GeneratorTests
             var type = assembly.GetType(StuntNaming.GetFullName(typeof(ICalculator)), true);
 
             Assert.NotNull(type);
-            Assert.NotNull(type.GetCustomAttribute<CompilerGeneratedAttribute>());
+            Assert.NotNull(type!.GetCustomAttribute<CompilerGeneratedAttribute>());
         }
 
         [InlineData(LanguageNames.CSharp)]
