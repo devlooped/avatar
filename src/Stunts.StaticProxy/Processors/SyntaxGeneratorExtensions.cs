@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Stunts.Processors
 {
@@ -69,12 +71,26 @@ namespace Stunts.Processors
 
             if (returnType != null)
             {
-                statements.Add(generator.ReturnStatement(
-                    generator.CastExpression(
-                        returnType,
-                        generator.MemberAccessExpression(
-                            generator.IdentifierName("returns"),
-                            nameof(IMethodReturn.ReturnValue)))));
+                if (returnType.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.RefType))
+                {
+                    statements.Add(generator.ReturnStatement(
+                        RefExpression((ExpressionSyntax)
+                            generator.MemberAccessExpression(
+                                generator.InvocationExpression(
+                                    generator.MemberAccessExpression(
+                                        generator.IdentifierName("returns"),
+                                        generator.GenericName("AsRef", ((RefTypeSyntax)returnType).Type))),
+                                    "Value"))));
+                }
+                else
+                {
+                    statements.Add(generator.ReturnStatement(
+                        generator.CastExpression(
+                            returnType,
+                            generator.MemberAccessExpression(
+                                generator.IdentifierName("returns"),
+                                nameof(IMethodReturn.ReturnValue)))));
+                }
             }
 
             return generator.WithStatements(method, statements);
@@ -87,6 +103,8 @@ namespace Stunts.Processors
         {
             var execute = (returnType == null) ?
                 generator.IdentifierName("Execute") :
+                returnType.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.RefType) ?
+                generator.GenericName("ExecuteRef", ((RefTypeSyntax)returnType).Type) :
                 generator.GenericName("Execute", returnType);
 
             return generator.InvocationExpression(

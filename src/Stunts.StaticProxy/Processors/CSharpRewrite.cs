@@ -44,13 +44,8 @@ namespace Stunts.Processors
         class CSharpRewriteVisitor : CSharpSyntaxRewriter
         {
             readonly SyntaxGenerator generator;
-            readonly Document document;
 
-            public CSharpRewriteVisitor(Document document)
-            {
-                this.document = document;
-                generator = SyntaxGenerator.GetGenerator(document);
-            }
+            public CSharpRewriteVisitor(Document document) => generator = SyntaxGenerator.GetGenerator(document);
 
             public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
@@ -83,8 +78,11 @@ namespace Stunts.Processors
                     if (node.Body != null)
                         node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)!;
 
-                    node = node.WithExpressionBody(
-                            ArrowExpressionClause(ExecutePipeline(node.ReturnType, node.ParameterList.Parameters)))
+                    var body = ExecutePipeline(node.ReturnType, node.ParameterList.Parameters);
+                    if (node.ReturnType.IsKind(SyntaxKind.RefType))
+                        body = RefExpression((ExpressionSyntax)generator.MemberAccessExpression(body, "Value"));
+
+                    node = node.WithExpressionBody(ArrowExpressionClause(body))
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
                 }
 
