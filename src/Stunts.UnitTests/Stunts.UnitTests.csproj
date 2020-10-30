@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Remove="Range.cs" Condition="'$(TargetFramework)' == 'net5.0'" />
     <Compile Include="..\Stunts.Package\Stunt.cs" Link="Stunts\Stunt.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="..\Stunts.Package\Stunt.StaticFactory.cs" Link="Stunts\Stunt.StaticFactory.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <Target Name="ClearMSBuild" AfterTargets="Build">

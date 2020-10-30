@@ -46,6 +46,81 @@ namespace UnitTests
             Assert.NotNull(assembly.GetTypes().FirstOrDefault(t => t.Name == "IFooStunt"));
         }
 
+        [Fact]
+        public void GenerateStuntRefReturns()
+        {
+            var code = @"
+using System;
+using Stunts;
+
+namespace UnitTests
+{
+    public interface IMemory
+    {
+        ref int Get();
+    }
+
+    public class Test
+    {
+        public void Do()
+        {
+            var stunt = Stunt.Of<IMemory>();
+            stunt.AddBehavior(new DefaultValueBehavior());
+            ref int value = ref stunt.Get();
+        }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetTypes().FirstOrDefault(t => t.Name == "IMemoryStunt"));
+
+            var test = Activator.CreateInstance(assembly.GetType("UnitTests.Test"));
+            test.GetType().InvokeMember("Do", BindingFlags.InvokeMethod, null, test, null);
+        }
+
+        [Fact]
+        public void GenerateStuntRefReturnsRefOut()
+        {
+            var code = @"
+using System;
+using Stunts;
+
+namespace UnitTests
+{
+    public interface IMemory
+    {
+        ref int Get(ref string name, out int count);
+    }
+
+    public class Test
+    {
+        public void Do()
+        {
+            var stunt = Stunt.Of<IMemory>();
+            stunt.AddBehavior(new DefaultValueBehavior());
+
+            var name = ""foo"";
+            ref int value = ref stunt.Get(ref name, out var count);
+        }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetTypes().FirstOrDefault(t => t.Name == "IMemoryStunt"));
+
+            var test = Activator.CreateInstance(assembly.GetType("UnitTests.Test"));
+            test.GetType().InvokeMember("Do", BindingFlags.InvokeMethod, null, test, null);
+        }
 
         [Fact]
         public void GeneratesOneStuntPerType()
@@ -143,6 +218,7 @@ namespace UnitTests
                 {
                     syntaxTree,
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Stunts/Stunt.cs"), path: "Stunt.cs"),
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Stunts/Stunt.StaticFactory.cs"), path: "Stunt.StaticFactory.cs"),
                 }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => d.Severity == DiagnosticSeverity.Hidden || d.Severity == DiagnosticSeverity.Info);

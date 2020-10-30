@@ -3,7 +3,7 @@
 namespace Stunts
 {
     /// <summary>
-    /// Usability functions for working with <see cref="IMethodInvocation"/>.
+    /// Usability overloads for working with <see cref="IMethodInvocation"/>.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MethodInvocationExtensions
