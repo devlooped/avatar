@@ -1,10 +1,9 @@
 <h1 id="avatar"><img src="https://github.com/kzu/avatar/raw/main/docs/img/icon.png" alt="Icon" height="48" width="48" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">  Avatar</h1>
 
-> *Avatars blend with the Na'vi seamlessly, and you can control their behavior precisely ('drive' them) with a psionic link. Just like a dynamic proxy, with behavior driven by code.*
+> *Avatars blend in with the Na'vi seamlessly, and you can control their behavior precisely by 'driving' them through a psionic link. Just like a [proxy](https://en.wikipedia.org/wiki/Proxy_pattern), with behavior driven through  code.*
 
-Avatar is a modern interception library that runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted (i.e. physical iOS devices and game consoles), through compile-time code generation.
 
-Avatar essentially implements the [proxy design pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and adds the capability of configuring those proxies via code using what we call a *behavior pipeline*. 
+Avatar is a modern interception library which implements the [proxy pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted, like physical iOS devices and game consoles, through compile-time code generation. The proxy behavior is configured in code using what we call a *behavior pipeline*. 
 
 [![Version](https://img.shields.io/nuget/vpre/Avatar.svg?color=royalblue)](https://www.nuget.org/packages/Avatar)
 [![Downloads](https://img.shields.io/nuget/dt/Avatar?color=darkmagenta)](https://www.nuget.org/packages/Avatar)
