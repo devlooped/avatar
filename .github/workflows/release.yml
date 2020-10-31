@@ -21,7 +21,7 @@ jobs:
         run: dotnet msbuild -r -m:1 -bl:build.binlog -p:version=${GITHUB_REF#refs/*/v}
       - name: 🧪 test net5.0
         run: dotnet test --no-build -f net5.0 -m:1
-        working-directory: src/Stunts.UnitTests
+        working-directory: src/Avatar.UnitTests
       - name: 📦 pack
         run: dotnet msbuild -t:pack -m:1 -bl:pack.binlog -p:version=${GITHUB_REF#refs/*/v}
         working-directory: src/Pack
@@ -31,4 +31,4 @@ jobs:
         with:
           path: '*.binlog'
       - name: 🚀 nuget
-        run: rm ./bin/ManualStunts*.nupkg && dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        run: rm ./bin/ManualAvatars*.nupkg && dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate

@@ -1,0 +1,43 @@
+<Project>
+
+  <!-- If source generators aren't supported, we just won't register the static one -->
+  <PropertyGroup>
+    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview') and 
+                                          $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
+    <RegisterStaticAvatarFactory Condition="'$(RegisterStaticAvatarFactory)' == '' and 
+                                           '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticAvatarFactory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AvatarAnalyzerDir>$(MSBuildThisFileDirectory)..\..\tools\netstandard2.0</AvatarAnalyzerDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true'">
+    <CompilerVisibleProperty Include="DebugSourceGenerators" />
+    <CompilerVisibleProperty Include="DebugAvatarSourceGenerator" />
+    <CompilerVisibleProperty Include="SkipCompilerExecution" />
+    <CompilerVisibleProperty Include="EmitAvatarSource" />
+    <CompilerVisibleProperty Include="AvatarAnalyzerDir" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(AvatarAnalyzerDir)\Avatar*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true'">
+    <Compile Include="$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)"
+             Condition="Exists('$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)')"
+             Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="@(Compile)">
+      <!-- Hide Avatar.cs/vb from the project -->
+      <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Avatar'">false</Visible>
+    </Compile>
+  </ItemGroup>
+
+  <Import Project="Avatar.DynamicProxy.targets"
+          Condition="'$(RegisterStaticAvatarFactory)' != 'true' and  Exists('Avatar.DynamicProxy.targets')" />
+
+</Project>

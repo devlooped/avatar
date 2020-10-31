@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Stunts;
+using Avatars;
 
 namespace Samples
 {
@@ -10,7 +10,7 @@ namespace Samples
     /// Forwards calls whose signature match to static methods on 
     /// another type.
     /// </summary>
-    public class InterfaceStaticAdapterBehavior : IStuntBehavior
+    public class InterfaceStaticAdapterBehavior : IAvatarBehavior
     {
         readonly Type targetType;
         readonly Dictionary<int, MethodInfo> targetMethods;
