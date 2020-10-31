@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Avatar</RootNamespace>
     <IsPackable>true</IsPackable>
     <Description>
       An extensible source generator library for arbitrary avatar code generation 

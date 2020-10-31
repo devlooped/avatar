@@ -23,6 +23,7 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Nullable>enable</Nullable>
+    <RootNamespace>Avatars</RootNamespace>
     
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;*.items;**/TestResults/**/*.*</DefaultItemExcludes>
 

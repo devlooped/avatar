@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Avatars.CodeAnalysis {
+namespace Avatars {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Avatars.CodeAnalysis {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Avatar.CodeAnalysis.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Avatars.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -115,20 +115,20 @@ namespace Avatars.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only classes and interfaces can be used in avatars. Invalid set of symbols: {0}..
+        /// </summary>
+        internal static string InvalidAvatarTypes {
+            get {
+                return ResourceManager.GetString("InvalidAvatarTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot intercept sealed types..
         /// </summary>
         internal static string InvalidSealedBaseType {
             get {
                 return ResourceManager.GetString("InvalidSealedBaseType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only classes and interfaces can be used in avatar. Invalid set of symbols: {0}..
-        /// </summary>
-        internal static string InvalidAvatarTypes {
-            get {
-                return ResourceManager.GetString("InvalidAvatarTypes", resourceCulture);
             }
         }
         
