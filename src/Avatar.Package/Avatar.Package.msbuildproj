@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
+    <PackageId>Avatar</PackageId>
+    <Title>Avatar</Title>
+    <Description>
+      Avatars blend with the Na'vi seamlessly, and you can control 
+      their behavior precisely ('drive' them) with a psionic link. 
+      Just like a dynamic proxy, with behavior driven by code.
+      
+      IMyService service = Avatar.Of&lt;IMyService&gt;();
+      service.AddBehavior(...);
+    </Description>
+    <PackageTags>dotnet proxy runtime dynamic</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Avatar.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
+    <Content Include="Avatar.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
+    <None Include="Avatar.StaticFactory.*" PackFolder="build\netstandard2.0" />
+    <None Include="Avatar.props" PackFolder="build\netstandard2.0" />
+    <None Include="Avatar.targets" PackFolder="build\netstandard2.0" />
+    <PackageFile Include="@(None)" PackFolder="buildTransitive\netstandard2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" Pack="false" />
+    <PackageReference Include="NuGetizer" Version="0.4.9" Visible="false" />
+    <PackageReference Update="NuGetizer" Version="42.42.42" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)..\..\..\nugetizer\bin\')" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar\Avatar.csproj" />
+    <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" AdditionalProperties="IsPackable=false" />
+    <ProjectReference Include="..\Avatar.DynamicProxy\Avatar.DynamicProxy.csproj" AdditionalProperties="IsPackable=false" />
+    <ProjectReference Include="..\Avatar.StaticProxy\Avatar.StaticProxy.csproj" AdditionalProperties="IsPackable=false" />
+  </ItemGroup>
+</Project>

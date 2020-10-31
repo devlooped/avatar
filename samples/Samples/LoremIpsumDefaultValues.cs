@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Stunts;
+using Avatars;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,7 +11,7 @@ namespace Samples
 {
     /// <summary>
     /// Showcases how to customize the DefaultValueBehavior so that each 
-    /// time a stunt needs to return a string, a random lorem ipsum one 
+    /// time an avatar needs to return a string, a random lorem ipsum one 
     /// is returned.
     /// </summary>
     public class LoremIpsumDefaultValues
@@ -21,12 +21,12 @@ namespace Samples
         public LoremIpsumDefaultValues(ITestOutputHelper output) => this.output = output;
 
         [Fact]
-        public void LoremIpsumStunt()
+        public void LoremIpsumAvatar()
         {
             var provider = new DefaultValueProvider();
             provider.Register(typeof(string), _ => Ipsum.GetPhrase());
 
-            var greeter = Stunt.Of<IGreeter>().AddBehavior(new DefaultValueBehavior(provider));
+            var greeter = Avatar.Of<IGreeter>().AddBehavior(new DefaultValueBehavior(provider));
 
             // On ever run, you'll get three different greetings!
             output.WriteLine(greeter.Greet());

@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <Nullable>annotations</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="InternalAccess\Program.cs" />
+    <ProjectProperty Include="TargetFramework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="coverlet.msbuild" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+
+    <PackageReference Include="Superpower" />
+    <PackageReference Include="NuGet.Client" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" />
+  </ItemGroup>
+
+  <ItemGroup Label="Targets">
+    <PackageReference Include="Microsoft.ApplicationInsights" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.15.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="net5 Targets" Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="net472 Targets" Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="EntityFramework" />
+    <PackageVersion Include="EntityFramework" Version="6.4.4" />
+
+    <PackageReference Include="Microsoft.AspNet.Mvc" />
+    <PackageVersion Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+
+    <PackageReference Include="Microsoft.AspNet.WebApi" />
+    <PackageVersion Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar\Avatar.csproj" />
+    <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Avatar.DynamicProxy\Avatar.DynamicProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Avatar.StaticProxy\Avatar.StaticProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\ManualAvatars\ManualAvatars.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Avatar.Package\Avatar.cs" Link="Avatar\Avatar.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Avatar.StaticProxy\RoslynInternals.cs" Link="InternalAccess\RoslynInternals.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="InternalAccess\Program.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="InternalAccess\Directory.Build.props" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="InternalAccess\Directory.Build.targets" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

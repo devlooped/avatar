@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <!-- When the packaging project references it for embedding -->
+    <PackFolder Condition="'$(IsPackable)' != 'true'">analyzers\dotnet</PackFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Superpower" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
+
+    <!-- Workaround for revision mismatch with public versions -->
+    <PackageReference Include="System.Collections.Immutable" Pack="false" />
+    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar\Avatar.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- When not packed standalone, include the build targets/sources too -->
+    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" Condition="'$(IsPackable)' != 'true'" />
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <InternalsVisibleTo Include="Avatar.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

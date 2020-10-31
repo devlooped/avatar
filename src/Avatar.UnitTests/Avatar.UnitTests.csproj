@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <!-- Change to enable when https://github.com/stakx/TypeNameFormatter/pull/43 ships -->
+    <Nullable>annotations</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectProperty Include="MSBuildProjectDirectory" />
+    <ProjectProperty Include="MSBuildBinPath" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.console" />
+    <PackageReference Include="xunit.runner.msbuild" Condition="'$(TargetFramework)' == 'net472'" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="coverlet.msbuild" />
+
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Locator" />
+    <PackageReference Include="MSBuild.StructuredLogger" />
+
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
+
+    <PackageReference Include="TypeNameFormatter.Sources" />
+    <PackageReference Include="Superpower" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar\Avatar.csproj" />
+    <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Avatar.DynamicProxy\Avatar.DynamicProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\Avatar.StaticProxy\Avatar.StaticProxy.csproj" EmitMetadata="false" />
+    <ProjectReference Include="..\ManualAvatars\ManualAvatars.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="CodeAnalysis\ST*\**\*.NoBuild.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Remove="CodeAnalysis\ST*\**\*.NoBuild.cs" />
+    <Compile Update="CodeAnalysis\ST*\**\*.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Range.cs" Condition="'$(TargetFramework)' == 'net5.0'" />
+    <Compile Include="..\Avatar.Package\Avatar.cs" Link="Avatar\Avatar.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="..\Avatar.Package\Avatar.StaticFactory.cs" Link="Avatar\Avatar.StaticFactory.cs" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="ClearMSBuild" AfterTargets="Build">
+    <ItemGroup>
+      <MSBuildAssembly Include="$(OutputPath)\Microsoft.Build*.dll" Exclude="$(OutputPath)\Microsoft.Build.Locator.dll" />
+    </ItemGroup>
+    <Delete Files="@(MSBuildAssembly)">
+      <Output TaskParameter="DeletedFiles" ItemName="DeletedFiles" />
+    </Delete>
+    <Message Text="Deleted: @(DeletedFiles)" Condition="'@(DeletedFiles)' != ''" />
+  </Target>
+  
+  <Target Name="AddConstants" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+    <ItemGroup>
+      <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('CodeAnalysis\ST'))" />
+      <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('CodeAnalysis/ST'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

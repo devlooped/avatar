@@ -4,13 +4,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Stunts;
+using Avatars;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Samples
 {
-    public class OutputHelperLoggingBehavior : IStuntBehavior
+    public class OutputHelperLoggingBehavior : IAvatarBehavior
     {
         readonly ITestOutputHelper output;
 
@@ -43,7 +43,7 @@ namespace Samples
         [Fact]
         public void LogsAllCalls()
         {
-            var calc = Stunt.Of<ICalculator>()
+            var calc = Avatar.Of<ICalculator>()
                 .AddBehavior(new OutputHelperLoggingBehavior(output))
                 .AddBehavior(new DefaultValueBehavior());
 

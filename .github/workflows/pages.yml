@@ -32,5 +32,5 @@ jobs:
           commit_author_email: hello@clarius.org
           username: helloclarius
           password: ${{ secrets.ACCESS_TOKEN }}
-          remote_url: https://github.com/clarius/stunts.git
+          remote_url: https://github.com/clarius/avatar.git
           target_branch: main

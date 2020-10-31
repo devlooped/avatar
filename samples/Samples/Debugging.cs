@@ -1,4 +1,4 @@
-﻿using Stunts;
+﻿using Avatars;
 using Xunit;
 
 namespace Samples
@@ -7,14 +7,14 @@ namespace Samples
     {
         /// <summary>
         /// Set a breakpoint in the last line of the method and inspect the 
-        /// stunt instance to see how Stunts optimizes and improves the 
-        /// troubleshooting and inspection of running stunts and their 
+        /// avatar instance to see how Avatar optimizes and improves the 
+        /// troubleshooting and inspection of running avatars and their 
         /// invocations.
         /// </summary>
         [Fact]
         public void DebuggerDisplay()
         {
-            var calc = Stunt.Of<ICalculator>();
+            var calc = Avatar.Of<ICalculator>();
             var recorder = new RecordingBehavior();
 
             calc.AddBehavior(recorder);

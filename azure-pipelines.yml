@@ -45,7 +45,7 @@ stages:
 
     - bash: dotnet test --no-build -f net5.0 -m:1 --collect:"XPlat Code Coverage"
       displayName: 🧪 test !win
-      workingDirectory: src/Stunts.UnitTests
+      workingDirectory: src/Avatar.UnitTests
       condition: ne(variables['vm'], 'windows-latest')
 
     - bash: bash <(curl -s https://codecov.io/bash)

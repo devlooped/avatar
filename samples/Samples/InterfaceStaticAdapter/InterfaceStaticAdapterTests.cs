@@ -1,5 +1,5 @@
 ﻿using System;
-using Stunts;
+using Avatars;
 
 namespace Samples
 {
@@ -17,7 +17,7 @@ namespace Samples
         // [Fact]
         public void Test()
         {
-            var console = Stunt.Of<IConsole>()
+            var console = Avatar.Of<IConsole>()
                 .AddBehavior(new InterfaceStaticAdapterBehavior(typeof(Console)));
 
             console.Write("Hello");

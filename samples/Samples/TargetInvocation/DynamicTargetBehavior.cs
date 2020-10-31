@@ -5,11 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.CSharp.RuntimeBinder;
-using Stunts;
+using Avatars;
 
 namespace Samples.TargetInvocation
 {
-    public class DynamicTargetBehavior : IStuntBehavior
+    public class DynamicTargetBehavior : IAvatarBehavior
     {
         readonly ConcurrentDictionary<MethodBase, Func<IMethodInvocation, IMethodReturn>> invokers = new();
         readonly HashSet<MethodBase> unsupported = new();
