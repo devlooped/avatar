@@ -27,7 +27,7 @@ namespace Avatars.UnitTests.GeneratorTests
         public AvatarDocumentGeneratorTests(ITestOutputHelper output) => this.output = output;
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task CanGenerateAvatarForInterface(string language, bool trace = false)
         {
@@ -56,7 +56,7 @@ namespace Avatars.UnitTests.GeneratorTests
         }
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task CanGenerateAvatarForClass(string language, bool trace = false)
         {
@@ -98,7 +98,7 @@ namespace Avatars.UnitTests.GeneratorTests
         }
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
@@ -138,25 +138,25 @@ namespace Avatars.UnitTests.GeneratorTests
             => CreateAvatar(new AvatarDocumentGenerator(), language, type);
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeHasGlobalNamespaceThenItWorks(string language)
             => CreateAvatar(new AvatarDocumentGenerator(), language, typeof(IGlobal));
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeIsInterface(string language, bool trace = false)
             => CreateAvatar(new AvatarDocumentGenerator(), language, typeof(ICalculator), trace);
 
-        [InlineData(LanguageNames.VisualBasic)]
         [InlineData(LanguageNames.CSharp)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeIsAbstract(string language)
             => CreateAvatar(new AvatarDocumentGenerator(), language, typeof(CalculatorBase));
 
-        [InlineData(LanguageNames.VisualBasic)]
         [InlineData(LanguageNames.CSharp)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeHasVirtualMembers(string language)
             => CreateAvatar(new AvatarDocumentGenerator(), language, typeof(Calculator));
@@ -251,8 +251,8 @@ namespace Avatars.UnitTests.GeneratorTests
         }
 
         [InlineData(LanguageNames.CSharp, @"public class Foo { }")]
-        [InlineData(LanguageNames.VisualBasic, @"Public Class Foo 
-End Class")]
+//        [InlineData(LanguageNames.VisualBasic, @"Public Class Foo 
+//End Class")]
         [Theory]
         public async Task CanCreateInstance(string language, string code, bool trace = false)
         {
