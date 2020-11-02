@@ -36,7 +36,7 @@ namespace Avatars
         }
 
         /// <inheritdoc />
-        public object CreateAvatar(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
+        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
         {
             var notImplemented = false;
 

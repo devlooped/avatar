@@ -45,16 +45,16 @@ namespace UnitTests
 
             var assembly = compilation.Emit();
 
-            var stuntName = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
-            var stuntType = assembly.GetType(stuntName);
+            var name = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
+            var type = assembly.GetType(name);
 
-            Assert.NotNull(stuntType);
+            Assert.NotNull(type);
 
-            var avatar = Activator.CreateInstance(stuntType!);
+            var avatar = Activator.CreateInstance(type!);
 
-            foreach (var type in types)
+            foreach (var t in types)
             {
-                Assert.IsAssignableFrom(type, avatar);
+                Assert.IsAssignableFrom(t, avatar);
             }
         }
 
