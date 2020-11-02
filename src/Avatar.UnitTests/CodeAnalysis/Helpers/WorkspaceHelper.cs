@@ -73,7 +73,8 @@ public static class WorkspaceHelper
     {
         using (var stream = new MemoryStream())
         {
-            var result = compilation.Emit(stream);
+            var cts = new CancellationTokenSource(10000);
+            var result = compilation.Emit(stream, cancellationToken: cts.Token);
             result.AssertSuccess();
 
             stream.Seek(0, SeekOrigin.Begin);

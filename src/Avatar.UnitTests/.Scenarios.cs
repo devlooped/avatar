@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -56,7 +56,7 @@ namespace Avatars.UnitTests
                     syntaxTree,
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Annotations));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
                 d.Severity == DiagnosticSeverity.Hidden || 
@@ -70,9 +70,11 @@ namespace Avatars.UnitTests
                 return (diagnostics, compilation);
 
             ISourceGenerator generator = new AvatarSourceGenerator();
-
             var driver = CSharpGeneratorDriver.Create(generator);
-            driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics);
+            // Make sure we don't hang forever during compilation.
+            var cts = new CancellationTokenSource(10000);
+
+            driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics, cts.Token);
 
             return (diagnostics, output);
         }
