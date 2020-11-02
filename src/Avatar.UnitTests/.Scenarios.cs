@@ -35,8 +35,8 @@ namespace Avatars.UnitTests
         }
 
         public static IEnumerable<object[]> GetScenarios()
-            => typeof(ThisAssembly.Constants.Scenarios).GetFields()
-                .Select(f => new object[] { f.GetValue(null) });
+            => Directory.EnumerateFiles("Scenarios", "*.cs")
+                .Select(file => new object[] { file });
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
