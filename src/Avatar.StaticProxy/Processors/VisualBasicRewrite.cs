@@ -101,7 +101,8 @@ namespace Avatars.Processors
                 var refParams = node.BlockStatement.ParameterList.Parameters.Where(x => x.Modifiers.Any(SyntaxKind.ByRefKeyword)).ToArray();
 
                 if (outParams.Length != 0 || refParams.Length != 0)
-                    node = (MethodBlockSyntax)generator.ImplementMethod(node, generator.GetType(node), outParams, refParams);
+                    node = (MethodBlockSyntax)generator.ImplementMethod(node, generator.GetType(node), 
+                        outParams, refParams, false, Array.Empty<SyntaxNode>(), Array.Empty<SyntaxNode>() /* TODO */);
                 else
                     node = (MethodBlockSyntax)generator.ImplementMethod(node, generator.GetType(node));
 
