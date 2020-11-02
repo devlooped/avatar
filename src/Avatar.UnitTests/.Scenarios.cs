@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -40,8 +42,9 @@ namespace Avatars.UnitTests
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), path: path);
 
-            // Force-load this core assembly;
-            new AvatarGeneratorAttribute();
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+                Assembly.Load(name);
+
             var references = new List<MetadataReference>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies.Where(x => !x.IsDynamic && !string.IsNullOrEmpty(x.Location)))
