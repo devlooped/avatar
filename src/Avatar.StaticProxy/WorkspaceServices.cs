@@ -11,7 +11,7 @@ namespace Avatars
     {
         static WorkspaceServices()
         {
-            if (Environment.GetEnvironmentVariable("DEBUG_STUNTS") == "1")
+            if (Environment.GetEnvironmentVariable("DEBUG_AVATAR") == "1")
                 Debugger.Break();
 
             HostServices = MefHostServices.Create(

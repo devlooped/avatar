@@ -41,13 +41,13 @@ namespace Avatars.UnitTests
 
             var assembly = Emit(compilation);
 
-            var stuntName = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
-            var stuntType = assembly.GetType(stuntName, true);
-            var avatar = Activator.CreateInstance(stuntType!);
+            var name = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
+            var type = assembly.GetType(name, true);
+            var avatar = Activator.CreateInstance(type!);
 
-            foreach (var type in types)
+            foreach (var t in types)
             {
-                Assert.IsAssignableFrom(type, avatar);
+                Assert.IsAssignableFrom(t, avatar);
             }
         }
 
