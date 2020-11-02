@@ -56,7 +56,7 @@ namespace Avatars.UnitTests
                     syntaxTree,
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Annotations));
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
                 d.Severity == DiagnosticSeverity.Hidden || 
@@ -71,7 +71,6 @@ namespace Avatars.UnitTests
 
             ISourceGenerator generator = new AvatarSourceGenerator();
             var driver = CSharpGeneratorDriver.Create(generator);
-            // Make sure we don't hang forever during compilation.
             var cts = new CancellationTokenSource(10000);
 
             driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics, cts.Token);
