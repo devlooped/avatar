@@ -33,7 +33,7 @@ namespace Avatars.UnitTests
 
             public TestFactory(object instance) => this.instance = instance;
 
-            public object CreateAvatar(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments)
+            public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments)
                 => instance;
         }
     }
