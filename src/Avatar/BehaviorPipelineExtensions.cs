@@ -55,5 +55,11 @@ namespace Avatars
         /// </summary>
         public static void Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target) 
             => pipeline.Invoke(invocation, target, true);
+
+        /// <summary>
+        /// Invokes pipeline without a target.
+        /// </summary>
+        public static IMethodReturn Invoke(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwOnException = false)
+            => pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), throwOnException);
     }
 }

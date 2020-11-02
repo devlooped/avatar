@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
@@ -40,9 +41,10 @@ namespace Avatars.UnitTests
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), path: path);
 
-            // Force-load this core assembly;
-            new AvatarGeneratorAttribute();
             var references = new List<MetadataReference>();
+            foreach (var name in typeof(Scenarios).Assembly.GetReferencedAssemblies())
+                Assembly.Load(name);
+
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies.Where(x => !x.IsDynamic && !string.IsNullOrEmpty(x.Location)))
                 references.Add(MetadataReference.CreateFromFile(assembly.Location));
@@ -53,7 +55,7 @@ namespace Avatars.UnitTests
                     syntaxTree,
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
                 d.Severity == DiagnosticSeverity.Hidden || 
