@@ -135,4 +135,7 @@
   <data name="ValueTypeIsNull" xml:space="preserve">
     <value>Argument {arg} is null and cannot be converted to requested type {type} because it is not a nullable value type.</value>
   </data>
+  <data name="StaticAvatarTypeNotFoundInAssembly" xml:space="preserve">
+    <value>Expected avatar type named '{type}' in assembly '{assembly}' was not found. The static source generator may have failed to generate the required types during build, or the avatar types may be located in a different assembly.</value>
+  </data>
 </root>

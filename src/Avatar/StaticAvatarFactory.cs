@@ -15,16 +15,18 @@ namespace Avatars
         /// <summary>
         /// Uses the <see cref="AvatarNaming.GetFullName(Type, Type[])"/> method to 
         /// determine the expected full type name of a compile-time generated avatar 
-        /// and tries to locate it from <paramref name="stuntsAssembly"/>.
+        /// and tries to locate it from <paramref name="assembly"/>.
         /// </summary>
-        /// <param name="stuntsAssembly">The assembly containing the compile-time generated avatars.</param>
+        /// <param name="assembly">The assembly containing the compile-time generated avatars.</param>
         /// <param name="baseType">Base type of the avatar.</param>
         /// <param name="implementedInterfaces">Additional interfaces the avatar implements.</param>
         /// <param name="constructorArguments">Optional additional constructor arguments for the avatar.</param>
-        public object CreateAvatar(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
+        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
         {
             var name = AvatarNaming.GetFullName(baseType, implementedInterfaces);
-            var type = stuntsAssembly.GetType(name, true, false);
+            var type = assembly.GetType(name, false, false);
+            if (type == null)
+                throw new ArgumentException(ThisAssembly.Strings.StaticAvatarTypeNotFoundInAssembly(name, assembly.GetName().Name), nameof(assembly));
 
             return Activator.CreateInstance(type, constructorArguments);
         }
