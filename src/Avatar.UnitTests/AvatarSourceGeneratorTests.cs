@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,11 @@ using Xunit;
 
 namespace Avatars.UnitTests
 {
+    public interface ITypeGetter
+    {
+        Type GetType(string assembly, string name);
+    }
+
     public class AvatarSourceGeneratorTests
     {
         // NOTE: add more representative types here if needed when fixing codegen
@@ -19,6 +25,9 @@ namespace Avatars.UnitTests
         [InlineData(typeof(ICollection<string>), typeof(IDisposable))]
         [InlineData(typeof(IDictionary<IReadOnlyCollection<string>, IReadOnlyList<int>>), typeof(IDisposable))]
         [InlineData(typeof(IDisposable))]
+        [InlineData(typeof(INotifyPropertyChanged))]
+        [InlineData(typeof(ICustomFormatter))]
+        [InlineData(typeof(ITypeGetter))]
         [Theory]
         public void GenerateCode(params Type[] types)
         {

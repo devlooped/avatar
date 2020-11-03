@@ -1,14 +1,15 @@
 ﻿using System;
 using Xunit;
+using Avatars;
 
-namespace Avatars.Scenarios
+namespace Scenarios.MultipleUses
 {
     /// <summary>
     /// Multiple uses of the avatar factory method only result in one 
     /// such type being generated (IWO, no compilation errors because 
     /// of duplicate types.
     /// </summary>
-    public class MultipleUses : IRunnable
+    public class Test : IRunnable
     {
         public void Run()
         {

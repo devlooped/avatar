@@ -1,6 +1,7 @@
 ﻿using Xunit;
+using Avatars;
 
-namespace Avatars.Scenarios.RefReturnsOut
+namespace Scenarios.RefReturnsOut
 {
     public interface IMemory
     {

@@ -38,7 +38,8 @@ namespace Avatars.CodeAnalysis
             = ImmutableArray.Create(
                 AvatarDiagnostics.BaseTypeNotFirst, 
                 AvatarDiagnostics.DuplicateBaseType,
-                AvatarDiagnostics.SealedBaseType);
+                AvatarDiagnostics.SealedBaseType, 
+                AvatarDiagnostics.EnumType);
 
         /// <summary>
         /// Registers the analyzer to take action on method invocation expressions.
@@ -61,6 +62,14 @@ namespace Avatars.CodeAnalysis
 
             if (invocation.TargetMethod.GetAttributes().Any(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, generator)))
             {
+                foreach (var enumType in invocation.TargetMethod.TypeArguments.Where(x => x.TypeKind == TypeKind.Enum))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        AvatarDiagnostics.EnumType,
+                        invocation.Syntax.GetLocation(), 
+                        enumType.Name));
+                }
+
                 var classes = invocation.TargetMethod.TypeArguments.Where(x => x.TypeKind == TypeKind.Class).ToArray();
                 if (classes.Length > 1)
                 {

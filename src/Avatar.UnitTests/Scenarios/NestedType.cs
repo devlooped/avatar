@@ -1,4 +1,6 @@
-﻿namespace Avatars.Scenarios.NestedType
+﻿using Avatars;
+
+namespace Scenarios.NestedType
 {
     /// <summary>
     /// Nested types are fully supported.
