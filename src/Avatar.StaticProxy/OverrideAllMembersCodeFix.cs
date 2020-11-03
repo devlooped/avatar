@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace Avatars
@@ -30,10 +31,11 @@ namespace Avatars
             var sourceToken = root.FindToken(diagnostic.Location.SourceSpan.Start);
 
             // Find the invocation identified by the diagnostic.
-            var type =
-                (SyntaxNode?)sourceToken.Parent?.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax>().FirstOrDefault() ??
-                (SyntaxNode?)sourceToken.Parent?.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.VisualBasic.Syntax.ClassBlockSyntax>().FirstOrDefault();
-
+            SyntaxNode? type =
+                sourceToken.Parent?.AncestorsAndSelf().Where(x => x.IsKind(SyntaxKind.ClassDeclaration)).FirstOrDefault() ??
+                // See https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.visualbasic.syntaxkind?view=roslyn-dotnet
+                sourceToken.Parent?.AncestorsAndSelf().Where(x => x.RawKind == 53).FirstOrDefault();
+            
             if (type != null)
             {
                 context.RegisterCodeFix(
