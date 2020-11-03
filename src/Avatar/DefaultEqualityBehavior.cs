@@ -13,7 +13,7 @@ namespace Avatars
         /// Always returns <see langword="true" />
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
-            => invocation.MethodBase.Name == nameof(GetHashCode) || invocation.MethodBase.Name == nameof(Equals);
+            => invocation.Method.Name == nameof(GetHashCode) || invocation.Method.Name == nameof(Equals);
 
         /// <summary>
         /// Implements the <see cref="object.GetHashCode"/> and <see cref="object.Equals(object)"/> 
@@ -21,9 +21,9 @@ namespace Avatars
         /// </summary>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            if (invocation.MethodBase.Name == nameof(GetHashCode))
+            if (invocation.Method.Name == nameof(GetHashCode))
                 return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target));
-            if (invocation.MethodBase.Name == nameof(Equals))
+            if (invocation.Method.Name == nameof(Equals))
                 return invocation.CreateValueReturn(ReferenceEquals(invocation.Target, invocation.Arguments[0]));
 
             return next().Invoke(invocation, next);

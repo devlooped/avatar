@@ -22,7 +22,7 @@ namespace Avatars
         /// <summary>
         /// The runtime method being invoked.
         /// </summary>
-		MethodBase MethodBase { get; }
+		MethodInfo Method { get; }
 
         /// <summary>
         /// The ultimate target of the method invocation, typically 

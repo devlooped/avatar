@@ -23,7 +23,7 @@ namespace Avatars
 
 			var outputArgs = new List<object?>();
 			var outputInfos = new List<ParameterInfo>();
-			var allInfos = invocation.MethodBase.GetParameters();
+			var allInfos = invocation.Method.GetParameters();
 
 			for (var i = 0; i < allInfos.Length; i++)
 			{
@@ -76,13 +76,13 @@ namespace Avatars
             {
                 result.Append($" => throw new {Exception.GetType().Name}(\"{Exception.Message}\")");
             }
-            else if (invocation.MethodBase is MethodInfo r && r.ReturnType != typeof(void))
+            else if (invocation.Method.ReturnType != typeof(void))
             {
                 result.Append(" => ")
                     .Append(
                         ReturnValue == null ? "null" : 
-                        r.ReturnType == typeof(string) ? $"\"{ReturnValue}\"" : 
-                        r.ReturnType == typeof(bool) ? ReturnValue.ToString().ToLowerInvariant() : 
+                        invocation.Method.ReturnType == typeof(string) ? $"\"{ReturnValue}\"" :
+                        invocation.Method.ReturnType == typeof(bool) ? ReturnValue.ToString().ToLowerInvariant() : 
                         ReturnValue);
             }
 

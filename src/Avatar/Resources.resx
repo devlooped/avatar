@@ -138,4 +138,7 @@
   <data name="StaticAvatarTypeNotFoundInAssembly" xml:space="preserve">
     <value>Expected avatar type named '{type}' in assembly '{assembly}' was not found. The static source generator may have failed to generate the required types during build, or the avatar types may be located in a different assembly.</value>
   </data>
+  <data name="MethodBaseNotInfo" xml:space="preserve">
+    <value>The specified MethodBase '{method}' is not a MethodInfo.</value>
+  </data>
 </root>

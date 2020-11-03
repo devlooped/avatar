@@ -39,7 +39,7 @@ namespace Avatars
         IMethodReturn IAvatarBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var arguments = invocation.Arguments.ToArray() ?? Array.Empty<object>();
-            var parameters = invocation.MethodBase.GetParameters() ?? Array.Empty<ParameterInfo>();
+            var parameters = invocation.Method.GetParameters() ?? Array.Empty<ParameterInfo>();
             for (var i = 0; i < parameters.Length; i++)
             {
                 var parameter = parameters[i];
@@ -50,10 +50,9 @@ namespace Avatars
             }
 
             var returnValue = default(object);
-            if (invocation.MethodBase is MethodInfo info &&
-                info.ReturnType != typeof(void))
+            if (invocation.Method.ReturnType != typeof(void))
             {
-                returnValue = Provider.GetDefault(info.ReturnType);
+                returnValue = Provider.GetDefault(invocation.Method.ReturnType);
             }
 
             return invocation.CreateValueReturn(returnValue, arguments);

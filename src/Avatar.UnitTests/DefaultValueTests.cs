@@ -62,15 +62,6 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public void DoesNotFailWithNonMethodInfo()
-        {
-            var ctor = typeof(Foo).GetConstructors().First();
-            IAvatarBehavior behavior = new DefaultValueBehavior();
-
-            behavior.Execute(new MethodInvocation(new object(), ctor, new object[1]), () => null!);
-        }
-
-        [Fact]
         public void DefaultForNullableValueTypeIsNull()
             => Assert.Null(new DefaultValueProvider().GetDefault<PlatformID?>());
 
