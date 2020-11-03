@@ -14,7 +14,6 @@ namespace Sample
             Assert.IsNotType<StaticAvatarFactory>(AvatarFactory.Default);
 
             var recorder = new RecordingBehavior();
-
             calculator.AddBehavior(recorder);
             calculator.AddBehavior(new DefaultValueBehavior());
 
