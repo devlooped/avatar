@@ -6,8 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.VisualBasic;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace Avatars.Processors
 {
@@ -17,9 +15,9 @@ namespace Avatars.Processors
     public class FixupImports : IDocumentProcessor
     {
         /// <summary>
-        /// Applies to both <see cref="LanguageNames.CSharp"/> and <see cref="LanguageNames.VisualBasic"/>.
+        /// Applies to <see cref="LanguageNames.CSharp"/> only.
         /// </summary>
-        public string[] Languages { get; } = new[] { LanguageNames.CSharp, LanguageNames.VisualBasic };
+        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
 
         /// <summary>
         /// Runs in the last phase of code gen, <see cref="ProcessorPhase.Fixup"/>.
@@ -40,10 +38,7 @@ namespace Avatars.Processors
 
             Array.Sort(imports);
 
-            if (document.Project.Language == LanguageNames.CSharp)
-                syntax = new CSharpRewriteVisitor().Visit(syntax);
-            else
-                syntax = new VisualBasicRewriteVisitor().Visit(syntax);
+            syntax = new CSharpRewriteVisitor().Visit(syntax);
 
             return document.WithSyntaxRoot(generator.AddNamespaceImports(syntax,
                 imports.Select(generator.NamespaceImportDeclaration)));
@@ -51,16 +46,9 @@ namespace Avatars.Processors
 
         class CSharpRewriteVisitor : CSharpSyntaxRewriter
         {
-            public override SyntaxNode? VisitCompilationUnit(Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax node)
+            public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
                 => base.VisitCompilationUnit(node.WithUsings(
-                    Microsoft.CodeAnalysis.CSharp.SyntaxFactory.List<UsingDirectiveSyntax>()));
-        }
-
-        class VisualBasicRewriteVisitor : VisualBasicSyntaxRewriter
-        {
-            public override SyntaxNode VisitCompilationUnit(Microsoft.CodeAnalysis.VisualBasic.Syntax.CompilationUnitSyntax node)
-                => base.VisitCompilationUnit(node.WithImports(
-                    Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory.List<ImportsStatementSyntax>()));
+                    SyntaxFactory.List<UsingDirectiveSyntax>()));
         }
     }
 }

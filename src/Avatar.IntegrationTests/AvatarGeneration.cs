@@ -40,7 +40,7 @@ namespace Avatars.UnitTests
             Assert.Empty(diagnostics);
 
             var assembly = Emit(compilation);
-
+            
             var name = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
             var type = assembly.GetType(name, true);
             var avatar = Activator.CreateInstance(type!);

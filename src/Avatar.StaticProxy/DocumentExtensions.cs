@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis
                 .Where(d => d != null)
                 // Add our own.
                 .Concat(new[] { new OverridableMembersAnalyzer() })
-                .ToImmutableArray<DiagnosticAnalyzer>());
+                .ToImmutableArray());
 
         /// <summary>
         /// Exposes the built-in analyzers, discovered via reflection.

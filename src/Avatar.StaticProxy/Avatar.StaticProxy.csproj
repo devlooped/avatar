@@ -20,10 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
-
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
 
     <!-- Workaround for revision mismatch with public versions -->
     <PackageReference Include="System.Collections.Immutable" />
@@ -50,14 +47,9 @@
 
   <!-- Replaced by common targets, required for the multitargeting DependsOnTargets below -->
   <Target Name="ResolveReferences" />
-  <Target Name="AddDependencies"  Condition="'$(IsPackable)' != 'true'"
-          AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
+  <Target Name="AddDependencies" Condition="'$(IsPackable)' != 'true'" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
     <ItemGroup Condition="'$(TargetFramework)' != ''">
-      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)"
-                    Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' or 
-                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' or 
-                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'"
-                    Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'"/>
+      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)" Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' or &#xD;&#xA;                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' or &#xD;&#xA;                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'" Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'" />
       <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>

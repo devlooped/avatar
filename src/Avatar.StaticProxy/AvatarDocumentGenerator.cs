@@ -34,15 +34,9 @@ namespace Avatars
             new CSharpRewrite(),
             new CSharpAvatar(),
             new CSharpGenerated(),
-            new VisualBasicScaffold(),
-            new VisualBasicRewrite(),
-            new VisualBasicAvatar(),
-            new VisualBasicParameterFixup(),
-            new VisualBasicGenerated(),
             new FixupImports(),
             new CSharpFileHeader(),
             new CSharpPragmas(),
-            new VisualBasicFileHeader(),
         };
 
         /// <summary>
