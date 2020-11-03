@@ -115,6 +115,33 @@ namespace Avatars {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot specify an enum base type..
+        /// </summary>
+        internal static string EnumType_Description {
+            get {
+                return ResourceManager.GetString("EnumType_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify enum type &apos;{0}&apos;...
+        /// </summary>
+        internal static string EnumType_Message {
+            get {
+                return ResourceManager.GetString("EnumType_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid enum base type.
+        /// </summary>
+        internal static string EnumType_Title {
+            get {
+                return ResourceManager.GetString("EnumType_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used in avatars. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidAvatarTypes {

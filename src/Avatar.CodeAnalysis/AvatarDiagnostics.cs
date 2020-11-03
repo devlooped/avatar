@@ -38,7 +38,7 @@ namespace Avatars.CodeAnalysis
 
         /// <summary>
         /// Diagnostic reported whenever the specified base type for a 
-        /// <see cref="AvatarGeneratorAttribute"/>-annotated method sealed.
+        /// <see cref="AvatarGeneratorAttribute"/>-annotated method is sealed.
         /// </summary>
         public static DiagnosticDescriptor SealedBaseType { get; } = new DiagnosticDescriptor(
             "ST003",
@@ -48,6 +48,19 @@ namespace Avatars.CodeAnalysis
             DiagnosticSeverity.Error,
             true,
             Strings.SealedBaseType.Description);
+
+        /// <summary>
+        /// Diagnostic reported whenever the specified base type for a 
+        /// <see cref="AvatarGeneratorAttribute"/>-annotated method is an enum.
+        /// </summary>
+        public static DiagnosticDescriptor EnumType { get; } = new DiagnosticDescriptor(
+            "ST004",
+            Strings.EnumType.Title,
+            Resources.EnumType_Message,
+            "Build",
+            DiagnosticSeverity.Error,
+            true,
+            Strings.EnumType.Description);
 
         /// <summary>
         /// Diagnostic reported when type used contains at least one member that uses 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Sample;
 using Xunit;
 
+public interface IGlobal { }
+
 namespace Avatars.UnitTests
 {
     public class AvatarNamingTests

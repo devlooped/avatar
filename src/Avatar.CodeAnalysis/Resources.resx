@@ -174,4 +174,13 @@
   <data name="WrongBaseType" xml:space="preserve">
     <value>Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}.</value>
   </data>
+  <data name="EnumType_Description" xml:space="preserve">
+    <value>Cannot specify an enum base type.</value>
+  </data>
+  <data name="EnumType_Message" xml:space="preserve">
+    <value>Cannot specify enum type '{0}'..</value>
+  </data>
+  <data name="EnumType_Title" xml:space="preserve">
+    <value>Invalid enum base type</value>
+  </data>
 </root>
