@@ -12,7 +12,7 @@ namespace Scenarios.OverrideObject
     public class Test : IRunnable
     {
         // Run just this test using the TD.NET ad-hoc runner
-        public void RunTest() => new Avatars.UnitTests.Scenarios().Run("Scenarios/OverrideObject.cs");
+        public void RunTest() => new Avatars.UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.OverrideObject);
 
         public void Run()
         {
@@ -30,7 +30,7 @@ namespace Scenarios.OverrideObject
 
             avatar.Equals(new object());
             Assert.Equal(3, recorder.Invocations.Count);
-            Assert.Equal(nameof(Equals), recorder.Invocations[3].Invocation.MethodBase.Name);
+            Assert.Equal(nameof(Equals), recorder.Invocations[2].Invocation.MethodBase.Name);
         }
     }
 }
