@@ -2,7 +2,7 @@
 using Xunit;
 using Avatars;
 
-namespace Scenarios.BasicInterface
+namespace Scenarios.InterfaceBase
 {
     public interface IBasicInterface
     {
