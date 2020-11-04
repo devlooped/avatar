@@ -19,9 +19,6 @@ namespace Avatars.Scenarios.ClassBaseTypeCtors
 
     public class Test : IRunnable
     {
-        // Run this particular scenario using the TD.NET ad-hoc runner.
-        public void RunScenario() => new UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.ClassBaseTypeCtors);
-
         public void Run()
         {
             var avatar = Avatar.Of<BaseTypeCtor>("Foo");
