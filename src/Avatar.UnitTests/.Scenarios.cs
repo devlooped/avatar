@@ -23,7 +23,9 @@ namespace Avatars.UnitTests
         [MemberData(nameof(GetScenarios))]
         public void Run(string path)
         {
-            var (diagnostics, compilation) = GetGeneratedOutput(path);
+            var (diagnostics, compilation) = GetGeneratedOutput(
+                Path.IsPathRooted(path) ? path :
+                Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, path));
 
             Assert.Empty(diagnostics);
 
@@ -37,8 +39,8 @@ namespace Avatars.UnitTests
         }
 
         public static IEnumerable<object[]> GetScenarios()
-            => Directory.EnumerateFiles("Scenarios", "*.cs")
-                .Select(file => new object[] { file });
+            => Directory.EnumerateFiles(Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, "Scenarios"), "*.cs")
+                .Select(file => new object[] { Path.Combine("Scenarios", Path.GetFileName(file)) });
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {

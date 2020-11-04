@@ -71,21 +71,19 @@ public static class WorkspaceHelper
 
     public static Assembly Emit(this Compilation compilation, bool symbols = true)
     {
-        using (var stream = new MemoryStream())
-        {
-            var options = symbols ?
-                new EmitOptions(debugInformationFormat: DebugInformationFormat.Embedded) :
-                new EmitOptions();
+        using var stream = new MemoryStream();
+        var options = symbols ?
+            new EmitOptions(debugInformationFormat: DebugInformationFormat.Embedded) :
+            new EmitOptions();
 
-            var cts = new CancellationTokenSource(10000);
-            var result = compilation.Emit(stream, 
-                options: options, 
-                cancellationToken: cts.Token);
-            result.AssertSuccess();
+        var cts = new CancellationTokenSource(10000);
+        var result = compilation.Emit(stream,
+            options: options,
+            cancellationToken: cts.Token);
+        result.AssertSuccess();
 
-            stream.Seek(0, SeekOrigin.Begin);
-            return Assembly.Load(stream.ToArray());
-        }
+        stream.Seek(0, SeekOrigin.Begin);
+        return Assembly.Load(stream.ToArray());
     }
 
     public static void AssertSuccess(this EmitResult result)
