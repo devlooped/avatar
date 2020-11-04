@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -26,6 +28,33 @@ namespace Avatars.UnitTests
 
             Assert.Same(instance, actual);
         }
+
+        [Fact]
+        public async Task ReplaceFactoryLocally()
+        {
+            var factory1 = new TestFactory(new object());
+            var factory2 = new TestFactory(new object());
+
+            await Task.WhenAll(
+                Task.Run(() =>
+                {
+                    AvatarFactory.LocalDefault = factory1;
+                    Thread.Sleep(50);
+                    Assert.Same(factory1, AvatarFactory.Default);
+                }),
+                Task.Run(() =>
+                {
+                    AvatarFactory.LocalDefault = factory2;
+                    Thread.Sleep(50);
+                    Assert.Same(factory2, AvatarFactory.Default);
+                })
+            );
+
+            Assert.NotSame(factory1, AvatarFactory.Default);
+            Assert.NotSame(factory2, AvatarFactory.Default);
+        }
+
+
 
         public class TestFactory : IAvatarFactory
         {
