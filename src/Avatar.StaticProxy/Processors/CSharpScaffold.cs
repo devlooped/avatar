@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Avatars.CodeActions;
 using Microsoft.CodeAnalysis;
 
 namespace Avatars.Processors
@@ -11,27 +12,38 @@ namespace Avatars.Processors
     public class CSharpScaffold : IDocumentProcessor
     {
         /// <summary>
+        /// Default refactorings when no specific refactorings are provided. 
+        /// </summary>
+        public static string[] DefaultRefactorings { get; } =
+        {
+            CodeRefactorings.CSharp.GenerateDefaultConstructorsCodeActionProvider,
+        };
+
+        /// <summary>
         /// Default code fixes when no specific fixes are provided. 
         /// </summary>
-        static readonly string[] DefaultCodeFixNames = 
+        public static string[] DefaultCodeFixes { get; } =
         {
-            CodeFixNames.CSharp.GenerateDefaultConstructorsCodeActionProvider,
-            CodeFixNames.CSharp.ImplementAbstractClass,
-            CodeFixNames.CSharp.ImplementInterface,
+            CodeFixes.CSharp.ImplementAbstractClass,
+            CodeFixes.CSharp.ImplementInterface,
             "OverrideAllMembersCodeFix",
         };
 
-        readonly string[] codeFixNames;
+        readonly string[] codeFixes;
+        readonly string[] codeRefactorings;
 
         /// <summary>
-        /// Initializes the scaffold with the <see cref="DefaultCodeFixNames"/>.
+        /// Initializes the scaffold with the <see cref="DefaultCodeFixes"/> and 
+        /// <see cref="DefaultRefactorings"/>.
         /// </summary>
-        public CSharpScaffold() : this(DefaultCodeFixNames) { }
+        public CSharpScaffold() : this(DefaultCodeFixes, DefaultRefactorings) { }
 
         /// <summary>
         /// Initializes the scaffold with a specific set of code fixes to apply.
         /// </summary>
-        public CSharpScaffold(params string[] codeFixNames) => this.codeFixNames = codeFixNames;
+        public CSharpScaffold(string[]? codeFixes, string[]? codeRefactorings)
+            => (this.codeFixes, this.codeRefactorings)
+            = (codeFixes ?? DefaultCodeFixes, codeRefactorings ?? DefaultRefactorings);
 
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
@@ -48,11 +60,11 @@ namespace Avatars.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
-            foreach (var codeFixName in codeFixNames)
-                document = await document.ApplyCodeActionAsync(codeFixName, cancellationToken: cancellationToken);
+            foreach (var refactoring in codeRefactorings)
+                document = await document.ApplyCodeActionAsync(refactoring, cancellationToken: cancellationToken);
 
-            foreach (var codeFixName in codeFixNames)
-                document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken: cancellationToken);
+            foreach (var codeFix in codeFixes)
+                document = await document.ApplyCodeFixAsync(codeFix, cancellationToken: cancellationToken);
 
             return document;
         }
