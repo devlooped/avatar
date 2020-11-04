@@ -69,12 +69,18 @@ public static class WorkspaceHelper
             "code.cs",
             loader: TextLoader.From(TextAndVersion.Create(SourceText.From(content), VersionStamp.Create()))));
 
-    public static Assembly Emit(this Compilation compilation)
+    public static Assembly Emit(this Compilation compilation, bool symbols = true)
     {
         using (var stream = new MemoryStream())
         {
+            var options = symbols ?
+                new EmitOptions(debugInformationFormat: DebugInformationFormat.Embedded) :
+                new EmitOptions();
+
             var cts = new CancellationTokenSource(10000);
-            var result = compilation.Emit(stream, cancellationToken: cts.Token);
+            var result = compilation.Emit(stream, 
+                options: options, 
+                cancellationToken: cts.Token);
             result.AssertSuccess();
 
             stream.Seek(0, SeekOrigin.Begin);
