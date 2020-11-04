@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Sample;
 using Xunit;
 
@@ -42,6 +43,26 @@ namespace Avatars.UnitTests
             Assert.Throws<NotImplementedException>(() => calculator.Add(2, 3));
 
             Assert.Equal(4, recorder.Invocations.Count);
+        }
+
+        [Fact]
+        public void ConstructorInterceptionNotSupported()
+        {
+            BehaviorPipelineFactory.LocalDefault = new RecordingBehaviorPipelineFactory();
+            AvatarFactory.LocalDefault = new DynamicAvatarFactory();
+
+            var calculator = Avatar.Of<ICalculator>();
+            var avatar = calculator as IAvatar;
+
+            Assert.NotNull(avatar);
+            Assert.Single(avatar.Behaviors);
+            // Cannot record ctor call
+            Assert.Empty(((RecordingBehavior)avatar.Behaviors[0]).Invocations);
+        }
+
+        class RecordingBehaviorPipelineFactory : IBehaviorPipelineFactory
+        {
+            public BehaviorPipeline CreatePipeline<TAvatar>() => new BehaviorPipeline(new RecordingBehavior());
         }
     }
 }
