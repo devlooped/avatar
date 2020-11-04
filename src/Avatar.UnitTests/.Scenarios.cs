@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -40,10 +42,14 @@ namespace Avatars.UnitTests
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), path: path);
+            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), 
+                path: new FileInfo(path).FullName, 
+                encoding: Encoding.UTF8);
 
             foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
                 Assembly.Load(name);
+
+            Debug.Assert(System.Threading.Tasks.Task.CompletedTask.IsCompleted);
 
             var references = new List<MetadataReference>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -54,9 +60,14 @@ namespace Avatars.UnitTests
                 new SyntaxTree[]
                 {
                     syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), 
+                        path: new FileInfo("Avatar/Avatar.cs").FullName, 
+                        encoding: Encoding.UTF8),
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), 
+                        path: new FileInfo("Avatar/Avatar.StaticFactory.cs").FullName,
+                        encoding: Encoding.UTF8),
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, 
+                    nullableContextOptions: NullableContextOptions.Enable));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
                 d.Severity == DiagnosticSeverity.Hidden || 

@@ -52,7 +52,7 @@ namespace UnitTests
 
             Assert.Empty(diagnostics);
 
-            var assembly = compilation.Emit();
+            var assembly = compilation.Emit(false);
 
             var name = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
             var type = assembly.GetType(name);
