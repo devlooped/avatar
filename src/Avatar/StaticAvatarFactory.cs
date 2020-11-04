@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace Avatars
 {
@@ -28,7 +29,18 @@ namespace Avatars
             if (type == null)
                 throw new ArgumentException(ThisAssembly.Strings.StaticAvatarTypeNotFoundInAssembly(name, assembly.GetName().Name), nameof(assembly));
 
-            return Activator.CreateInstance(type, constructorArguments);
+            try
+            {
+                return Activator.CreateInstance(type, constructorArguments);
+            }
+            catch (TargetInvocationException tie)
+            {
+                var ex = ExceptionDispatchInfo.Capture(tie.GetBaseException());
+                ex.Throw();
+            }
+
+            // Code will never reach this.
+            throw new NotImplementedException();
         }
     }
 }
