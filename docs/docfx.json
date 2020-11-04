@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json.schemastore.org/docfx",
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [ "*.cs" ],
+          "src": "../src/Avatar"
+        }
+      ],
+      "dest": "docs/api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "*.yml",
+          "index.md"
+        ], 
+        "src": "api",
+        "dest": "api"
+      },
+
+      {
+        "files": [
+          "*.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "logo.svg",
+          "favicon.ico",
+          "favicon/*.*",
+          "styles/*.css",
+          "styles/*.js"
+        ]
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "Avatar",
+      "_rel": "/avatar/",
+      "_enableSearch": true
+    },
+    "template": [
+      "default",
+      "./template"
+    ],    
+    "dest": "_site"
+  }
+}

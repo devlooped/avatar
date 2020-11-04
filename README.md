@@ -2,7 +2,7 @@
 
 > *Avatars blend in with the Na'vi seamlessly, and you can control their behavior precisely by 'driving' them through a psionic link. Just like a [proxy](https://en.wikipedia.org/wiki/Proxy_pattern), with behavior driven through  code.*
 
-![Avatar Overloads](docs/img/AvatarIncubation.png)
+![Avatar Overloads](https://github.com/kzu/avatar/raw/main/docs/img/AvatarIncubation.png)
 
 Avatar is a modern interception library which implements the [proxy pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted, like physical iOS devices and game consoles, through compile-time code generation. The proxy behavior is configured in code using what we call a *behavior pipeline*. 
 
@@ -40,7 +40,7 @@ calc.AddBehavior((invocation, next) => ...);
 
 `AddBehavior`/`InsertBehavior` overloads allow granular control of the avatar's behavior pipeline, which is basically a [chain of responsibility](https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern) that invokes all configured behaviors that apply to the current invocation. Individual behaviors can determine whether to short-circuit the call or call the next behavior in the chain. 
 
-![Avatar Overloads](docs/img/AddInsertBehavior.png)
+![Avatar Overloads](https://github.com/kzu/avatar/raw/main/docs/img/AddInsertBehavior.png)
 
 Behaviors can also dynamically determine whether they apply to a given invocation by providing the optional `appliesTo` argument. In addition to the  delegate-based overloads (called *anonymous behaviors*), you can also create behaviors by implementing the `IAvatarBehavior` interface:
 
@@ -79,7 +79,7 @@ If you want to centrally configure all your avatars, the easiest way is to simpl
 
 The `[AvatarGenerator]` attribute is required if you want to leverage the built-in compile-time code generation, since that signals to the source generator that calls to your API end up creating an avatar at run-time and therefore a generated type will be needed for it during compile-time. You can actually explore how this very same behavior is implemented in the built-in Avatar API which is provided as a content file:
 
-![avatar API source](docs/img/AvatarApi.png)
+![avatar API source](https://github.com/kzu/avatar/raw/main/docs/img/AvatarApi.png)
 
 The `Avatar.cs` contains, for example:
 
@@ -97,11 +97,11 @@ As you can see, the Avatar API itself uses the same extensibility mechanism that
 
 There is nothing more frustrating than a proxy you have carefully configured that doesn't behave the way you expect it to. In order to make this a less frustrating experience, avatars are carefully optimized for debugger display and inspection, so that it's clear what behaviors are configured, and invocations and results are displayed clearly and concisely. Here's the debugging display of the `RecordingBehavior` that just keeps track of invocations and their return values for example:
 
-![debugging display](docs/img/DebuggerDisplay.png)
+![debugging display](https://github.com/kzu/avatar/raw/main/docs/img/DebuggerDisplay.png)
 
 And here's the invocation debugger display from an anonymous behavior:
 
-![behavior debugging](docs/img/DebuggingBehavior.png)
+![behavior debugging](https://github.com/kzu/avatar/raw/main/docs/img/DebuggingBehavior.png)
 
 ## Samples
 
