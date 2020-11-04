@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable CS0436
+using System;
 using System.Collections.Generic;
 using Xunit;
 

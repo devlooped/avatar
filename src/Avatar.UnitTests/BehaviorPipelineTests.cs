@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -389,6 +391,37 @@ namespace Avatars.UnitTests
 
             Assert.NotEmpty(pipeline.Behaviors);
             Assert.Empty(clone);
+        }
+
+        [Fact]
+        public async Task WhenRunningParalell_ThenCanReplaceLocalPipelineFactory()
+        {
+            var factory1 = new TestBehaviorPipelineFactory();
+            var factory2 = new TestBehaviorPipelineFactory();
+
+            await Task.WhenAll(
+                Task.Run(() =>
+                {
+                    BehaviorPipelineFactory.LocalDefault = factory1;
+                    Thread.Sleep(50);
+                    Assert.Same(factory1, BehaviorPipelineFactory.Default);
+                }),
+                Task.Run(() =>
+                {
+                    BehaviorPipelineFactory.LocalDefault = factory2;
+                    Thread.Sleep(50);
+                    Assert.Same(factory2, BehaviorPipelineFactory.Default);
+                })
+            );
+
+            Assert.NotSame(factory1, BehaviorPipelineFactory.Default);
+            Assert.NotSame(factory2, BehaviorPipelineFactory.Default);
+        }
+
+        class TestBehaviorPipelineFactory : IBehaviorPipelineFactory
+        {
+            public BehaviorPipeline CreatePipeline<TAvatar>()
+                => new BehaviorPipeline(new RecordingBehavior());
         }
 
         class TestBehavior : IAvatarBehavior

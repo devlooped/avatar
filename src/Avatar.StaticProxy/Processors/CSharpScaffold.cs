@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Editing;
 
 namespace Avatars.Processors
 {
@@ -16,6 +15,7 @@ namespace Avatars.Processors
         /// </summary>
         static readonly string[] DefaultCodeFixNames = 
         {
+            CodeFixNames.CSharp.GenerateDefaultConstructorsCodeActionProvider,
             CodeFixNames.CSharp.ImplementAbstractClass,
             CodeFixNames.CSharp.ImplementInterface,
             "OverrideAllMembersCodeFix",
@@ -48,6 +48,9 @@ namespace Avatars.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
+            foreach (var codeFixName in codeFixNames)
+                document = await document.ApplyCodeActionAsync(codeFixName, cancellationToken: cancellationToken);
+
             foreach (var codeFixName in codeFixNames)
                 document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken: cancellationToken);
 

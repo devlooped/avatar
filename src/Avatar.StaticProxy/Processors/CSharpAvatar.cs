@@ -91,8 +91,14 @@ namespace Avatars.Processors
                                     VariableDeclarator(Identifier("pipeline"))
                                     .WithInitializer(
                                         EqualsValueClause(
-                                            ObjectCreationExpression(IdentifierName(nameof(BehaviorPipeline)))
-                                            .WithArgumentList(ArgumentList())))))
+                                            (ExpressionSyntax)generator.InvocationExpression(
+                                                generator.MemberAccessExpression(
+                                                    generator.MemberAccessExpression(
+                                                        generator.IdentifierName(nameof(BehaviorPipelineFactory)),
+                                                        nameof(BehaviorPipelineFactory.Default)),
+                                                    generator.GenericName(
+                                                        nameof(IBehaviorPipelineFactory.CreatePipeline),
+                                                        generator.IdentifierName(node.Identifier.ValueText))))))))
                             .NormalizeWhitespace()
                         ).WithModifiers(TokenList(Token(SyntaxKind.ReadOnlyKeyword))));
                 }

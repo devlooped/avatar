@@ -44,7 +44,7 @@ namespace Sample
             var local_x = x;
             var local_y = y;
             var local_z = z;
-
+            
             var result = pipeline.Invoke(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z),
                 (m, n) => m.CreateValueReturn(base.TryAdd(ref local_x, ref local_y, out local_z), local_x, local_y, local_z), true);
 
