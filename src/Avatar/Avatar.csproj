@@ -5,10 +5,20 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Label="docfx">
+    <DocfxConfigFile>../../docs/docfx.json</DocfxConfigFile>
+    <MetadataOutputFolder>../..</MetadataOutputFolder>
+    <PreviewOutputFolder>../../docs/_site</PreviewOutputFolder>
+    <LogFile>$(MSBuildProjectExtensionsPath)/obj/docfx.log</LogFile>
+    <LogLevel>Info</LogLevel>
+    <BuildDocFx Condition="'$(BuildDocFx)' == ''">false</BuildDocFx>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" />
     <PackageReference Include="ThisAssembly" PrivateAssets="all" />
     <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+    <PackageReference Include="docfx.console" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
