@@ -54,6 +54,46 @@ namespace Avatars.Processors
                 return base.VisitClassDeclaration((ClassDeclarationSyntax)AddAttributes(node));
             }
 
+            public override SyntaxNode? VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitConstructorDeclaration(node);
+
+                return base.VisitConstructorDeclaration((ConstructorDeclarationSyntax)AddAttributes(node));
+            }
+
+            public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitMethodDeclaration(node);
+
+                return base.VisitMethodDeclaration((MethodDeclarationSyntax)AddAttributes(node));
+            }
+
+            public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitPropertyDeclaration(node);
+
+                return base.VisitPropertyDeclaration((PropertyDeclarationSyntax)AddAttributes(node));
+            }
+
+            public override SyntaxNode? VisitIndexerDeclaration(IndexerDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitIndexerDeclaration(node);
+
+                return base.VisitIndexerDeclaration((IndexerDeclarationSyntax)AddAttributes(node));
+            }
+
+            public override SyntaxNode? VisitEventDeclaration(EventDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitEventDeclaration(node);
+
+                return base.VisitEventDeclaration((EventDeclarationSyntax)AddAttributes(node));
+            }
+
             SyntaxNode AddAttributes(SyntaxNode node)
                 => generator.AddAttributes(node,
                     Attribute(IdentifierName("CompilerGenerated")));

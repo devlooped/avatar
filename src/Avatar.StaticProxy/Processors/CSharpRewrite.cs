@@ -109,6 +109,29 @@ namespace Avatars.Processors
                 return base.VisitClassDeclaration(node);
             }
 
+            public override SyntaxNode? VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+            {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitConstructorDeclaration(node);
+
+                if (node.Body != null)
+                    node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)!;
+
+                var create = generator.CreateMethodInvocation(node.ParameterList.Parameters);
+                var body = (ExpressionSyntax)generator.InvocationExpression(
+                            generator.MemberAccessExpression(
+                                generator.IdentifierName("pipeline"),
+                                generator.IdentifierName("Execute")),
+                            create, 
+                            generator.FalseLiteralExpression());
+
+                node = node.WithExpressionBody(ArrowExpressionClause(body))
+                    .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+                return base.VisitConstructorDeclaration(node);
+            }
+
             public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
             {
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))

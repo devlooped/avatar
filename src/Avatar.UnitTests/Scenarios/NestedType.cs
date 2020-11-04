@@ -1,4 +1,5 @@
-﻿using Avatars;
+﻿#pragma warning disable CS0436
+using Avatars;
 
 namespace Scenarios.NestedType
 {

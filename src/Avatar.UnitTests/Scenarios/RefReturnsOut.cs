@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿#pragma warning disable CS0436
+using Xunit;
 using Avatars;
 
 namespace Scenarios.RefReturnsOut

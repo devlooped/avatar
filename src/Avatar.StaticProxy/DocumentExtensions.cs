@@ -10,6 +10,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Text;
 using Avatars;
+using Microsoft.CodeAnalysis.CodeRefactorings;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Reflection;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -28,6 +32,16 @@ namespace Microsoft.CodeAnalysis
                 .Where(d => d != null)
                 // Add our own.
                 .Concat(new[] { new OverridableMembersAnalyzer() })
+                .ToImmutableArray());
+
+        static readonly Lazy<ImmutableArray<(CodeRefactoringProvider, ExportCodeRefactoringProviderAttribute)>> builtInRefactorings = new (() =>
+            MefHostServices
+                .DefaultAssemblies
+                .SelectMany(x => x.GetTypes()
+                .Where(t => !t.IsAbstract && typeof(CodeRefactoringProvider).IsAssignableFrom(t)))
+                .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
+                .Select(t => ((CodeRefactoringProvider)(Activator.CreateInstance(t)!), t.GetCustomAttribute<ExportCodeRefactoringProviderAttribute>()))
+                .Where(x => x.Item1 != null && x.Item2 != null)
                 .ToImmutableArray());
 
         /// <summary>
@@ -74,6 +88,44 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
+        /// Applies the given named code fix to a document.
+        /// </summary>
+        public static async Task<Document> ApplyCodeActionAsync(this Document document, string providerName, ImmutableArray<DiagnosticAnalyzer> analyzers = default, CancellationToken cancellationToken = default)
+        {
+            // If we request and process ALL codefixes at once, we'll get one for each 
+            // diagnostics, which is one per non-implemented member of the interface/abstract 
+            // base class, so we'd be applying unnecessary fixes after the first one.
+            // So we re-retrieve them after each Apply, which will leave only the remaining 
+            // ones.
+            var actions = await GetCodeActions(document, providerName, cancellationToken);
+            while (actions.Length != 0)
+            {
+                var operations = await actions[0].Action.GetOperationsAsync(cancellationToken);
+                ApplyChangesOperation? operation;
+                if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
+                {
+                    // According to https://github.com/DotNetAnalyzers/StyleCopAnalyzers/pull/935 and 
+                    // https://github.com/dotnet/roslyn-sdk/issues/140, Sam Harwell mentioned that we should 
+                    // be forcing a re-parse of the document syntax tree at this point. 
+                    var existing = operation.ChangedSolution.GetDocument(document.Id);
+                    if (existing != null)
+                        document = await existing.RecreateDocumentAsync(cancellationToken);
+
+                    // Retrieve the codefixes for the updated doc again.
+                    actions = await GetCodeActions(document, providerName, cancellationToken);
+                }
+                else
+                {
+                    // If we got no applicable code fixes, exit the loop and move on to the next codefix.
+                    break;
+                }
+            }
+
+            return document;
+        }
+
+
+        /// <summary>
         /// Forces recreation of the text of a document.
         /// </summary>
         public static async Task<Document> RecreateDocumentAsync(this Document document, CancellationToken cancellationToken)
@@ -88,7 +140,7 @@ namespace Microsoft.CodeAnalysis
             Document document, string codeFixName,
             ImmutableArray<DiagnosticAnalyzer> analyzers = default, CancellationToken cancellationToken = default)
         {
-            var provider = GetCodeFixProvider(document, codeFixName);
+            var provider = GetComponent<CodeFixProvider>(document, codeFixName);
             if (provider == null)
                 return ImmutableArray<ICodeFix>.Empty;
 
@@ -125,39 +177,86 @@ namespace Microsoft.CodeAnalysis
                     d.Location.Kind == LocationKind.SourceFile &&
                     d.Location.GetLineSpan().Path == document.FilePath);
 
-            var codeFixes = new List<ICodeFix>();
+            var actions = new List<ICodeFix>();
             foreach (var diagnostic in diagnostics)
             {
                 await provider.RegisterCodeFixesAsync(
                     new CodeFixContext(document, diagnostic,
-                    (action, diag) => codeFixes.Add(new CodeFixAdapter(action, diag, codeFixName)),
+                    (action, diag) => actions.Add(new CodeFixAdapter(action, diag, codeFixName)),
                     cancellationToken));
             }
 
-            var finalFixes = new List<ICodeFix>();
+            var final = new List<ICodeFix>();
 
             // All code actions without equivalence keys must be applied individually.
-            finalFixes.AddRange(codeFixes.Where(x => x.Action.EquivalenceKey == null));
+            final.AddRange(actions.Where(x => x.Action.EquivalenceKey == null));
             // All code actions with the same equivalence key should be applied only once.
-            finalFixes.AddRange(codeFixes
+            final.AddRange(actions
                 .Where(x => x.Action.EquivalenceKey != null)
                 .GroupBy(x => x.Action.EquivalenceKey)
                 .Select(x => x.First()));
 
-            return finalFixes.ToImmutableArray();
+            return final.ToImmutableArray();
+        }
+
+        static async Task<ImmutableArray<ICodeFix>> GetCodeActions(
+            Document document, string providerName, CancellationToken cancellationToken = default)
+        {
+            // Cannot use exports because there are missing imports that come from the editor/IDE 
+            // and this fails, even if it's a Lazy<T, TMeta> :(
+            // var provider = GetComponent<CodeRefactoringProvider>(document, providerName);
+            var provider = builtInRefactorings.Value.Where(x => x.Item2.Name == providerName)
+                .Select(x => x.Item1).FirstOrDefault();
+            if (provider == null)
+                return ImmutableArray<ICodeFix>.Empty;
+
+            var compilation = await document.Project.GetCompilationAsync(cancellationToken);
+            if (compilation == null)
+                return ImmutableArray<ICodeFix>.Empty;
+
+            var actions = new List<ICodeFix>();
+            var root = await document.GetSyntaxRootAsync();
+            if (root == null)
+                return ImmutableArray<ICodeFix>.Empty;
+
+            var type = root.DescendantNodes().Where(x => x.IsKind(SyntaxKind.ClassDeclaration)).FirstOrDefault() ??
+                // See https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.visualbasic.syntaxkind?view=roslyn-dotnet
+                root.DescendantNodes().Where(x => x.RawKind == 53).FirstOrDefault();
+
+            if (type == null)
+                return ImmutableArray<ICodeFix>.Empty;
+
+            await provider.ComputeRefactoringsAsync(new CodeRefactoringContext(document, new TextSpan(((ClassDeclarationSyntax)type).Identifier.Span.Start, 0),
+                action => actions.Add(new CodeFixAdapter(action, ImmutableArray<Diagnostic>.Empty, providerName)),
+                cancellationToken));
+
+            var final = new List<ICodeFix>();
+
+            // All code actions without equivalence keys must be applied individually.
+            final.AddRange(actions.Where(x => x.Action.EquivalenceKey == null));
+            // All code actions with the same equivalence key should be applied only once.
+            final.AddRange(actions
+                .Where(x => x.Action.EquivalenceKey != null)
+                .GroupBy(x => x.Action.EquivalenceKey)
+                .Select(x => x.First()));
+
+            // We reverse the list since usually the "Generate All" is the last entry, i.e. in the 
+            // generate default ctors.
+            final.Reverse();
+
+            return final.ToImmutableArray();
         }
 
         // Debug view of all available providers and their metadata
         // document.Project.Solution.Workspace.Services.HostServices.GetExports<CodeFixProvider, IDictionary<string, object>>().OrderBy(x => x.Metadata["Name"]?.ToString()).Select(x => $"{x.Metadata["Name"]}: {string.Join(", ", (string[])x.Metadata["Languages"])}"  ).ToList()
-        static CodeFixProvider? GetCodeFixProvider(Document document, string codeFixName)
-            => document.Project.Solution.Workspace.Services.HostServices
-                    .GetExports<CodeFixProvider, IDictionary<string, object>>()
-                    .Where(x =>
-                        x.Metadata.ContainsKey("Languages") && x.Metadata.ContainsKey("Name") &&
-                        x.Metadata["Languages"] is string[] languages &&
-                        languages.Contains(document.Project.Language) &&
-                        x.Metadata["Name"] is string name && name == codeFixName)
-                    .Select(x => x.Value)
-                    .FirstOrDefault();
+        static T? GetComponent<T>(Document document, string name) => document.Project.Solution.Workspace.Services.HostServices
+            .GetExports<T, IDictionary<string, object>>()
+            .Where(x =>
+                x.Metadata.ContainsKey("Languages") && x.Metadata.ContainsKey("Name") &&
+                x.Metadata["Languages"] is string[] languages &&
+                languages.Contains(document.Project.Language) &&
+                x.Metadata["Name"] is string value && value == name)
+            .Select(x => x.Value)
+            .FirstOrDefault();
     }
 }

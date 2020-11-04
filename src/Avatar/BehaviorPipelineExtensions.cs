@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Avatars
 {
@@ -14,8 +15,9 @@ namespace Avatars
         /// defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>
-        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation) 
-            => pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), true);
+        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwNotImplemented = true) 
+            => pipeline.Invoke(invocation, (i, n) 
+                => throwNotImplemented ? throw new NotImplementedException() : i.CreateValueReturn(null, i.Arguments.ToArray()), true);
 
         /// <summary>
         /// Since no <see cref="ExecuteDelegate"/> is provided as a target, and a value is required to 

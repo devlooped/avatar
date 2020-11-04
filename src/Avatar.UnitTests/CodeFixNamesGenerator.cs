@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -18,7 +20,15 @@ namespace Avatars
         public void GenerateCodeFixNames()
         {
             var host = MefHostServices.Create(MefHostServices.DefaultAssemblies.Concat(new[] { typeof(CodeFixNamesGenerator).Assembly }));
-            var providers = host.GetExports<CodeFixProvider, IDictionary<string, object>>();
+            var providers = host.GetExports<CodeFixProvider, IDictionary<string, object>>().Select(x => x.Metadata).Concat(
+                MefHostServices.DefaultAssemblies.Select(asm => asm.GetTypes())
+                    .SelectMany(types => types.Select(type => type.GetCustomAttribute<ExportCodeRefactoringProviderAttribute>()))
+                    .Where(attr => attr != null)
+                    .Select(attr => new Dictionary<string, object>
+                    {
+                        { nameof(ExportCodeFixProviderAttribute.Name), attr.Name },
+                        { nameof(ExportCodeFixProviderAttribute.Languages), attr.Languages },
+                    }));
 
             var allFixes = new HashSet<string>();
             var codeFixes = new Dictionary<string, HashSet<string>>
@@ -27,23 +37,23 @@ namespace Avatars
             };
 
             foreach (var provider in providers.Where(x => 
-                x.Metadata.TryGetValue("Name", out var value) && 
+                x.TryGetValue("Name", out var value) && 
                 value is string name &&
                 !string.IsNullOrEmpty(name) && 
-                x.Metadata.TryGetValue("Languages", out value) && 
+                x.TryGetValue("Languages", out value) && 
                 value is string[]))
             {
-                foreach (var language in (string[])provider.Metadata["Languages"])
+                foreach (var language in (string[])provider["Languages"])
                 {
                     if (!codeFixes.ContainsKey(language))
                         codeFixes.Add(language, new HashSet<string>());
 
-                    codeFixes[language].Add((string)provider.Metadata["Name"]);
-                    allFixes.Add((string)provider.Metadata["Name"]);
+                    codeFixes[language].Add((string)provider["Name"]);
+                    allFixes.Add((string)provider["Name"]);
                 }
             }
 
-            var ns = NamespaceDeclaration(ParseName("Avatar.Processors"))
+            var ns = NamespaceDeclaration(ParseName("Avatars.Processors"))
                 .AddMembers(ClassDeclaration("CodeFixNames")
                     .WithModifiers(TokenList(Token(SyntaxKind.PartialKeyword)))
                     .WithMembers(List<MemberDeclarationSyntax>(codeFixes.Select(lang
