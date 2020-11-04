@@ -4,13 +4,11 @@
     <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
     <PackageId>Avatar</PackageId>
     <Title>Avatar</Title>
-    <Description>
-      Avatars blend with the Na'vi seamlessly, and you can control 
-      their behavior precisely ('drive' them) with a psionic link. 
-      Just like a dynamic proxy, with behavior driven by code.
+    <Description>Avatars blend with the Na'vi seamlessly, and you can control their behavior precisely ('drive' them) with a psionic link. 
+Just like a dynamic proxy, with behavior driven by code.
       
-      IMyService service = Avatar.Of&lt;IMyService&gt;();
-      service.AddBehavior(...);
+IMyService service = Avatar.Of&lt;IMyService&gt;();
+service.AddBehavior(...);
     </Description>
     <PackageTags>dotnet proxy runtime dynamic</PackageTags>
   </PropertyGroup>
