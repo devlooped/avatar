@@ -1,9 +1,8 @@
 ﻿#pragma warning disable CS0436
 using System;
 using Xunit;
-using Avatars;
 
-namespace Scenarios.InterfaceBase
+namespace Avatars.Scenario.InterfaceBase
 {
     public interface IBasicInterface
     {
@@ -15,22 +14,33 @@ namespace Scenarios.InterfaceBase
     /// </summary>
     public class Test : IRunnable
     {
+        // Uncomment to run this scenario only
+        //[Fact]
+        public void RunScenario() => new UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.InterfaceBase);
+
         public void Run()
         {
+            BehaviorPipelineFactory.LocalDefault = new RecordingBehaviorPipelineFactory();
             var avatar = Avatar.Of<IBasicInterface>();
 
             Assert.NotNull(avatar);
             Assert.IsAssignableFrom<IAvatar>(avatar);
 
-            // If no behavior is configured, invoking it throws.
+            // Recorder tracks call to constructor.
+            Assert.Single(((IAvatar)avatar).Behaviors);
+            Assert.Single(((RecordingBehavior)((IAvatar)avatar).Behaviors[0]).Invocations);
+
+            // If no returning behavior is configured, invoking it throws.
             Assert.Throws<NotImplementedException>(() => avatar.Run());
 
             // When we add at least one matching behavior, invocations succeed.
             avatar.AddBehavior(new DefaultValueBehavior());
             avatar.Run();
+        }
 
-            // The IAvatar interface is properly implemented.
-            Assert.Single(((IAvatar)avatar).Behaviors);
+        class RecordingBehaviorPipelineFactory : IBehaviorPipelineFactory
+        {
+            public BehaviorPipeline CreatePipeline<TAvatar>() => new BehaviorPipeline(new RecordingBehavior());
         }
     }
 }
