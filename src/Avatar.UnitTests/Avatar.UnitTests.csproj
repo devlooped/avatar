@@ -51,7 +51,7 @@
   <ItemGroup>
     <None Include="CodeAnalysis\ST*\**\*.NoBuild.cs" CopyToOutputDirectory="PreserveNewest" />
     <Compile Remove="CodeAnalysis\ST*\**\*.NoBuild.cs" />
-    <Compile Update="CodeAnalysis\ST*\**\*.cs;Scenarios\**\*.cs" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Update="CodeAnalysis\ST*\**\*.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
