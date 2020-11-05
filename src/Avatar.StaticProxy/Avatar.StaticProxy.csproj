@@ -18,27 +18,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Pack="false" />
 
     <!-- Workaround for revision mismatch with public versions -->
-    <PackageReference Include="System.Collections.Immutable" />
-    <PackageReference Include="System.Reflection.Metadata" />
+    <PackageReference Include="System.Collections.Immutable" Pack="false" />
+    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
 
-    <PackageReference Include="System.ComponentModel.Composition" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
+    <PackageReference Include="System.ComponentModel.Composition" Pack="false" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Pack="false" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Avatar\Avatar.csproj" />
     <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" Pack="!$(IsPackable)" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(IsPackable)' != 'true'">
-    <PackageReference Update="@(PackageReference)" Pack="false" />
-    <ProjectReference Update="@(ProjectReference)" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
