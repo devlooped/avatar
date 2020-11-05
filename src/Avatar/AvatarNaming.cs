@@ -75,7 +75,7 @@ namespace Avatars
             => string.IsNullOrEmpty(typeNamespace) ? rootNamespace : rootNamespace + "." + typeNamespace;
     }
 
-    internal static class StringBuilderExtensions
+    static class StringBuilderExtensions
     {
         public static StringBuilder AddNames(this StringBuilder builder, IEnumerable<Type> types)
         {

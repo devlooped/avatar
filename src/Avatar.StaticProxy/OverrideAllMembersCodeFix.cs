@@ -15,7 +15,7 @@ namespace Avatars
     /// using <see cref="RoslynInternals.OverrideAsync"/>.
     /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(OverrideAllMembersCodeFix))]
-    internal class OverrideAllMembersCodeFix : CodeFixProvider
+    class OverrideAllMembersCodeFix : CodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(OverridableMembersAnalyzer.DiagnosticId);
 

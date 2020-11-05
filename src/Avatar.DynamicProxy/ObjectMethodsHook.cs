@@ -13,7 +13,7 @@ namespace Avatars
     /// This is required to allow Moq to mock ToString on proxy *class* implementations.
     /// </summary>
     [Serializable]
-    internal class ObjectMethodsHook : AllMethodsHook
+    class ObjectMethodsHook : AllMethodsHook
     {
         /// <summary>
         /// Adds <see cref="object"/> methods to the interception candidates.
@@ -21,7 +21,7 @@ namespace Avatars
         public override bool ShouldInterceptMethod(Type type, MethodInfo method)
             => base.ShouldInterceptMethod(type, method) || IsObjectMethod(method);
 
-        private static bool IsObjectMethod(MethodInfo method)
+        static bool IsObjectMethod(MethodInfo method)
             => method.DeclaringType == typeof(object) && 
                 (method.Name == nameof(object.ToString) || 
                 method.Name == nameof(object.Equals) || 

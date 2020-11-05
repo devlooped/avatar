@@ -14,9 +14,9 @@ namespace System
     /// int lastElement = someArray[^1]; // lastElement = 5
     /// </code>
     /// </remarks>
-    internal readonly struct Index : IEquatable<Index>
+    readonly struct Index : IEquatable<Index>
     {
-        private readonly int _value;
+        readonly int _value;
 
         /// <summary>Construct an Index using a value and indicating if the index is from the start or from the end.</summary>
         /// <param name="value">The index value. it has to be zero or positive number.</param>
@@ -39,7 +39,7 @@ namespace System
         }
 
         // The following private constructors mainly created for perf reason to avoid the checks
-        private Index(int value)
+        Index(int value)
         {
             _value = value;
         }
@@ -151,7 +151,7 @@ namespace System
     /// int[] subArray2 = someArray[1..^0]; // { 2, 3, 4, 5 }
     /// </code>
     /// </remarks>
-    internal readonly struct Range : IEquatable<Range>
+    readonly struct Range : IEquatable<Range>
     {
         /// <summary>Represent the inclusive start index of the Range.</summary>
         public Index Start { get; }
@@ -236,7 +236,7 @@ namespace System
 
 namespace System.Runtime.CompilerServices
 {
-    internal static class RuntimeHelpers
+    static class RuntimeHelpers
     {
         /// <summary>
         /// Slices the specified array using the specified range.

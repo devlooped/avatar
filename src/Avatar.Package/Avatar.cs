@@ -10,7 +10,7 @@ namespace Avatars
     /// </summary>
     [CompilerGenerated]
     [ExcludeFromCodeCoverage]
-    internal partial class Avatar
+partial class Avatar
     {
         static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
             (T)AvatarFactory.Default.CreateAvatar(typeof(Avatar).Assembly, typeof(T), interfaces, constructorArgs);

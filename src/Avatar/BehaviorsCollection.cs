@@ -19,7 +19,7 @@ namespace Avatars
     /// is invoked, a single notification with <see cref="NotifyCollectionChangedAction.Reset"/> 
     /// will be raised instead.
     /// </remarks>
-    internal class BehaviorsCollection : ObservableCollection<IAvatarBehavior>, ISupportInitialize, ICloneable
+    class BehaviorsCollection : ObservableCollection<IAvatarBehavior>, ISupportInitialize, ICloneable
     {
         bool initializing;
 

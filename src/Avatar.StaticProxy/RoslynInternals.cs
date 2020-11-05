@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Options;
 
 namespace Avatars
 {
-    internal static class RoslynInternals
+    static class RoslynInternals
     {
         #region GetExports
 

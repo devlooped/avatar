@@ -110,18 +110,18 @@ namespace Avatars
             return null;
         }
 
-        private static object CreateArray(Type type) => Array.CreateInstance(
+        static object CreateArray(Type type) => Array.CreateInstance(
             type.GetElementType() ?? throw new ArgumentException(nameof(type)), new int[type.GetArrayRank()]);
 
-        private static object CreateTask(Type type) => Task.CompletedTask;
+        static object CreateTask(Type type) => Task.CompletedTask;
 
-        private static object CreateEnumerable(Type type) => Enumerable.Empty<object>();
+        static object CreateEnumerable(Type type) => Enumerable.Empty<object>();
 
-        private static object CreateEnumerableOf(Type type) => Array.CreateInstance(type.GenericTypeArguments[0], 0);
+        static object CreateEnumerableOf(Type type) => Array.CreateInstance(type.GenericTypeArguments[0], 0);
 
-        private static object CreateQueryable(Type type) => Enumerable.Empty<object>().AsQueryable();
+        static object CreateQueryable(Type type) => Enumerable.Empty<object>().AsQueryable();
 
-        private static object? CreateQueryableOf(Type type)
+        static object? CreateQueryableOf(Type type)
         {
             var elementType = type.GetGenericArguments()[0];
             var array = Array.CreateInstance(elementType, 0);
@@ -132,7 +132,7 @@ namespace Avatars
                 .Invoke(null, new[] { array });
         }
 
-        private object? CreateValueTupleOf(Type type)
+        object? CreateValueTupleOf(Type type)
         {
             var itemTypes = type.GetGenericArguments();
             var items = new object?[itemTypes.Length];
@@ -144,9 +144,9 @@ namespace Avatars
             return Activator.CreateInstance(type, items);
 
         }
-        private object CreateTaskOf(Type type) => GetCompletedTaskForType(type.GenericTypeArguments[0]);
+        object CreateTaskOf(Type type) => GetCompletedTaskForType(type.GenericTypeArguments[0]);
 
-        private Task GetCompletedTaskForType(Type type)
+        Task GetCompletedTaskForType(Type type)
         {
             var tcs = Activator.CreateInstance(typeof(TaskCompletionSource<>).MakeGenericType(type))
                 ?? throw new NotSupportedException();

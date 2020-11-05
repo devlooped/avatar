@@ -9,13 +9,13 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Avatars.UnitTests
 {
-    internal static class CodeAnalysisHelpers
+    static class CodeAnalysisHelpers
     {
-        private static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-        private static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
-        private static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
-        private static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true)!.Assembly.Location);
-        private static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
+        static readonly MetadataReference CorlibReference = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+        static readonly MetadataReference SystemCoreReference = MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location);
+        static readonly MetadataReference CSharpSymbolsReference = MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location);
+        static readonly MetadataReference CSharpFeaturesReference = MetadataReference.CreateFromFile(Type.GetType("Microsoft.CodeAnalysis.CSharp.CSharpAnalyzersResources, Microsoft.CodeAnalysis.CSharp.Features, PublicKeyToken=31bf3856ad364e35", true)!.Assembly.Location);
+        static readonly MetadataReference CodeAnalysisReference = MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location);
 
         internal static string DefaultFilePathPrefix = "Test";
         internal static string CSharpDefaultFileExt = "cs";
@@ -34,10 +34,7 @@ namespace Avatars.UnitTests
         public static Diagnostic[] GetSortedDiagnostics(
             this DiagnosticAnalyzer analyzer,
             string[] sources,
-            string language)
-        {
-            return GetSortedDiagnosticsFromDocuments(analyzer, GetDocuments(sources, language));
-        }
+            string language) => GetSortedDiagnosticsFromDocuments(analyzer, GetDocuments(sources, language));
 
         /// <summary>
         /// Given an analyzer and a document to apply it to, run the analyzer and gather an array of diagnostics found in it.
@@ -91,10 +88,8 @@ namespace Avatars.UnitTests
         /// </summary>
         /// <param name="diagnostics">The list of Diagnostics to be sorted</param>
         /// <returns>An IEnumerable containing the Diagnostics in order of Location</returns>
-        private static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics)
-        {
-            return diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
-        }
+        static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics) 
+            => diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
 
         #endregion
 
@@ -106,7 +101,7 @@ namespace Avatars.UnitTests
         /// <param name="sources">Classes in the form of strings</param>
         /// <param name="language">The language the source code is in</param>
         /// <returns>A Tuple containing the Documents produced from the sources and their TextSpans if relevant</returns>
-        private static Document[] GetDocuments(string[] sources, string language)
+        static Document[] GetDocuments(string[] sources, string language)
         {
             if (language != LanguageNames.CSharp && language != LanguageNames.VisualBasic)
             {
@@ -131,9 +126,7 @@ namespace Avatars.UnitTests
         /// <param name="language">The language the source code is in</param>
         /// <returns>A Document created from the source string</returns>
         public static Document CreateDocument(string source, string language)
-        {
-            return CreateProject(new[] { source }, language).Documents.First();
-        }
+            => CreateProject(new[] { source }, language).Documents.First();
 
         /// <summary>
         /// Create a project using the inputted strings as sources.
@@ -141,7 +134,7 @@ namespace Avatars.UnitTests
         /// <param name="sources">Classes in the form of strings</param>
         /// <param name="language">The language the source code is in</param>
         /// <returns>A Project created out of the Documents created from the source strings</returns>
-        private static Project CreateProject(string[] sources, string language)
+        static Project CreateProject(string[] sources, string language)
         {
             var fileNamePrefix = DefaultFilePathPrefix;
             var fileExt = language == LanguageNames.CSharp ? CSharpDefaultFileExt : VisualBasicDefaultExt;

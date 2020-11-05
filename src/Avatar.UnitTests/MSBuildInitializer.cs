@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Avatars.UnitTests
 {
-    internal static class MSBuildInitializer
+    static class MSBuildInitializer
     {
         [ModuleInitializer]
         internal static void Run()

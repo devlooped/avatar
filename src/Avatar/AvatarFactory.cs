@@ -43,7 +43,7 @@ namespace Avatars
         /// </summary>
         public static IAvatarFactory NotImplemented { get; } = nullFactory;
 
-        private AvatarFactory() { }
+        AvatarFactory() { }
 
         /// <summary>
         /// See <see cref="IAvatarFactory.CreateAvatar(Assembly, Type, Type[], object[])"/>

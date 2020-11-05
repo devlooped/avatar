@@ -34,7 +34,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" />
 
-    <PackageReference Include="TypeNameFormatter.Sources" />
     <PackageReference Include="Superpower" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
     <PackageReference Include="Microsoft.Bcl.HashCode" />

@@ -16,7 +16,7 @@ namespace Avatars.AcceptanceTests
 {
     public class InternalTests
     {
-        private ITestOutputHelper output;
+        ITestOutputHelper output;
 
         public InternalTests(ITestOutputHelper output) => this.output = output;
 

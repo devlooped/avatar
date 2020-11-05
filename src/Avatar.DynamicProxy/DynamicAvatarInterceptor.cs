@@ -7,7 +7,7 @@ using Castle.DynamicProxy;
 
 namespace Avatars
 {
-    internal class DynamicAvatarInterceptor : IInterceptor, IAvatar // Implemented to detect breaking changes in Avatar
+    class DynamicAvatarInterceptor : IInterceptor, IAvatar // Implemented to detect breaking changes in Avatar
     {
         static readonly MethodInfo expressionFactory = typeof(DynamicAvatarInterceptor).GetMethod("CreatePipeline", BindingFlags.Static | BindingFlags.NonPublic);
         static readonly ConcurrentDictionary<Type, Func<BehaviorPipeline>> createPipelineFactories = new();

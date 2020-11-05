@@ -78,7 +78,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="language">The language of the classes represented by the source strings</param>
     /// <param name="analyzer">The analyzer to be run on the source code</param>
     /// <param name="expected">DiagnosticResults that should appear after the analyzer is run on the sources</param>
-    private void VerifyDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expected)
+    void VerifyDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expected)
     {
         var diagnostics = GetSortedDiagnostics(sources, language, analyzer);
         VerifyDiagnosticResults(diagnostics, analyzer, expected);
@@ -94,7 +94,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="actualResults">The Diagnostics found by the compiler after running the analyzer on the source code</param>
     /// <param name="analyzer">The analyzer that was being run on the sources</param>
     /// <param name="expectedResults">Diagnostic Results that should have appeared in the code</param>
-    private static void VerifyDiagnosticResults(IEnumerable<Diagnostic> actualResults, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expectedResults)
+    static void VerifyDiagnosticResults(IEnumerable<Diagnostic> actualResults, DiagnosticAnalyzer analyzer, params DiagnosticResult[] expectedResults)
     {
         int expectedCount = expectedResults.Count();
         int actualCount = actualResults.Count();
@@ -170,7 +170,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="diagnostic">The diagnostic that was found in the code</param>
     /// <param name="actual">The Location of the Diagnostic found in the code</param>
     /// <param name="expected">The DiagnosticResultLocation that should have been found</param>
-    private static void VerifyDiagnosticLocation(DiagnosticAnalyzer analyzer, Diagnostic diagnostic, Location actual, DiagnosticResultLocation expected)
+    static void VerifyDiagnosticLocation(DiagnosticAnalyzer analyzer, Diagnostic diagnostic, Location actual, DiagnosticResultLocation expected)
     {
         var actualSpan = actual.GetLineSpan();
 
@@ -211,7 +211,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="analyzer">The analyzer that this verifier tests</param>
     /// <param name="diagnostics">The Diagnostics to be formatted</param>
     /// <returns>The Diagnostics formatted as a string</returns>
-    private static string FormatDiagnostics(DiagnosticAnalyzer analyzer, params Diagnostic[] diagnostics)
+    static string FormatDiagnostics(DiagnosticAnalyzer analyzer, params Diagnostic[] diagnostics)
     {
         var builder = new StringBuilder();
         for (int i = 0; i < diagnostics.Length; ++i)
