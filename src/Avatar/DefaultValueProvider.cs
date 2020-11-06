@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Avatars
@@ -29,6 +28,8 @@ namespace Avatars
                 factories[typeof(Array)] = CreateArray;
                 factories[typeof(Task)] = CreateTask;
                 factories[typeof(Task<>)] = CreateTaskOf;
+                factories[typeof(ValueTask)] = CreateValueTask;
+                factories[typeof(ValueTask<>)] = CreateValueTaskOf;
                 factories[typeof(IEnumerable)] = CreateEnumerable;
                 factories[typeof(IEnumerable<>)] = CreateEnumerableOf;
                 factories[typeof(IQueryable)] = CreateQueryable;
@@ -47,7 +48,7 @@ namespace Avatars
         /// <summary>
         /// Gets a default value for the given type <typeparamref name="T"/>.
         /// </summary>
-        public T GetDefault<T>() => (T)GetDefault(typeof(T))!;
+        public T? GetDefault<T>() => (T)GetDefault(typeof(T));
 
         /// <summary>
         /// Gets a default value for the given type <paramref name="type"/>
@@ -113,8 +114,6 @@ namespace Avatars
         static object CreateArray(Type type) => Array.CreateInstance(
             type.GetElementType() ?? throw new ArgumentException(nameof(type)), new int[type.GetArrayRank()]);
 
-        static object CreateTask(Type type) => Task.CompletedTask;
-
         static object CreateEnumerable(Type type) => Enumerable.Empty<object>();
 
         static object CreateEnumerableOf(Type type) => Array.CreateInstance(type.GenericTypeArguments[0], 0);
@@ -144,6 +143,16 @@ namespace Avatars
             return Activator.CreateInstance(type, items);
 
         }
+
+        // See https://github.com/dotnet/runtime/blob/master/src/libraries/System.Private.CoreLib/src/System/Threading/Tasks/ValueTask.cs#L114
+        static object CreateValueTask(Type type) => default(ValueTask);
+
+        object CreateValueTaskOf(Type type) => Activator.CreateInstance(
+            typeof(ValueTask<>).MakeGenericType(type.GetGenericArguments()[0]), GetDefault(type.GetGenericArguments()[0]))
+            ?? throw new NotSupportedException();
+
+        static object CreateTask(Type type) => Task.CompletedTask;
+
         object CreateTaskOf(Type type) => GetCompletedTaskForType(type.GenericTypeArguments[0]);
 
         Task GetCompletedTaskForType(Type type)

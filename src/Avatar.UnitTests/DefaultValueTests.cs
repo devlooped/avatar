@@ -94,6 +94,33 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
+        public void DefaultForTaskTIsCompleted()
+        {
+            var value = new DefaultValueProvider().GetDefault<Task<bool>>();
+
+            Assert.NotNull(value);
+            Assert.True(value.IsCompleted);
+            Assert.False(value.Result);
+        }
+
+        [Fact]
+        public void DefaultForValueTaskIsCompleted()
+        {
+            var value = new DefaultValueProvider().GetDefault<ValueTask>();
+
+            Assert.True(value.IsCompleted);
+        }
+
+        [Fact]
+        public void DefaultForValueTaskTIsCompleted()
+        {
+            var value = new DefaultValueProvider().GetDefault<ValueTask<bool>>();
+
+            Assert.True(value.IsCompleted);
+            Assert.False(value.Result);
+        }
+
+        [Fact]
         public void DefaultForTaskOfEnumIsDefaultValue()
         {
             var value = new DefaultValueProvider().GetDefault<Task<PlatformID>>();
