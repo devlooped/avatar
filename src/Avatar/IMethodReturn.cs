@@ -6,7 +6,7 @@ namespace Avatars
     /// <summary>
     /// Represents the result of invoking a method.
     /// </summary>
-	public interface IMethodReturn
+    public interface IMethodReturn
     {
         /// <summary>
         /// An arbitrary property bag used during the invocation.
@@ -17,7 +17,7 @@ namespace Avatars
         /// Optional exception if the method invocation results in 
         /// an exception being thrown.
         /// </summary>
-		Exception? Exception { get; }
+        Exception? Exception { get; }
 
         /// <summary>
         /// Collection of out/ref arguments.
@@ -28,6 +28,6 @@ namespace Avatars
         /// The value being returned for a non-void method if no exception 
         /// was thrown.
         /// </summary>
-		object? ReturnValue { get; }
-	}
+        object? ReturnValue { get; }
+    }
 }
