@@ -62,7 +62,7 @@ namespace Avatars
         /// any time, but changes to the list are not visible to in-flight 
         /// invocations. Additionally, the list implements <see cref="INotifyCollectionChanged"/> 
         /// to allow components to monitor changes to the pipeline, as well as <see cref="ISupportInitialize"/> 
-        /// to perform batches of changes to the behaviors and avoid excesive collection change 
+        /// to perform batches of changes to the behaviors and avoid excessive collection change
         /// notifications.
         /// </remarks>
         public IList<IAvatarBehavior> Behaviors { get; }
