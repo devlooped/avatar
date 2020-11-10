@@ -10,53 +10,53 @@ namespace Avatars
     /// Default implementation of <see cref="IMethodReturn"/>.
     /// </summary>
     class MethodReturn : IMethodReturn
-	{
+    {
         readonly IMethodInvocation invocation;
         readonly object?[] allArguments;
 
         public MethodReturn(IMethodInvocation invocation, object? returnValue, object?[] allArguments)
-		{
+        {
             this.invocation = invocation;
             this.allArguments = allArguments;
 
-			ReturnValue = returnValue;
+            ReturnValue = returnValue;
 
-			var outputArgs = new List<object?>();
-			var outputInfos = new List<ParameterInfo>();
-			var allInfos = invocation.MethodBase.GetParameters();
+            var outputArgs = new List<object?>();
+            var outputInfos = new List<ParameterInfo>();
+            var allInfos = invocation.MethodBase.GetParameters();
 
-			for (var i = 0; i < allInfos.Length; i++)
-			{
-				var info = allInfos[i];
-				if (info.ParameterType.IsByRef)
-				{
-					outputArgs.Add(allArguments[i]);
-					outputInfos.Add(info);
-				}
-			}
+            for (var i = 0; i < allInfos.Length; i++)
+            {
+                var info = allInfos[i];
+                if (info.ParameterType.IsByRef)
+                {
+                    outputArgs.Add(allArguments[i]);
+                    outputInfos.Add(info);
+                }
+            }
 
-			Outputs = new ArgumentCollection(outputArgs, outputInfos);
-		}
+            Outputs = new ArgumentCollection(outputArgs, outputInfos);
+        }
 
-		public MethodReturn(IMethodInvocation invocation, Exception exception)
-		{
+        public MethodReturn(IMethodInvocation invocation, Exception exception)
+        {
             this.invocation = invocation;
             allArguments = Array.Empty<object>();
             Outputs = new ArgumentCollection(new object[0], new ParameterInfo[0]);
-			Exception = exception;
-		}
+            Exception = exception;
+        }
 
-		/// <summary>
-		/// The collection of output parameters. If the method has no output
-		/// parameters, this is a zero-length list (never null).
-		/// </summary>
-		public IArgumentCollection Outputs { get; }
+        /// <summary>
+        /// The collection of output parameters. If the method has no output
+        /// parameters, this is a zero-length list (never null).
+        /// </summary>
+        public IArgumentCollection Outputs { get; }
 
-		public object? ReturnValue { get; }
+        public object? ReturnValue { get; }
 
-		public Exception? Exception { get; }
+        public Exception? Exception { get; }
 
-		public IDictionary<string, object> Context { get => invocation.Context; }
+        public IDictionary<string, object> Context { get => invocation.Context; }
 
         /// <summary>
         /// Gets a friendly representation of the object.

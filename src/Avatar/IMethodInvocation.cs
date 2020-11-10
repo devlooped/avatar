@@ -7,28 +7,28 @@ namespace Avatars
     /// <summary>
     /// Represents a method invocation.
     /// </summary>
-	public interface IMethodInvocation : IEquatable<IMethodInvocation>
+    public interface IMethodInvocation : IEquatable<IMethodInvocation>
     {
         /// <summary>
         /// The arguments of the method invocation.
         /// </summary>
-		IArgumentCollection Arguments { get; }
+        IArgumentCollection Arguments { get; }
 
         /// <summary>
         /// An arbitrary property bag used during the invocation.
         /// </summary>
-		IDictionary<string, object> Context { get; }
+        IDictionary<string, object> Context { get; }
 
         /// <summary>
         /// The runtime method being invoked.
         /// </summary>
-		MethodBase MethodBase { get; }
+        MethodBase MethodBase { get; }
 
         /// <summary>
         /// The ultimate target of the method invocation, typically 
         /// a avatar object.
         /// </summary>
-		object Target { get; }
+        object Target { get; }
 
         /// <summary>
         /// Behaviors in the pipeline that should be skipped during this invocation.
@@ -50,6 +50,6 @@ namespace Avatars
         /// </summary>
         /// <param name="exception">The exception to throw from the method invocation.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
-		IMethodReturn CreateExceptionReturn(Exception exception);
+        IMethodReturn CreateExceptionReturn(Exception exception);
     }
 }

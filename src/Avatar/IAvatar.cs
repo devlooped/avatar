@@ -12,10 +12,10 @@ namespace Avatars
     [GeneratedCode("Avatar", ThisAssembly.Info.Version)]
     [CompilerGenerated]
     public interface IAvatar
-	{
+    {
         /// <summary>
         /// Behaviors configured for the avatar.
         /// </summary>
-		IList<IAvatarBehavior> Behaviors { get; }
-	}
+        IList<IAvatarBehavior> Behaviors { get; }
+    }
 }

@@ -6,7 +6,7 @@ namespace Avatars
     /// <summary>
     /// Represents the arguments of a method invocation.
     /// </summary>
-	public interface IArgumentCollection : IEnumerable<object?>
+    public interface IArgumentCollection : IEnumerable<object?>
     {
         /// <summary>
         /// Whether the collection contains a parameter with the 
@@ -16,22 +16,22 @@ namespace Avatars
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-		bool Contains(string name);
+        bool Contains(string name);
 
         /// <summary>
         /// Count <see cref="ParameterInfo"/>s in the collection.
         /// </summary>
-		int Count { get; }
+        int Count { get; }
 
         /// <summary>
         /// Get the <see cref="ParameterInfo"/> at the given index.
         /// </summary>
-		ParameterInfo GetInfo(int index);
+        ParameterInfo GetInfo(int index);
 
         /// <summary>
         /// Gets the <see cref="ParameterInfo"/> with the given name.
         /// </summary>
-		ParameterInfo GetInfo(string name);
+        ParameterInfo GetInfo(string name);
 
         /// <summary>
         /// Gets the index of the parameter with the given name or <c>-1</c>
@@ -52,6 +52,6 @@ namespace Avatars
         /// <summary>
         /// Gets or sets the value of the argument at the given index.
         /// </summary>
-		object? this[int index] { get; set; }
-	}
+        object? this[int index] { get; set; }
+    }
 }

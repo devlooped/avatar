@@ -15,7 +15,7 @@ namespace Avatars
         /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
-		public static IAvatar AddBehavior(this IAvatar avatar, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static IAvatar AddBehavior(this IAvatar avatar, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             avatar.Behaviors.Add(new AnonymousBehavior(behavior, appliesTo, name));
             return avatar;
@@ -77,7 +77,7 @@ namespace Avatars
         /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
-		public static IAvatar InsertBehavior(this IAvatar avatar, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static IAvatar InsertBehavior(this IAvatar avatar, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
         {
             avatar.Behaviors.Insert(index, new AnonymousBehavior(behavior, appliesTo, name));
             return avatar;
