@@ -394,7 +394,7 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public async Task WhenRunningParalell_ThenCanReplaceLocalPipelineFactory()
+        public async Task WhenRunningParallel_ThenCanReplaceLocalPipelineFactory()
         {
             var factory1 = new TestBehaviorPipelineFactory();
             var factory2 = new TestBehaviorPipelineFactory();

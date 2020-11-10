@@ -76,7 +76,7 @@ namespace Avatars.UnitTests
                 d.Severity == DiagnosticSeverity.Info || 
                 // Type conflicts with referenced assembly, will happen because scenarios 
                 // are also compiled in the unit test project itself, but also in the scenario 
-                // file compilation, but the locally defined in surce wins.
+                // file compilation, but the locally defined in source wins.
                 d.Id == "CS0436");
 
             if (diagnostics.Any())

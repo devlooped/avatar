@@ -40,7 +40,7 @@ namespace Avatars
         };
 
         /// <summary>
-        /// Default naming convention used when generating documents, unless overriden 
+        /// Default naming convention used when generating documents, unless overridden
         /// via the corresponding constructor argument.
         /// </summary>
         public static NamingConvention DefaultNamingConvention { get; } = new NamingConvention();

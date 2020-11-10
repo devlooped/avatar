@@ -48,7 +48,7 @@ namespace Avatars
         /// <summary>
         /// See <see cref="IAvatarFactory.CreateAvatar(Assembly, Type, Type[], object[])"/>
         /// </summary>
-        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments) 
+        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
             => throw new NotImplementedException(ThisAssembly.Strings.AvatarFactoryNotImplemented);
     }
 }
