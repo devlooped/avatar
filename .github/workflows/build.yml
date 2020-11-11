@@ -1,4 +1,4 @@
-﻿name: build
+name: build
 on: 
   push:
     branches: [ main, dev, 'feature/*', 'rel/*' ]
@@ -80,6 +80,7 @@ jobs:
     name: push nuget.ci
     runs-on: ubuntu-latest
     needs: [build, acceptance]
+    if: ${{ !github.event.pull_request.head.repo.fork }}
     steps:
       - name: 🔽 packages
         uses: actions/download-artifact@v2
