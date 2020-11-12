@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Xunit;
 using Xunit.Sdk;
-using Avatars.CodeAnalysis;
 using static WorkspaceHelper;
 
 namespace Avatars.UnitTests

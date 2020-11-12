@@ -11,7 +11,7 @@ namespace Avatars.Scenarios.ClassBaseCtorException
 
     public class Test : IRunnable
     {
-        public void Run() 
+        public void Run()
             => Assert.Throws<IndexOutOfRangeException>(() => Avatar.Of<ClassBaseCtor>());
     }
 }

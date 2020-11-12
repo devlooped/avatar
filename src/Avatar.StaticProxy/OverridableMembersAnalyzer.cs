@@ -50,7 +50,7 @@ namespace Avatars
         static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             var overridable = RoslynInternals.GetOverridableMembers((INamedTypeSymbol)context.Symbol, context.CancellationToken);
-            
+
             if (context.Compilation.Language == LanguageNames.VisualBasic)
                 overridable = overridable.Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63

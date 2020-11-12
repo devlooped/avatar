@@ -35,7 +35,7 @@ namespace Avatars
                 sourceToken.Parent?.AncestorsAndSelf().Where(x => x.IsKind(SyntaxKind.ClassDeclaration)).FirstOrDefault() ??
                 // See https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.visualbasic.syntaxkind?view=roslyn-dotnet
                 sourceToken.Parent?.AncestorsAndSelf().Where(x => x.RawKind == 53).FirstOrDefault();
-            
+
             if (type != null)
             {
                 context.RegisterCodeFix(
@@ -64,7 +64,7 @@ namespace Avatars
                     .Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
                     .Where(x => x.Kind != SymbolKind.Event)
-                    .ToImmutableArray();            
+                    .ToImmutableArray();
 
             var generator = SyntaxGenerator.GetGenerator(document);
             var memberTasks = overridables.Select(
@@ -72,7 +72,7 @@ namespace Avatars
 
             var members = await Task.WhenAll(memberTasks);
             var newDoc = await RoslynInternals.AddMemberDeclarationsAsync(document.Project.Solution, symbol, members, cancellationToken);
-            
+
             return newDoc.Project.Solution;
         }
     }

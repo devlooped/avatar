@@ -48,7 +48,7 @@ namespace Avatars
                 // the caller explicitly opted-in to nulls. This could only 
                 // happen if the caller does not have nullable turned on.
                 if (type.IsValueType &&
-                    type.IsGenericType && 
+                    type.IsGenericType &&
                     type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     return default(T)!;
                 else if (type.IsValueType)

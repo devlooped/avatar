@@ -28,13 +28,13 @@ namespace Avatars
         /// Customizes the analyzer by specifying a custom 
         /// <see cref="generatorAttribute"/> to lookup in method invocations.
         /// </summary>
-        protected PointerMemberAnalyzer(Type generatorAttribute) 
+        protected PointerMemberAnalyzer(Type generatorAttribute)
             => this.generatorAttribute = generatorAttribute;
 
         /// <summary>
         /// Returns the single descriptor this analyzer supports.
         /// </summary>
-        public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics 
+        public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(AvatarDiagnostics.PointerMember);
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Avatars
             if (generator == null)
                 return;
 
-            if (invocation.TargetMethod.GetAttributes().Any(x => 
+            if (invocation.TargetMethod.GetAttributes().Any(x =>
                 SymbolEqualityComparer.Default.Equals(x.AttributeClass, generator)))
             {
                 var args = invocation.TargetMethod.TypeArguments

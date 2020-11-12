@@ -122,7 +122,7 @@ namespace Avatars.Processors
                             generator.MemberAccessExpression(
                                 generator.IdentifierName("pipeline"),
                                 generator.IdentifierName("Execute")),
-                            create, 
+                            create,
                             generator.FalseLiteralExpression());
 
                 node = node.WithExpressionBody(ArrowExpressionClause(body))
@@ -237,7 +237,7 @@ namespace Avatars.Processors
 
                 var canRead = (node.ExpressionBody != null || node.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.GetAccessorDeclaration)) == true);
                 var canWrite = node.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.SetAccessorDeclaration)) == true;
-                
+
                 var prop = node;
 
                 if (node.ExpressionBody != null)
@@ -280,7 +280,7 @@ namespace Avatars.Processors
 
                 var value = Parameter(Identifier("value")).WithType(node.Type);
                 var parameters = new SyntaxNode[] { value };
-                
+
                 if (virtualEvents.Contains(node.Identifier.ValueText))
                 {
                     node = node.WithAccessorList(AccessorList(List(new AccessorDeclarationSyntax[]

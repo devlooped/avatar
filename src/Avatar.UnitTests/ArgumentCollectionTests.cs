@@ -53,7 +53,7 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public void ContainsByName() 
+        public void ContainsByName()
             => Assert.True(new ArgumentCollection(new object[] { 5 }, valueTypeMethod.GetParameters()).Contains("value"));
 
         [Fact]
@@ -116,7 +116,7 @@ namespace Avatars.UnitTests
 
             Assert.Equal((int?)null, new ArgumentCollection(new object?[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>(0));
             Assert.Equal((int?)null, new ArgumentCollection(new object?[] { null }, nullableValueTypeMethod.GetParameters()).GetNullable<int?>("value"));
-                
+
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).GetNullable<string>(0));
             Assert.Equal("foo", new ArgumentCollection(new object[] { "foo" }, referenceTypeMethod.GetParameters()).GetNullable<string>("value"));
 

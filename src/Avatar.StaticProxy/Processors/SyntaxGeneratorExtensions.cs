@@ -17,7 +17,7 @@ namespace Avatars.Processors
         /// <summary>
         /// Inspects a property to determine if supports read/write.
         /// </summary>
-        public static (bool canRead, bool canWrite) InspectProperty(this SyntaxGenerator generator, SyntaxNode property) 
+        public static (bool canRead, bool canWrite) InspectProperty(this SyntaxGenerator generator, SyntaxNode property)
             => (generator.GetAccessor(property, DeclarationKind.GetAccessor) != null,
                 generator.GetAccessor(property, DeclarationKind.SetAccessor) != null);
 
@@ -83,8 +83,8 @@ namespace Avatars.Processors
                             generator.MemberAccessExpression(
                                 generator.IdentifierName("m"),
                                 "CreateValueReturn"),
-                            new[] 
-                            { 
+                            new[]
+                            {
                                 generator.InvocationExpression(
                                     generator.MemberAccessExpression(
                                         generator.BaseExpression(),

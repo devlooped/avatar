@@ -1,13 +1,13 @@
 ﻿//#define QUICK
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
-using Xunit;
 using TypeNameFormatter;
-using System.Reflection;
-using System.IO;
+using Xunit;
 
 namespace Avatars.AcceptanceTests
 {
@@ -40,7 +40,7 @@ namespace Avatars.UnitTests
             Assert.Empty(diagnostics);
 
             var assembly = Emit(compilation);
-            
+
             var name = AvatarNaming.GetFullName(types.First(), types.Skip(1).ToArray());
             var type = assembly.GetType(name, true);
             var avatar = Activator.CreateInstance(type!);
@@ -55,7 +55,7 @@ namespace Avatars.UnitTests
             //.Select(file => Assembly.LoadFrom(file))
             .Select(file => AssemblyName.GetAssemblyName(file))
             //.GetExecutingAssembly().GetReferencedAssemblies()
-            .Where(name => 
+            .Where(name =>
                 !name.Name.StartsWith("Microsoft.CodeAnalysis") &&
                 !name.Name.StartsWith("xunit") &&
                 !name.Name.StartsWith("Avatar"))

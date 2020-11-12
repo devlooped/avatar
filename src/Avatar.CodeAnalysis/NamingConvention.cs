@@ -30,7 +30,7 @@ namespace Avatars.CodeAnalysis
             return builder.Append(NameSuffix).ToString();
         }
 
-        static void AddNames(StringBuilder builder,  IEnumerable<ITypeSymbol> symbols)
+        static void AddNames(StringBuilder builder, IEnumerable<ITypeSymbol> symbols)
         {
             foreach (var symbol in symbols)
             {

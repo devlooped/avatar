@@ -14,7 +14,7 @@ namespace Avatars
     /// </remarks>
     public static class BehaviorPipelineFactory
     {
-        static readonly AsyncLocal<IBehaviorPipelineFactory?> localFactory = new ();
+        static readonly AsyncLocal<IBehaviorPipelineFactory?> localFactory = new();
         static IBehaviorPipelineFactory defaultFactory = new DefaultBehaviorPipelineFactory();
 
         /// <summary>
