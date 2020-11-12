@@ -53,7 +53,7 @@ namespace Avatars.Processors
             {
                 node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node)!;
 
-                if (!generator.GetBaseAndInterfaceTypes(node).Any(x => 
+                if (!generator.GetBaseAndInterfaceTypes(node).Any(x =>
                     x.ToString() == nameof(IAvatar) ||
                     x.ToString() == typeof(IAvatar).FullName))
                 {

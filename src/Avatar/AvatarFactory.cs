@@ -22,10 +22,10 @@ namespace Avatars
         /// A <see cref="LocalDefault"/> can override the value of this global 
         /// default, if assigned to a non-null value.
         /// </remarks>
-        public static IAvatarFactory Default 
-        { 
-            get => localFactory.Value ?? defaultFactory; 
-            set => defaultFactory = value; 
+        public static IAvatarFactory Default
+        {
+            get => localFactory.Value ?? defaultFactory;
+            set => defaultFactory = value;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Avatars
         /// <summary>
         /// See <see cref="IAvatarFactory.CreateAvatar(Assembly, Type, Type[], object[])"/>
         /// </summary>
-        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] construtorArguments) 
+        public object CreateAvatar(Assembly assembly, Type baseType, Type[] implementedInterfaces, object?[] constructorArguments)
             => throw new NotImplementedException(ThisAssembly.Strings.AvatarFactoryNotImplemented);
     }
 }

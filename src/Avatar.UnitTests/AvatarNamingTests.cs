@@ -37,7 +37,7 @@ namespace Avatars.UnitTests
         public void FullNameWithInterfaces()
         {
             var name = AvatarNaming.GetFullName(typeof(ICalculator), typeof(IDisposable), typeof(IServiceProvider));
-            
+
             Assert.Equal($"{AvatarNaming.DefaultRootNamespace}.{typeof(ICalculator).Namespace}.ICalculatorIDisposableIServiceProvider{AvatarNaming.DefaultSuffix}", name);
         }
 

@@ -88,7 +88,7 @@ namespace Avatars.UnitTests
         /// </summary>
         /// <param name="diagnostics">The list of Diagnostics to be sorted</param>
         /// <returns>An IEnumerable containing the Diagnostics in order of Location</returns>
-        static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics) 
+        static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics)
             => diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
 
         #endregion

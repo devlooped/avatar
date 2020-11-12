@@ -27,6 +27,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-rc.2.20479.15
+      - name: ❱❱ format
+        run: |
+          dotnet tool update -g --version 4.1.* dotnet-format >nul || dotnet tool list -g
+          dotnet format -f --check -v:diag
       - name: 🙏 build
         run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - name: 🧪 test net5.0
@@ -80,7 +84,7 @@ jobs:
     name: push nuget.ci
     runs-on: ubuntu-latest
     needs: [build, acceptance]
-    if: github.event.head.repo.fork != 'true'
+    if: ${{ !github.event.pull_request.head.repo.fork }}
     steps:
       - name: 🔽 packages
         uses: actions/download-artifact@v2

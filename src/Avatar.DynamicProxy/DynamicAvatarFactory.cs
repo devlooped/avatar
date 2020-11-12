@@ -74,9 +74,9 @@ namespace Avatars
         /// <summary>
         /// Creates the proxy with the <see cref="Generator"/>, using the given default interceptor to implement its behavior.
         /// </summary>
-        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, ProxyGenerationOptions options, Func<IInterceptor> getDefaultInteceptor)
+        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, ProxyGenerationOptions options, Func<IInterceptor> getDefaultInterceptor)
             // TODO: bring the approach from https://github.com/moq/moq4/commit/806e9919eab9c1f3879b9e9bda895fa76ecf9d92 for performance.
-            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, getDefaultInteceptor());
+            => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, getDefaultInterceptor());
 
         /// <summary>
         /// The <see cref="ProxyGenerator"/> used to create proxy types.

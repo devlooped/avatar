@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System;
 using System.Diagnostics;
-using TypeNameFormatter;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using TypeNameFormatter;
 
 namespace Avatars
 {
@@ -69,7 +69,7 @@ namespace Avatars
 
         [DebuggerNonUserCode]
         [ExcludeFromCodeCoverage]
-        string ToString(ParameterInfo parameter, int index) => 
+        string ToString(ParameterInfo parameter, int index) =>
             (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
             " " + parameter.Name +
             (parameter.IsOut ? "" :

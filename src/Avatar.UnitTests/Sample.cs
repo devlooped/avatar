@@ -11,12 +11,12 @@ namespace Avatars.UnitTests
             var avatar = new CalculatorClassAvatar();
             var recorder = new RecordingBehavior();
             avatar.AddBehavior(recorder);
-            
+
             var isOn = false;
             avatar.TurnedOn += (_, __) => isOn = true;
-            
+
             avatar.TurnOn();
-            
+
             Assert.True(isOn);
             Assert.Equal(3, avatar.Add(1, 2));
             Assert.Equal(default, avatar.Mode);

@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS0436
 using System;
-using Xunit;
 using Avatars;
+using Xunit;
 
 
 namespace Scenarios.MultipleInterfaces

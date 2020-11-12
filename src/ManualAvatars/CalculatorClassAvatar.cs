@@ -32,10 +32,10 @@ namespace Sample
 
         public override bool IsOn => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.IsOn));
 
-        public override int Add(int x, int y) => 
+        public override int Add(int x, int y) =>
             pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y), (m, n) => m.CreateValueReturn(base.Add(x, y), x, y));
 
-        public override int Add(int x, int y, int z) => 
+        public override int Add(int x, int y, int z) =>
             pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z), (m, n) => m.CreateValueReturn(base.Add(x, y, z), x, y, z));
 
         public override bool TryAdd(ref int x, ref int y, out int z)
@@ -44,7 +44,7 @@ namespace Sample
             var local_x = x;
             var local_y = y;
             var local_z = z;
-            
+
             var result = pipeline.Invoke(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z),
                 (m, n) => m.CreateValueReturn(base.TryAdd(ref local_x, ref local_y, out local_z), local_x, local_y, local_z), true);
 

@@ -36,9 +36,9 @@ namespace Avatars.CodeAnalysis
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
             = ImmutableArray.Create(
-                AvatarDiagnostics.BaseTypeNotFirst, 
+                AvatarDiagnostics.BaseTypeNotFirst,
                 AvatarDiagnostics.DuplicateBaseType,
-                AvatarDiagnostics.SealedBaseType, 
+                AvatarDiagnostics.SealedBaseType,
                 AvatarDiagnostics.EnumType);
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Avatars.CodeAnalysis
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         AvatarDiagnostics.EnumType,
-                        invocation.Syntax.GetLocation(), 
+                        invocation.Syntax.GetLocation(),
                         enumType.Name));
                 }
 

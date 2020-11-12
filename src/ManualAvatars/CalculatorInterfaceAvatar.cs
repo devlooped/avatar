@@ -33,7 +33,7 @@ namespace Sample
         {
             get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
             set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value));
-        }   
+        }
 
         public int Add(int x, int y) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y));
 

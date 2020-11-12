@@ -2,8 +2,8 @@
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Xunit;
 using Avatars;
+using Xunit;
 
 namespace Scenarios.CompilerGenerated
 {

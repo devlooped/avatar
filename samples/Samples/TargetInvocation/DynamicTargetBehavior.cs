@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.CSharp.RuntimeBinder;
 using Avatars;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Samples.TargetInvocation
 {
@@ -17,7 +17,7 @@ namespace Samples.TargetInvocation
 
         public DynamicTargetBehavior(dynamic target) => this.target = target;
 
-        public bool AppliesTo(IMethodInvocation invocation) 
+        public bool AppliesTo(IMethodInvocation invocation)
             => !unsupported.Contains(invocation.MethodBase) &&
                // NOTE: doing the proper binding for ref/out arguments is quite complicated 
                // with the dynamic approach, since we would need to generate variables to keep the 

@@ -1,5 +1,5 @@
-﻿using Samples;
-using Avatars;
+﻿using Avatars;
+using Samples;
 using Xunit;
 
 namespace Samples.TargetInvocation

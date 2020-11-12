@@ -35,7 +35,7 @@ namespace Samples
             calc.Store("Mem1", 50);
             calc.Recall("Mem1");
 
-            var calls = recorder.Invocations;            
+            var calls = recorder.Invocations;
         }
     }
 }

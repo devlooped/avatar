@@ -50,7 +50,7 @@ namespace Avatars.UnitTests
                 new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
-            
+
             pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
                 new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
 
@@ -200,7 +200,7 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
 
-            Assert.Throws<ArgumentException>(() 
+            Assert.Throws<ArgumentException>(()
                 => pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
                 new ExecuteDelegate((m, n) => throw new NotImplementedException()), true));
         }
@@ -394,7 +394,7 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public async Task WhenRunningParalell_ThenCanReplaceLocalPipelineFactory()
+        public async Task WhenRunningParallel_ThenCanReplaceLocalPipelineFactory()
         {
             var factory1 = new TestBehaviorPipelineFactory();
             var factory2 = new TestBehaviorPipelineFactory();
@@ -441,7 +441,7 @@ namespace Avatars.UnitTests
         object? NonVoidMethod() => null;
         object? NonVoidMethodWithArg(object arg) => null;
         object? NonVoidMethodWithArgRef(object arg1, ref object arg2) => null;
-        object? NonVoidMethodWithArgOut(object arg1, out object arg2) { arg2 = new object (); return null; }
+        object? NonVoidMethodWithArgOut(object arg1, out object arg2) { arg2 = new object(); return null; }
         object? NonVoidMethodWithArgRefOut(object arg1, ref object arg2, out object arg3) { arg3 = new object(); return null; }
     }
 }
