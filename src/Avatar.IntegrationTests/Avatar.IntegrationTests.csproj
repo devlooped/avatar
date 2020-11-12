@@ -30,7 +30,7 @@
 
   <ItemGroup Label="Targets">
     <PackageReference Include="Microsoft.ApplicationInsights" />
-    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.15.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.16.0" />
   </ItemGroup>
 
   <ItemGroup Label="net5 Targets" Condition="'$(TargetFramework)' == 'net5.0'">
