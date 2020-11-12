@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using TypeNameFormatter;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using TypeNameFormatter;
 
 namespace Avatars
 {
@@ -48,11 +48,11 @@ namespace Avatars
         public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
 
         /// <inheritdoc />
-        public IMethodReturn CreateExceptionReturn(Exception exception) 
+        public IMethodReturn CreateExceptionReturn(Exception exception)
             => new MethodReturn(this, exception);
 
         /// <inheritdoc />
-        public IMethodReturn CreateValueReturn(object? returnValue, params object?[] allArguments) 
+        public IMethodReturn CreateValueReturn(object? returnValue, params object?[] allArguments)
             => new MethodReturn(this, returnValue, allArguments);
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Avatars
 
             if (MethodBase.IsSpecialName)
             {
-                if (MethodBase.Name.Equals("get_Item", StringComparison.Ordinal) || 
+                if (MethodBase.Name.Equals("get_Item", StringComparison.Ordinal) ||
                     MethodBase.Name.Equals("set_Item", StringComparison.Ordinal))
                 {
                     result.Append("this");
@@ -89,7 +89,7 @@ namespace Avatars
                 {
                     result.Append(MethodBase.Name.Substring(4));
                 }
-                else if(MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+                else if (MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
                 {
                     result.Append(MethodBase.Name.Substring(4));
                     result.Append(" = ").Append(Arguments[0]?.ToString() ?? "null");
@@ -177,7 +177,7 @@ namespace Avatars
         /// equality for all <see cref="Arguments"/>.
         /// </summary>
         /// <returns><see langword="true"/> if the invocations are equal, <see langword="false"/> otherwise.</returns>
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
             => Equals(obj as IMethodInvocation);
 
         /// <summary>

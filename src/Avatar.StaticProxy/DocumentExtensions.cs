@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avatars;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CodeRefactorings;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Text;
-using Avatars;
-using Microsoft.CodeAnalysis.CodeRefactorings;
-using Microsoft.CodeAnalysis.CSharp;
-using System.Reflection;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -34,15 +34,15 @@ namespace Microsoft.CodeAnalysis
                 .Concat(new[] { new OverridableMembersAnalyzer() })
                 .ToImmutableArray());
 
-        static readonly Lazy<ImmutableArray<(CodeRefactoringProvider, ExportCodeRefactoringProviderAttribute)>> builtInRefactorings = new (() =>
-            MefHostServices
-                .DefaultAssemblies
-                .SelectMany(x => x.GetTypes()
-                .Where(t => !t.IsAbstract && typeof(CodeRefactoringProvider).IsAssignableFrom(t)))
-                .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
-                .Select(t => ((CodeRefactoringProvider)(Activator.CreateInstance(t)!), t.GetCustomAttribute<ExportCodeRefactoringProviderAttribute>()))
-                .Where(x => x.Item1 != null && x.Item2 != null)
-                .ToImmutableArray());
+        static readonly Lazy<ImmutableArray<(CodeRefactoringProvider, ExportCodeRefactoringProviderAttribute)>> builtInRefactorings = new(() =>
+           MefHostServices
+               .DefaultAssemblies
+               .SelectMany(x => x.GetTypes()
+               .Where(t => !t.IsAbstract && typeof(CodeRefactoringProvider).IsAssignableFrom(t)))
+               .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
+               .Select(t => ((CodeRefactoringProvider)(Activator.CreateInstance(t)!), t.GetCustomAttribute<ExportCodeRefactoringProviderAttribute>()))
+               .Where(x => x.Item1 != null && x.Item2 != null)
+               .ToImmutableArray());
 
         /// <summary>
         /// Exposes the built-in analyzers, discovered via reflection.

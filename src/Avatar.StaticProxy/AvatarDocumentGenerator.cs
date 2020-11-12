@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avatars.CodeAnalysis;
+using Avatars.Processors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Text;
-using Avatars.CodeAnalysis;
-using Avatars.Processors;
 
 namespace Avatars
 {
@@ -92,7 +92,7 @@ namespace Avatars
                     bylang => bylang
                         .GroupBy(proclang => proclang.Processor.Phase)
                         .ToDictionary(
-                            byphase => byphase.Key, 
+                            byphase => byphase.Key,
                             byphase => byphase.Select(proclang => proclang.Processor).ToArray()));
         }
 
@@ -138,7 +138,7 @@ namespace Avatars
             // This special case supports tests better.
             if (project.Solution.Workspace is AdhocWorkspace workspace)
             {
-                var directory = Path.Combine(Path.GetDirectoryName(project.FilePath) ?? "", 
+                var directory = Path.Combine(Path.GetDirectoryName(project.FilePath) ?? "",
                     Path.Combine(NamingConvention.RootNamespace.Split('.')));
                 Directory.CreateDirectory(directory);
 

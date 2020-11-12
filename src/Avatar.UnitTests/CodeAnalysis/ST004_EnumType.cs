@@ -1,7 +1,7 @@
 ﻿using System.IO;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Avatars.CodeAnalysis;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -19,7 +19,7 @@ namespace Avatars.UnitTests
                     File.ReadAllText(ThisAssembly.Constants.CodeAnalysis.ST004.Diagnostic.MultipleEnums),
                     File.ReadAllText(@"Avatar/Avatar.cs"),
                 },
-                new[] 
+                new[]
                 {
                     new DiagnosticResult
                     {

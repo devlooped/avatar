@@ -92,11 +92,11 @@ namespace Avatars
 
         public static Task<Document> AddMemberDeclarationsAsync(Solution solution, INamedTypeSymbol destination, IEnumerable<ISymbol> members, CancellationToken cancellationToken = default)
             => (Task<Document>)(addMemberDeclarationsAsync ?? throw NotSupported()).Invoke(
-                null, new object?[] 
-                { 
-                    solution, destination, members, 
-                    GetOptions(solution.Workspace.Options), 
-                    cancellationToken 
+                null, new object?[]
+                {
+                    solution, destination, members,
+                    GetOptions(solution.Workspace.Options),
+                    cancellationToken
                 })!;
 
         static object? GetOptions(OptionSet options)

@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS0436
 using System;
-using Xunit;
 using Avatars;
+using Xunit;
 
 namespace Scenarios.MultipleUses
 {
@@ -22,7 +22,7 @@ namespace Scenarios.MultipleUses
 
             Do();
         }
-        
+
         public void Do()
         {
             var disposable2 = Avatar.Of<IDisposable>();

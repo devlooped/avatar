@@ -44,8 +44,8 @@ namespace Avatars.UnitTests
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), 
-                path: new FileInfo(path).FullName, 
+            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path),
+                path: new FileInfo(path).FullName,
                 encoding: Encoding.UTF8);
 
             foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
@@ -62,18 +62,18 @@ namespace Avatars.UnitTests
                 new SyntaxTree[]
                 {
                     syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), 
-                        path: new FileInfo("Avatar/Avatar.cs").FullName, 
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"),
+                        path: new FileInfo("Avatar/Avatar.cs").FullName,
                         encoding: Encoding.UTF8),
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), 
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"),
                         path: new FileInfo("Avatar/Avatar.StaticFactory.cs").FullName,
                         encoding: Encoding.UTF8),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, 
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                     nullableContextOptions: NullableContextOptions.Enable));
 
-            var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
-                d.Severity == DiagnosticSeverity.Hidden || 
-                d.Severity == DiagnosticSeverity.Info || 
+            var diagnostics = compilation.GetDiagnostics().RemoveAll(d =>
+                d.Severity == DiagnosticSeverity.Hidden ||
+                d.Severity == DiagnosticSeverity.Info ||
                 // Type conflicts with referenced assembly, will happen because scenarios 
                 // are also compiled in the unit test project itself, but also in the scenario 
                 // file compilation, but the locally defined in source wins.

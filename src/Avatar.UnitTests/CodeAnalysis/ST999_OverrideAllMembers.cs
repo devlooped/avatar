@@ -14,7 +14,7 @@ namespace Avatars.UnitTests
 
         [Theory]
         [InlineData(
-            ThisAssembly.Constants.CodeAnalysis.ST999.Diagnostic.PublicClass, 
+            ThisAssembly.Constants.CodeAnalysis.ST999.Diagnostic.PublicClass,
             ThisAssembly.Constants.CodeAnalysis.ST999.Diagnostic.PublicClassFix, 4, 26)]
         public void Verify_Diagnostic(string path, string fix, int line, int column)
         {

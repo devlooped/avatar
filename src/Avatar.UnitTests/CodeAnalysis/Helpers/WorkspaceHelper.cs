@@ -5,12 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Avatars;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Avatars;
 using Xunit;
 
 public static class WorkspaceHelper

@@ -51,7 +51,7 @@ namespace Avatars
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/>.
         /// </summary>
-        public BehaviorPipeline() 
+        public BehaviorPipeline()
             => Behaviors = new BehaviorsCollection();
 
         /// <summary>

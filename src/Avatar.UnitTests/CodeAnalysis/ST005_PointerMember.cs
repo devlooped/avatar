@@ -1,7 +1,7 @@
 ﻿using System.IO;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Avatars.CodeAnalysis;
 using Xunit;
 
 namespace Avatars.UnitTests

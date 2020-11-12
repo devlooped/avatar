@@ -22,9 +22,9 @@ namespace Avatars
             => base.ShouldInterceptMethod(type, method) || IsObjectMethod(method);
 
         static bool IsObjectMethod(MethodInfo method)
-            => method.DeclaringType == typeof(object) && 
-                (method.Name == nameof(object.ToString) || 
-                method.Name == nameof(object.Equals) || 
+            => method.DeclaringType == typeof(object) &&
+                (method.Name == nameof(object.ToString) ||
+                method.Name == nameof(object.Equals) ||
                 method.Name == nameof(object.GetHashCode));
     }
 }

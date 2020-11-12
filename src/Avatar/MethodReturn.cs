@@ -80,9 +80,9 @@ namespace Avatars
             {
                 result.Append(" => ")
                     .Append(
-                        ReturnValue == null ? "null" : 
-                        r.ReturnType == typeof(string) ? $"\"{ReturnValue}\"" : 
-                        r.ReturnType == typeof(bool) ? ReturnValue.ToString().ToLowerInvariant() : 
+                        ReturnValue == null ? "null" :
+                        r.ReturnType == typeof(string) ? $"\"{ReturnValue}\"" :
+                        r.ReturnType == typeof(bool) ? ReturnValue.ToString().ToLowerInvariant() :
                         ReturnValue);
             }
 

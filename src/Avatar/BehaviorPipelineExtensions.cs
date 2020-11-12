@@ -15,8 +15,8 @@ namespace Avatars
         /// defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>
-        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwNotImplemented = true) 
-            => pipeline.Invoke(invocation, (i, n) 
+        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwNotImplemented = true)
+            => pipeline.Invoke(invocation, (i, n)
                 => throwNotImplemented ? throw new NotImplementedException() : i.CreateValueReturn(null, i.Arguments.ToArray()), true);
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Avatars
         /// return, this defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>
-        public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation) 
+        public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation)
             => (T?)pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), true).ReturnValue;
 
         /// <summary>
@@ -49,13 +49,13 @@ namespace Avatars
         /// Since a value is required to return, this executes the pipeline and requests to throw on 
         /// exceptions.
         /// </summary>
-        public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target) 
+        public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
             => (T?)pipeline.Invoke(invocation, target, true).ReturnValue;
 
         /// <summary>
         /// Executes and forces an exception, for void methods.
         /// </summary>
-        public static void Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target) 
+        public static void Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
             => pipeline.Invoke(invocation, target, true);
 
         /// <summary>

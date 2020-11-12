@@ -20,7 +20,7 @@ namespace Avatars.Processors
     public class DefaultImports : IDocumentProcessor
     {
         // These namespaces are used by the default avatar code and are always imported.
-        static readonly string[] DefaultNamespaces = 
+        static readonly string[] DefaultNamespaces =
         {
             typeof(EventArgs).Namespace!,
             typeof(IList<>).Namespace!,
@@ -61,7 +61,7 @@ namespace Avatars.Processors
             if (root == null)
                 return document;
 
-            var imports =  generator.GetNamespaceImports(root).Select(generator.GetName);
+            var imports = generator.GetNamespaceImports(root).Select(generator.GetName);
 
             var missing = new HashSet<string>(namespaces);
             missing.ExceptWith(imports);

@@ -22,10 +22,10 @@ namespace Avatars
         /// A <see cref="LocalDefault"/> can override the value of this global 
         /// default, if assigned to a non-null value.
         /// </remarks>
-        public static IAvatarFactory Default 
-        { 
-            get => localFactory.Value ?? defaultFactory; 
-            set => defaultFactory = value; 
+        public static IAvatarFactory Default
+        {
+            get => localFactory.Value ?? defaultFactory;
+            set => defaultFactory = value;
         }
 
         /// <summary>

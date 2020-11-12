@@ -68,7 +68,7 @@ namespace Avatars.UnitTests
             var nextCalled = false;
 
             behavior.Execute(
-                new MethodInvocation(target, method), 
+                new MethodInvocation(target, method),
                 () => (m, n) =>
                 {
                     nextCalled = true;

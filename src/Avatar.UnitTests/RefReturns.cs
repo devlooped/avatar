@@ -11,7 +11,7 @@ namespace Avatars.UnitTests
         public void CanReturnRef()
         {
             INumbers avatar = new NumbersAvatar();
-            
+
 
             Ref<int> value = 25;
 

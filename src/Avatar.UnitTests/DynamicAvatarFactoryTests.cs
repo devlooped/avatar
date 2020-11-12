@@ -16,7 +16,7 @@ namespace Avatars.UnitTests
             var factory = new DynamicAvatarFactory();
 
 
-            var calculator = (ICalculator)factory.CreateAvatar(Assembly.GetExecutingAssembly(), 
+            var calculator = (ICalculator)factory.CreateAvatar(Assembly.GetExecutingAssembly(),
                 typeof(ICalculator), Array.Empty<Type>(), Array.Empty<object>());
 
             var recorder = new RecordingBehavior();
