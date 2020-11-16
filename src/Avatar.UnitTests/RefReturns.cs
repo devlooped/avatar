@@ -15,7 +15,7 @@ namespace Avatars.UnitTests
 
             Ref<int> value = 25;
 
-            avatar.AddBehavior((invocation, next) => invocation.CreateValueReturn(value, invocation.Arguments.ToArray()));
+            avatar.AddBehavior((invocation, next) => invocation.CreateValueReturn(value, invocation.Arguments));
 
             var index = 0;
             ref int v = ref avatar.NumberAt(ref index, out var count);

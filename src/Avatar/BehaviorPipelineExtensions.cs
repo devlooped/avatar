@@ -17,7 +17,7 @@ namespace Avatars
         /// </summary>
         public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwNotImplemented = true)
             => pipeline.Invoke(invocation, (i, n)
-                => throwNotImplemented ? throw new NotImplementedException() : i.CreateValueReturn(null, i.Arguments.ToArray()), true);
+                => throwNotImplemented ? throw new NotImplementedException() : i.CreateValueReturn(null, i.Arguments), true);
 
         /// <summary>
         /// Since no <see cref="ExecuteDelegate"/> is provided as a target, and a value is required to 

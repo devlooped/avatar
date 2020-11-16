@@ -22,9 +22,9 @@ namespace Avatars
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase.Name == nameof(GetHashCode))
-                return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target));
+                return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target), invocation.Arguments);
             if (invocation.MethodBase.Name == nameof(Equals))
-                return invocation.CreateValueReturn(ReferenceEquals(invocation.Target, invocation.Arguments[0]));
+                return invocation.CreateValueReturn(ReferenceEquals(invocation.Target, invocation.Arguments.GetValue(0)), invocation.Arguments);
 
             return next().Invoke(invocation, next);
         }

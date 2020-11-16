@@ -164,7 +164,7 @@ namespace Avatars.UnitTests
             var expected = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object())));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, m.Arguments)));
 
             Func<object, object?> a = NonVoidMethodWithArg;
 
@@ -189,7 +189,7 @@ namespace Avatars.UnitTests
                 new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
-            Assert.Equal(output, result.Outputs[0]);
+            Assert.Equal(output, result.Outputs.GetValue(0));
         }
 
         [Fact]
@@ -220,7 +220,7 @@ namespace Avatars.UnitTests
                 new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
-            Assert.Equal(output, result.Outputs[0]);
+            Assert.Equal(output, result.Outputs.GetValue(0));
         }
 
         [Fact]
@@ -239,8 +239,8 @@ namespace Avatars.UnitTests
                 new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
-            Assert.Equal(byref, result.Outputs[0]);
-            Assert.Equal(output, result.Outputs[1]);
+            Assert.Equal(byref, result.Outputs.GetValue(0));
+            Assert.Equal(output, result.Outputs.GetValue(1));
         }
 
         [Fact]

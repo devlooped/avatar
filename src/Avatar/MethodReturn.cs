@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -12,37 +13,31 @@ namespace Avatars
     class MethodReturn : IMethodReturn
     {
         readonly IMethodInvocation invocation;
-        readonly object?[] allArguments;
 
-        public MethodReturn(IMethodInvocation invocation, object? returnValue, object?[] allArguments)
+        public MethodReturn(IMethodInvocation invocation, object? returnValue, IArgumentCollection arguments)
         {
+            if (invocation.MethodBase.GetParameters().Length != arguments.Count)
+                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(invocation.MethodBase.Name, invocation.MethodBase.GetParameters().Length, arguments.Count), nameof(arguments));
+
             this.invocation = invocation;
-            this.allArguments = allArguments;
 
             ReturnValue = returnValue;
 
             var outputArgs = new List<object?>();
             var outputInfos = new List<ParameterInfo>();
-            var allInfos = invocation.MethodBase.GetParameters();
+            var parameters = invocation.MethodBase.GetParameters();
 
-            for (var i = 0; i < allInfos.Length; i++)
-            {
-                var info = allInfos[i];
-                if (info.ParameterType.IsByRef)
-                {
-                    outputArgs.Add(allArguments[i]);
-                    outputInfos.Add(info);
-                }
-            }
+            var outputs = new ArgumentCollection(invocation.MethodBase.GetParameters().Where(x => x.ParameterType.IsByRef).ToArray());
+            foreach (var info in outputs)
+                outputs.Add(info.Name, arguments.GetValue(info.Name));
 
-            Outputs = new ArgumentCollection(outputArgs, outputInfos);
+            Outputs = outputs;
         }
 
         public MethodReturn(IMethodInvocation invocation, Exception exception)
         {
             this.invocation = invocation;
-            allArguments = Array.Empty<object>();
-            Outputs = new ArgumentCollection(new object[0], new ParameterInfo[0]);
+            Outputs = new ArgumentCollection(Array.Empty<ParameterInfo>());
             Exception = exception;
         }
 
@@ -56,7 +51,7 @@ namespace Avatars
 
         public Exception? Exception { get; }
 
-        public IDictionary<string, object> Context { get => invocation.Context; }
+        public IDictionary<string, object> Context => invocation.Context;
 
         /// <summary>
         /// Gets a friendly representation of the object.

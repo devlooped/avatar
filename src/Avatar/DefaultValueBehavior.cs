@@ -38,15 +38,15 @@ namespace Avatars
         /// </summary>
         IMethodReturn IAvatarBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            var arguments = invocation.Arguments.ToArray() ?? Array.Empty<object>();
-            var parameters = invocation.MethodBase.GetParameters() ?? Array.Empty<ParameterInfo>();
-            for (var i = 0; i < parameters.Length; i++)
+            var arguments = new ArgumentCollection(invocation.Arguments);
+            foreach (var parameter in arguments)
             {
-                var parameter = parameters[i];
                 // Only provide default values for out parameters. 
                 // NOTE: does not touch ByRef values.
                 if (parameter.IsOut)
-                    arguments[i] = Provider.GetDefault(parameter.ParameterType);
+                    arguments.SetValue(parameter.Name, Provider.GetDefault(parameter.ParameterType));
+                else
+                    arguments.SetValue(parameter.Name, invocation.Arguments.GetValue(parameter.Name));
             }
 
             var returnValue = default(object);
