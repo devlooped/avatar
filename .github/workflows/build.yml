@@ -1,4 +1,4 @@
-name: build
+﻿name: build
 on: 
   push:
     branches: [ main, dev, 'feature/*', 'rel/*' ]
@@ -7,7 +7,6 @@ on:
 
 env:
   DOTNET_NOLOGO: true
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 defaults:
   run:
@@ -23,10 +22,10 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
-      - name: ⚙ dotnet 5.0 rc2
+      - name: ⚙ dotnet 5.0.x
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100-rc.2.20479.15
+          dotnet-version: 5.0.x
       - name: ❱❱ format
         run: |
           dotnet tool update -g --version 4.1.* dotnet-format >nul || dotnet tool list -g
@@ -72,10 +71,10 @@ jobs:
         with:
           name: bin
           path: bin
-      - name: ⚙ dotnet 5.0 rc2
+      - name: ⚙ dotnet 5.0
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100-rc.2.20479.15
+          dotnet-version: 5.0.x
       - name: 🧪 test
         run: dotnet test -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
         working-directory: src/Acceptance

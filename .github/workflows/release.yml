@@ -13,10 +13,10 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
-      - name: ⚙ dotnet 5.0 rc2
+      - name: ⚙ dotnet 5.0.x
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.100-rc.2.20479.15
+          dotnet-version: 5.0.x
       - name: 🙏 build
         run: dotnet msbuild -r -m:1 -bl:build.binlog -p:version=${GITHUB_REF#refs/*/v}
       - name: 🧪 test net5.0
