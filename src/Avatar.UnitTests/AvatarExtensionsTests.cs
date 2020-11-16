@@ -175,7 +175,7 @@ namespace Avatars.UnitTests
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
             public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
-                => new MethodReturn(invocation, "test", Array.Empty<object>());
+                => new MethodReturn(invocation, "test", invocation.Arguments);
 
             public override string ToString() => nameof(TestBehavior);
         }

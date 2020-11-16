@@ -22,13 +22,29 @@ namespace Avatars
         /// </summary>
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
-        /// <param name="arguments">The optional arguments passed to the method invocation.</param>
+        /// <param name="arguments">The arguments of the method invocation.</param>
         public MethodInvocation(object target, MethodBase method, params object?[] arguments)
+            : this(target, method, new ArgumentCollection(method.GetParameters(), arguments))
+        {
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
+        /// </summary>
+        /// <param name="target">The target object where the invocation is being performed.</param>
+        /// <param name="method">The method being invoked.</param>
+        /// <param name="arguments">The arguments of the method invocation. Can be <see langword="null"/> or not specified 
+        /// if the <paramref name="method"/> does not have any parameters.</param>
+        public MethodInvocation(object target, MethodBase method, IArgumentCollection? arguments = null)
         {
             // TODO: validate that arguments length and type match the method info?
             Target = target ?? throw new ArgumentNullException(nameof(target));
             MethodBase = method ?? throw new ArgumentNullException(nameof(method));
-            Arguments = new ArgumentCollection(arguments, method.GetParameters());
+            Arguments = arguments ?? new ArgumentCollection(method.GetParameters());
+
+            if (method.GetParameters().Length != Arguments.Count)
+                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count), nameof(arguments));
+
             Context = new Dictionary<string, object>();
         }
 
@@ -52,8 +68,8 @@ namespace Avatars
             => new MethodReturn(this, exception);
 
         /// <inheritdoc />
-        public IMethodReturn CreateValueReturn(object? returnValue, params object?[] allArguments)
-            => new MethodReturn(this, returnValue, allArguments);
+        public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null)
+            => new MethodReturn(this, returnValue, arguments ?? new ArgumentCollection(Array.Empty<ParameterInfo>()));
 
         /// <summary>
         /// Gets a friendly representation of the invocation.
@@ -92,7 +108,7 @@ namespace Avatars
                 else if (MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
                 {
                     result.Append(MethodBase.Name.Substring(4));
-                    result.Append(" = ").Append(Arguments[0]?.ToString() ?? "null");
+                    result.Append(" = ").Append(Arguments.GetValue(0)?.ToString() ?? "null");
                 }
                 else if (MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))
                 {
@@ -139,7 +155,7 @@ namespace Avatars
             else if (isevent)
             {
                 return result
-                    .Append(((Delegate)Arguments[0]!).GetMethodInfo().Name)
+                    .Append(((Delegate)Arguments.GetValue(0)!).GetMethodInfo().Name)
                     .ToString();
             }
 

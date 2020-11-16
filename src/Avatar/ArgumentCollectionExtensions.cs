@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace Avatars
 {
@@ -10,12 +11,26 @@ namespace Avatars
     public static class ArgumentCollectionExtensions
     {
         /// <summary>
+        /// Ensures the length of both the arguments and the method or constructor 
+        /// arguments matches.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void EnsureSameLength(this IArgumentCollection arguments, MethodBase member)
+        {
+            if (member is MethodInfo info && info.GetParameters().Length != arguments.Count)
+                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(info.Name, info.GetParameters().Length, arguments.Count));
+
+            if (member is MethodInfo ctor && ctor.GetParameters().Length != arguments.Count)
+                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(ctor.Name, ctor.GetParameters().Length, arguments.Count));
+        }
+
+        /// <summary>
         /// Gets a typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="name"/>.
         /// </summary>
         /// <exception cref="ArgumentNullException">The value in the collection was <see langword="null"/>.</exception>
         public static T Get<T>(this IArgumentCollection arguments, string name) where T : notnull
-            => Get<T>("'" + name + "'", arguments[name]);
+            => Get<T>("'" + name + "'", arguments.GetValue(name));
 
         /// <summary>
         /// Gets a typed argument from the <paramref name="arguments"/> collection 
@@ -23,21 +38,21 @@ namespace Avatars
         /// </summary>
         /// <exception cref="ArgumentNullException">The value in the collection was <see langword="null"/>.</exception>
         public static T Get<T>(this IArgumentCollection arguments, int index) where T : notnull
-            => Get<T>(index.ToString(), arguments[index]);
+            => Get<T>(index.ToString(), arguments.GetValue(index));
 
         /// <summary>
         /// Gets an optional (nullable) typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="name"/>.
         /// </summary>
         public static T? GetNullable<T>(this IArgumentCollection arguments, string name)
-            => GetNullable<T>("'" + name + "'", arguments[name]);
+            => GetNullable<T>("'" + name + "'", arguments.GetValue(name));
 
         /// <summary>
         /// Gets an optional (nullable) typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="index"/>.
         /// </summary>
         public static T? GetNullable<T>(this IArgumentCollection arguments, int index)
-            => GetNullable<T>(index.ToString(), arguments[index]);
+            => GetNullable<T>(index.ToString(), arguments.GetValue(index));
 
         static T Get<T>(string argument, object? value) where T : notnull
         {

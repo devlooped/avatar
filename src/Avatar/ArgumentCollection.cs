@@ -9,84 +9,183 @@ using TypeNameFormatter;
 
 namespace Avatars
 {
+    /// <summary>
+    /// Contains the arguments of a method invocation as well as their 
+    /// parameter information.
+    /// </summary>
     [DebuggerTypeProxy(typeof(DebugView))]
     [DebuggerDisplay("Count = {Count}")]
-    class ArgumentCollection : IArgumentCollection
+    public class ArgumentCollection : IArgumentCollection
     {
-        readonly List<ParameterInfo> infos;
-        readonly List<object?> values;
+        readonly ParameterInfo[] infos;
+        readonly Dictionary<string, ParameterInfo> nameParams;
+        // TODO: should we provide box-free holders too?
+        readonly Dictionary<string, object?> values = new();
 
-        public ArgumentCollection(object?[] values, ParameterInfo[] infos)
-            : this((IEnumerable<object>)values, (IEnumerable<ParameterInfo>)infos) { }
-
-        public ArgumentCollection(IEnumerable<object?> values, IEnumerable<ParameterInfo> infos)
+        /// <summary>
+        /// Creates a new argument collection by cloning the given <see cref="IArgumentCollection"/> 
+        /// and optionally specifying new values.
+        /// </summary>
+        /// <remarks>
+        /// If the received <paramref name="arguments"/> is an instance of <see cref="ArgumentCollection"/>, 
+        /// the existing values will be copied over too.
+        /// </remarks>
+        public ArgumentCollection(IArgumentCollection arguments, params object?[] values)
         {
-            this.infos = infos.ToList();
-            this.values = values.ToList();
-
-            if (this.infos.Count != this.values.Count)
-                throw new ArgumentException("Number of arguments must match number of parameters.");
-        }
-
-        public object? this[int index]
-        {
-            get => values[index];
-            set => values[index] = value;
-        }
-
-        public object? this[string name]
-        {
-            get => values[ValidIndexOf(name)];
-            set => values[ValidIndexOf(name)] = value;
-        }
-
-        public int Count => infos.Count;
-
-        public bool Contains(string name) => IndexOf(name) != -1;
-
-        public IEnumerator<object?> GetEnumerator() => values.GetEnumerator();
-
-        public ParameterInfo GetInfo(string name) => infos[ValidIndexOf(name)];
-
-        public ParameterInfo GetInfo(int index) => infos[index];
-
-        public string NameOf(int index) => infos[index].Name;
-
-        public int IndexOf(string name)
-        {
-            for (var i = 0; i < infos.Count; ++i)
+            if (arguments is ArgumentCollection collection)
             {
-                if (infos[i].Name == name)
-                    return i;
+                infos = collection.infos;
+                nameParams = collection.nameParams;
+                this.values = collection.values;
+            }
+            else
+            {
+                infos = arguments.ToArray();
+                nameParams = infos.ToDictionary(x => x.Name);
             }
 
-            return -1;
+            SetValues(values);
         }
 
+        /// <summary>
+        /// Creates a new argument collection using the given parameter information 
+        /// and optional values.
+        /// </summary>
+        public ArgumentCollection(ParameterInfo[] infos, params object?[] values)
+        {
+            this.infos = infos;
+            nameParams = infos.ToDictionary(x => x.Name);
+            SetValues(values);
+        }
+
+        /// <inheritdoc />
+        public ParameterInfo this[int index]
+        {
+            get => (index < 0 || index >= infos.Length) 
+                ? throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index)) 
+                : infos[index];
+        }
+
+        /// <inheritdoc />
+        public ParameterInfo this[string name]
+        {
+            get => nameParams.TryGetValue(name, out var parameter) 
+                ? parameter 
+                : throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(name));
+        }
+
+        /// <inheritdoc />
+        public int Count => infos.Length;
+
+        /// <inheritdoc />
+        public object? GetValue(string name)
+        {
+            if (!nameParams.ContainsKey(name))
+                throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(name));
+
+            return values.TryGetValue(name, out var value) ? value : null;
+        }
+
+        /// <inheritdoc />
+        public object? GetValue(int index)
+        {
+            if (index < 0 || index >= infos.Length)
+                throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index));
+
+            return values.TryGetValue(infos[index].Name, out var value) ? value : null;
+        }
+
+        /// <inheritdoc />
+        public void SetValue(string name, object? value)
+        {
+            if (!nameParams.ContainsKey(name))
+                throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(name));
+
+            values[name] = value;
+        }
+
+        /// <inheritdoc />
+        public void SetValue(int index, object? value)
+        {
+            if (index < 0 || index >= infos.Length)
+                throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index));
+
+            SetValue(infos[index].Name, value);
+        }
+
+        /// <summary>
+        /// Sets the value of the parameter with the given name.
+        /// </summary>
+        /// <typeparam name="T">Type of the value being set.</typeparam>
+        /// <param name="name">Name of the argument being set.</param>
+        /// <param name="value">Value of the argument.</param>
+        /// <remarks>
+        /// This method is equivalent to <see cref="SetValue(string, object?)"/> and 
+        /// supports object initialization syntax so you can write code like:
+        /// <code>
+        /// var args = new ArgumentCollection(parameters) 
+        /// {
+        ///   { "message", "hello" },
+        ///   { "count", 25 },
+        ///   { "enabled", true },
+        /// };
+        /// </code>
+        /// </remarks>
+        public void Add<T>(string name, T? value) => SetValue(name, value);
+
+        /// <summary>
+        /// Sets the value of the parameter with the given index.
+        /// </summary>
+        /// <typeparam name="T">Type of the value being set.</typeparam>
+        /// <param name="index">Index of the argument being set.</param>
+        /// <param name="value">Value of the argument.</param>
+        /// <remarks>
+        /// This method is equivalent to <see cref="SetValue(int, object?)"/> and 
+        /// supports object initialization syntax so you can write code like:
+        /// <code>
+        /// var args = new ArgumentCollection(parameters) 
+        /// {
+        ///   { 0, "hello" },
+        ///   { 1, 25 },
+        ///   { 2, true },
+        /// };
+        /// </code>
+        /// </remarks>
+        public void Add<T>(int index, T? value) => SetValue(index, value);
+
+        /// <inheritdoc />
+        public IEnumerator<ParameterInfo> GetEnumerator() => nameParams.Values.GetEnumerator();
+
+        /// <inheritdoc />
         [DebuggerNonUserCode]
         [ExcludeFromCodeCoverage]
         public override string ToString() => string.Join(", ", infos.Select(ToString));
 
         [DebuggerNonUserCode]
         [ExcludeFromCodeCoverage]
-        string ToString(ParameterInfo parameter, int index) =>
+        string ToString(ParameterInfo parameter) =>
             (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
             " " + parameter.Name +
             (parameter.IsOut ? "" :
-                (": " +
-                    ((IsString(parameter.ParameterType) && values[index] != null) ? "\"" + values[index] + "\"" :
+                (": " + (!values.TryGetValue(parameter.Name, out var value) ? "null" :
+                    ((IsString(parameter.ParameterType) && value != null) ? "\"" + value + "\"" :
                         // render boolean as lowercase to match C#
-                        (values[index] is bool b) ? b.ToString().ToLowerInvariant() : (values[index] ?? "null"))
+                        (value is bool b) ? b.ToString().ToLowerInvariant() : value))
                 )
             );
 
-        int ValidIndexOf(string name)
+        void SetValues(object?[] values)
         {
-            var index = IndexOf(name);
-            if (index == -1)
-                throw new KeyNotFoundException(name);
+            if (values != null && values.Length > 0)
+            {
+                if (values.Length != infos.Length)
+                    throw new ArgumentException(ThisAssembly.Strings.ArgumentsMismatch);
 
-            return index;
+                for (var i = 0; i < values.Length; i++)
+                {
+                    this.values[infos[i].Name] = values[i];
+                }
+            }
         }
 
         static bool IsString(Type type) => type == typeof(string) ||
@@ -102,7 +201,8 @@ namespace Avatars
 
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             public KeyValuePair<ParameterInfo, object?>[] Items => arguments.infos
-                .Select((info, index) => new KeyValuePair<ParameterInfo, object?>(info, arguments.values[index]))
+                // TODO: get value display, not the actual value??
+                .Select(info => new KeyValuePair<ParameterInfo, object?>(info, arguments.GetValue(info.Name)))
                 .ToArray();
         }
     }

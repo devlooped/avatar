@@ -40,9 +40,9 @@ namespace Avatars
         /// current invocation.
         /// </summary>
         /// <param name="returnValue">Optional return value from the method invocation. <see langword="null"/> for <see langword="void"/> methods.</param>
-        /// <param name="allArguments">Ordered list of all arguments to the method invocation, including ref/out arguments.</param>
+        /// <param name="arguments">Ordered list of all arguments to the method invocation, including ref/out arguments. <see langword="null"/> for parameterless members.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
-        IMethodReturn CreateValueReturn(object? returnValue, params object?[] allArguments);
+        IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null);
 
         /// <summary>
         /// Creates a method invocation return that represents 

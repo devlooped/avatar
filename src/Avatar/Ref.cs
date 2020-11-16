@@ -43,7 +43,7 @@ namespace Avatars
     /// </summary>
     /// <remarks>
     /// An instance of this class can be set as the <see cref="IMethodReturn.ReturnValue"/> 
-    /// (i.e. when calling <see cref="IMethodInvocation.CreateValueReturn(object?, object?[])"/>)
+    /// (i.e. when calling <see cref="IMethodInvocation.CreateValueReturn"/>)
     /// for cases where the method signature uses ref returns.
     /// See https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/ref-returns.
     /// </remarks>

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Castle.DynamicProxy;
 
 namespace Avatars
@@ -60,11 +63,11 @@ namespace Avatars
                 throw exception;
 
             invocation.ReturnValue = returns.ReturnValue;
-            for (var i = 0; i < returns.Outputs.Count; i++)
+            var indexed = input.Arguments.Select((p, i) => (p.Name, i)).ToDictionary(x => x.Name, x => x.i);
+            foreach (var prm in returns.Outputs)
             {
-                var name = returns.Outputs.GetInfo(i).Name;
-                var index = input.Arguments.IndexOf(name);
-                invocation.SetArgumentValue(index, returns.Outputs[i]);
+                var index = indexed[prm.Name];
+                invocation.SetArgumentValue(index, returns.Outputs.GetValue(prm.Name));
             }
         }
 

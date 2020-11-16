@@ -19,8 +19,8 @@ namespace Avatars.UnitTests
             var result = behavior.Execute(new MethodInvocation(new object(), method, value), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
-            Assert.NotNull(result.Outputs[0]);
-            Assert.Same(result.Outputs[0], value);
+            Assert.NotNull(result.Outputs.GetValue(0));
+            Assert.Same(result.Outputs.GetValue(0), value);
         }
 
         [Fact]
@@ -33,8 +33,8 @@ namespace Avatars.UnitTests
             var result = behavior.Execute(new MethodInvocation(new object(), method, platform), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
-            Assert.NotNull(result.Outputs[0]);
-            Assert.Equal(platform, result.Outputs[0]);
+            Assert.NotNull(result.Outputs.GetValue(0));
+            Assert.Equal(platform, result.Outputs.GetValue(0));
         }
 
         [Fact]
@@ -46,8 +46,8 @@ namespace Avatars.UnitTests
             var result = behavior.Execute(new MethodInvocation(new object(), method, new object[1]), () => null!);
 
             Assert.Equal(1, result.Outputs.Count);
-            Assert.NotNull(result.Outputs[0]);
-            Assert.True(result.Outputs[0] is object[]);
+            Assert.NotNull(result.Outputs.GetValue(0));
+            Assert.True(result.Outputs.GetValue(0) is object[]);
         }
 
         [Fact]
