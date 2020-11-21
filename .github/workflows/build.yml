@@ -22,6 +22,9 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+      - name: 🖉 version
+        run: echo "VERSION_SUFFIX=$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        shell: bash
       - name: ⚙ dotnet 5.0.x
         uses: actions/setup-dotnet@v1
         with:
@@ -31,7 +34,7 @@ jobs:
           dotnet tool update -g --version 4.1.* dotnet-format >nul || dotnet tool list -g
           dotnet format -f --check -v:diag
       - name: 🙏 build
-        run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$VERSION_SUFFIX"
       - name: 🧪 test net5.0
         run: dotnet test --no-build -f net5.0 -m:1 --blame-hang --blame-hang-timeout 5m -d $GITHUB_WORKSPACE/logs/${{ matrix.os }}.net5.txt -r $GITHUB_WORKSPACE/logs
         working-directory: src/Avatar.UnitTests
@@ -40,7 +43,7 @@ jobs:
         working-directory: src/Avatar.UnitTests
         if: matrix.os == 'windows-latest'
       - name: 📦 pack
-        run: dotnet msbuild -t:pack -m:1 -bl:pack.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet msbuild -t:pack -m:1 -bl:pack.binlog -p:versionsuffix="$VERSION_SUFFIX"
         working-directory: src/Pack
       - name: 🔼 logs
         if: ${{ always() }}
@@ -76,7 +79,7 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: 🧪 test
-        run: dotnet test -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet test -p:versionsuffix="$VERSION_SUFFIX"
         working-directory: src/Acceptance
 
   push:
