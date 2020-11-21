@@ -2,10 +2,8 @@
 
   <!-- If source generators aren't supported, we just won't register the static one -->
   <PropertyGroup>
-    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' and ('$(LangVersion)' == '9.0' or '$(LangVersion)' == 'Preview') and 
-                                          $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
-    <RegisterStaticAvatarFactory Condition="'$(RegisterStaticAvatarFactory)' == '' and 
-                                           '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticAvatarFactory>
+    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' AND $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
+    <RegisterStaticAvatarFactory Condition="'$(RegisterStaticAvatarFactory)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticAvatarFactory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -20,7 +18,7 @@
     <CompilerVisibleProperty Include="AvatarAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(AvatarAnalyzerDir)\Avatar*.dll" />
   </ItemGroup>
 
@@ -33,11 +31,11 @@
   <ItemGroup>
     <Compile Update="@(Compile)">
       <!-- Hide Avatar.cs/vb from the project -->
-      <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Avatar'">false</Visible>
+      <Visible Condition="'%(NuGetItemType)' == 'Compile' AND '%(NuGetPackageId)' == 'Avatar'">false</Visible>
     </Compile>
   </ItemGroup>
 
   <Import Project="Avatar.DynamicProxy.targets"
-          Condition="'$(RegisterStaticAvatarFactory)' != 'true' and  Exists('Avatar.DynamicProxy.targets')" />
+          Condition="'$(RegisterStaticAvatarFactory)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
 
 </Project>
