@@ -68,6 +68,15 @@ namespace Avatars
         public IList<IAvatarBehavior> Behaviors { get; }
 
         /// <summary>
+        /// Invokes pipeline without a target.
+        /// </summary>
+        /// <remarks>
+        /// If the target is reached, a <see cref="NotImplementedException"/> will be thrown.
+        /// </remarks>
+        public IMethodReturn Invoke(IMethodInvocation invocation, bool throwOnException = false)
+            => Invoke(invocation, (input, next) => throw new NotImplementedException(), throwOnException);
+
+        /// <summary>
         /// Invoke the pipeline with the given input.
         /// </summary>
         /// <param name="invocation">Input to the method call.</param>
