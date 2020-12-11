@@ -44,18 +44,18 @@ namespace Sample
             z = default;
 
             var result = pipeline.Invoke(new MethodInvocation(this, method, x, y, z),
-                (m, n) => 
+                (m, n) =>
                 {
                     var local_x = m.Arguments.Get<int>("x");
                     var local_y = m.Arguments.Get<int>("y");
                     var local_z = m.Arguments.Get<int>("z");
-                    return m.CreateValueReturn(base.TryAdd(ref local_x, ref local_y, out local_z), 
+                    return m.CreateValueReturn(base.TryAdd(ref local_x, ref local_y, out local_z),
                         new ArgumentCollection(method.GetParameters())
                         {
                             { "x", local_x },
                             { "y", local_y },
                             { "z", local_z },
-                        }); 
+                        });
                 }, true);
 
             x = result.Outputs.GetNullable<int>("x");

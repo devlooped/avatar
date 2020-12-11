@@ -63,16 +63,16 @@ namespace Avatars
         /// <inheritdoc />
         public ParameterInfo this[int index]
         {
-            get => (index < 0 || index >= infos.Length) 
-                ? throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index)) 
+            get => (index < 0 || index >= infos.Length)
+                ? throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index))
                 : infos[index];
         }
 
         /// <inheritdoc />
         public ParameterInfo this[string name]
         {
-            get => nameParams.TryGetValue(name, out var parameter) 
-                ? parameter 
+            get => nameParams.TryGetValue(name, out var parameter)
+                ? parameter
                 : throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(name));
         }
 
@@ -174,7 +174,7 @@ namespace Avatars
                 (": " + (!values.TryGetValue(parameter.Name, out var value) ? "null" :
                     ((IsString(parameter.ParameterType) && value != null) ? "\"" + value + "\"" :
                         // render boolean as lowercase to match C#
-                        (value is bool b) ? b.ToString().ToLowerInvariant() : 
+                        (value is bool b) ? b.ToString().ToLowerInvariant() :
                         value ?? "null"))
                 )
             );
