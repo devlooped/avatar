@@ -168,7 +168,7 @@ namespace Avatars
         [ExcludeFromCodeCoverage]
         string TypeName(Type type) => type.Name;
 
-#region Equality
+        #region Equality
 
         /// <summary>
         /// Tests the current invocation against another for equality, taking into account the target object 
@@ -211,6 +211,6 @@ namespace Avatars
             return hash.ToHashCode();
         }
 
-#endregion
+        #endregion
     }
 }
