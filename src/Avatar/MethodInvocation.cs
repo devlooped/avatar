@@ -80,7 +80,9 @@ namespace Avatars
         /// No actual behavior depends on these strings.
         /// </devdoc>
         [ExcludeFromCodeCoverage]
+#if !DEBUG
         [DebuggerNonUserCode]
+#endif
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -166,7 +168,7 @@ namespace Avatars
         [ExcludeFromCodeCoverage]
         string TypeName(Type type) => type.Name;
 
-        #region Equality
+#region Equality
 
         /// <summary>
         /// Tests the current invocation against another for equality, taking into account the target object 
@@ -176,7 +178,7 @@ namespace Avatars
         /// <param name="other">The invocation to compare against.</param>
         /// <returns><see langword="true"/> if the invocations are equal, <see langword="false"/> otherwise.</returns>
         public bool Equals(IMethodInvocation? other)
-            => other != null && ReferenceEquals(Target, other.Target) && MethodBase.Equals(other.MethodBase) && Arguments.SequenceEqual(other.Arguments);
+            => other != null && ReferenceEquals(Target, other.Target) && MethodBase.Equals(other.MethodBase) && Arguments.Equals(other.Arguments);
 
         /// <summary>
         /// Tests the current invocation against another for equality, taking into account the target object 
@@ -205,14 +207,10 @@ namespace Avatars
             var hash = new HashCode();
             hash.Add(RuntimeHelpers.GetHashCode(Target));
             hash.Add(MethodBase);
-            foreach (var arg in Arguments)
-            {
-                hash.Add(arg ?? NullArgument);
-            }
-
+            hash.Add(Arguments);
             return hash.ToHashCode();
         }
 
-        #endregion
+#endregion
     }
 }

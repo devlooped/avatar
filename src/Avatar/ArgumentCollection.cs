@@ -17,6 +17,8 @@ namespace Avatars
     [DebuggerDisplay("Count = {Count}")]
     public class ArgumentCollection : IArgumentCollection
     {
+        static readonly object NullValue = new object();
+
         readonly ParameterInfo[] infos;
         readonly Dictionary<string, ParameterInfo> nameParams;
         // TODO: should we provide box-free holders too?
@@ -161,8 +163,10 @@ namespace Avatars
         [ExcludeFromCodeCoverage]
         public override string ToString() => string.Join(", ", infos.Select(ToString));
 
-        [DebuggerNonUserCode]
         [ExcludeFromCodeCoverage]
+#if !DEBUG
+        [DebuggerNonUserCode]
+#endif
         string ToString(ParameterInfo parameter) =>
             (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
             " " + parameter.Name +
@@ -170,7 +174,8 @@ namespace Avatars
                 (": " + (!values.TryGetValue(parameter.Name, out var value) ? "null" :
                     ((IsString(parameter.ParameterType) && value != null) ? "\"" + value + "\"" :
                         // render boolean as lowercase to match C#
-                        (value is bool b) ? b.ToString().ToLowerInvariant() : value))
+                        (value is bool b) ? b.ToString().ToLowerInvariant() : 
+                        value ?? "null"))
                 )
             );
 
@@ -191,8 +196,31 @@ namespace Avatars
         static bool IsString(Type type) => type == typeof(string) ||
             (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is ArgumentCollection collection &&
+                infos.SequenceEqual(collection.infos) &&
+                values.Count == collection.Count &&
+                values.Values.SequenceEqual(collection.values.Values);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            foreach (var prm in infos)
+                hash.Add(prm);
+
+            foreach (var arg in values.Values)
+                hash.Add(arg ?? NullValue);
+
+            return hash.ToHashCode();
+        }
+
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        [ExcludeFromCodeCoverage]
         [DebuggerNonUserCode]
         class DebugView
         {
