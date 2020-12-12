@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Avatars
 {
@@ -6,6 +8,9 @@ namespace Avatars
     {
         public static int Main(string[] args)
         {
+            if (args.Any(x => "true".Equals(x, StringComparison.OrdinalIgnoreCase)))
+                Debugger.Break();
+
             if (RoslynInternals.addMemberDeclarationsAsync == null)
             {
                 Console.WriteLine($"Null {nameof(RoslynInternals)}.{nameof(RoslynInternals.addMemberDeclarationsAsync)}");

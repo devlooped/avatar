@@ -36,18 +36,17 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 
     <ItemGroup>
         <PackageReference Include='{package.Id}' Version='{package.Version}' />
-        <PackageReference Include='System.Runtime' Version='4.3.1' />
-        <PackageReference Include='Microsoft.CodeCoverage' Version='16.7.1' />
+        <PackageReference Include='System.Composition' Version='5.0.0' />
     </ItemGroup>
 </Project>");
 
             var restore = Path.ChangeExtension(projectFile, "-restore.binlog");
-            var process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild -t:restore -bl:{restore} {projectFile}")
+            var process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild {projectFile} -t:restore" + (Debugger.IsAttached ? $" -bl:{restore}" : ""))
             {
-                CreateNoWindow = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
+                CreateNoWindow = !Debugger.IsAttached,
+                RedirectStandardError = !Debugger.IsAttached,
+                RedirectStandardOutput = !Debugger.IsAttached,
+                UseShellExecute = Debugger.IsAttached
             }) ?? throw new InvalidOperationException();
 
             process.WaitForExit();
@@ -55,22 +54,28 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 #if DEBUG
             if (process.ExitCode != 0)
             {
-                output.WriteLine(process.StandardError.ReadToEnd());
-                output.WriteLine(process.StandardOutput.ReadToEnd());
-                try { Process.Start(restore); }
-                catch { }
+                if (!Debugger.IsAttached)
+                {
+                    output.WriteLine(process.StandardError.ReadToEnd());
+                    output.WriteLine(process.StandardOutput.ReadToEnd());
+                }
+                else
+                {
+                    try { Process.Start(restore); }
+                    catch { }
+                }
             }
 #endif
 
             Assert.Equal(0, process.ExitCode);
 
             var build = Path.ChangeExtension(projectFile, "-build.binlog");
-            process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild -t:build -bl:{build} {projectFile}")
+            process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild {projectFile} -t:build" + (Debugger.IsAttached ? $" -bl:{build}" : ""))
             {
-                CreateNoWindow = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
+                CreateNoWindow = !Debugger.IsAttached,
+                RedirectStandardError = !Debugger.IsAttached,
+                RedirectStandardOutput = !Debugger.IsAttached,
+                UseShellExecute = Debugger.IsAttached,
             }) ?? throw new InvalidOperationException();
 
             process.WaitForExit();
@@ -78,10 +83,16 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 #if DEBUG
             if (process.ExitCode != 0)
             {
-                output.WriteLine(process.StandardError.ReadToEnd());
-                output.WriteLine(process.StandardOutput.ReadToEnd());
-                try { Process.Start(build); }
-                catch { }
+                if (!Debugger.IsAttached)
+                {
+                    output.WriteLine(process.StandardError.ReadToEnd());
+                    output.WriteLine(process.StandardOutput.ReadToEnd());
+                }
+                else
+                {
+                    try { Process.Start(build); }
+                    catch { }
+                }
             }
 #endif
 
@@ -90,18 +101,18 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             var info = new ProcessStartInfo(Path.Combine(
                 Path.GetDirectoryName(projectFile) ?? "",
                 $@"bin\{package.Version}\{targetFramework}",
-                Path.ChangeExtension(Path.GetFileName(projectFile), ".exe")))
+                Path.ChangeExtension(Path.GetFileName(projectFile), ".exe")), Debugger.IsAttached.ToString())
             {
-                CreateNoWindow = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
+                CreateNoWindow = !Debugger.IsAttached,
+                RedirectStandardError = !Debugger.IsAttached,
+                RedirectStandardOutput = !Debugger.IsAttached,
+                UseShellExecute = Debugger.IsAttached
             };
 
             process = Process.Start(info) ?? throw new InvalidOperationException();
             process.WaitForExit();
 
-            if (process.ExitCode != 0)
+            if (process.ExitCode != 0 && !Debugger.IsAttached)
             {
                 output.WriteLine(process.StandardError.ReadToEnd());
                 output.WriteLine(process.StandardOutput.ReadToEnd());
@@ -116,17 +127,13 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             var source = new PackageSource("https://api.nuget.org/v3/index.json");
             var repo = new SourceRepository(source, providers);
             var resource = repo.GetResourceAsync<PackageMetadataResource>().Result;
-            var metadata = resource.GetMetadataAsync("Microsoft.CodeAnalysis.Workspaces.Common", true, false, new Logger(null), CancellationToken.None).Result;
+            var metadata = resource.GetMetadataAsync("Microsoft.CodeAnalysis", true, false, new Logger(null), CancellationToken.None).Result;
 
-            // 3.1.0 is already stable and we verified we work with it
-            // Older versions are guaranteed to not change either, so we 
-            // can rely on it working too, since this test passed at some 
-            // point too.
+            // 3.8.0 is the first version we support that introduces source generators
             return metadata
                 .Select(m => m.Identity)
-                .Where(m => m.Version >= new NuGetVersion("3.1.0"))
-                .Select(v => new object[] { v, ThisAssembly.Project.TargetFramework })
-                .Take(2);
+                .Where(m => m.Version >= new NuGetVersion("3.8.0"))
+                .Select(v => new object[] { v, ThisAssembly.Project.TargetFramework });
         }
 
         class Logger : NuGet.Common.ILogger

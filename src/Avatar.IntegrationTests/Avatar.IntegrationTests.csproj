@@ -66,6 +66,7 @@
     <None Include="InternalAccess\Program.cs" CopyToOutputDirectory="PreserveNewest" />
     <None Update="InternalAccess\Directory.Build.props" CopyToOutputDirectory="PreserveNewest" />
     <None Update="InternalAccess\Directory.Build.targets" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="InternalAccess\Directory.Packages.props" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
