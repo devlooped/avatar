@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>kzu</Authors>
-    <Copyright>Copyright (C) Daniel Cazzulino $([System.DateTime]::Now.Year). All rights reserved.</Copyright>
+    <Copyright>Copyright (C) Daniel Cazzulino and Contributors. All rights reserved.</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
@@ -72,13 +72,6 @@
     <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" Visible="false" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" Visible="false" />
-    <PackageReference Include="NuGetizer" PrivateAssets="all" Visible="false" />
-    <PackageReference Include="ThisAssembly" PrivateAssets="all" Visible="false" />
-  </ItemGroup>
-
   <!-- Will only apply for cross-targeting, will be overriden by common targets typically. 
        This is here for packaging projects only, which upon resolving references from dotnet-nugetize 
        will call GetTargetPath and that would otherwise fail -->
@@ -88,5 +81,5 @@
       <InnerTargets>GetTargetPath</InnerTargets>
     </PropertyGroup>
   </Target>
-  
+
 </Project>

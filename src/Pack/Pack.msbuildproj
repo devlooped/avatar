@@ -2,8 +2,8 @@
   <!-- Move everything to the .props because otherwise CPS screws up the items and formatting -->
   <Import Project="Pack.props" />
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" />
-    <PackageReference Include="NuGetizer" Version="0.4.9" Visible="false" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" Pack="false" />
+    <PackageReference Include="NuGetizer" Version="0.6.0" Visible="false" />
     <PackageReference Update="NuGetizer" Version="42.42.42" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)..\..\..\nugetizer\bin\')" />
     <None Include="Pack.props" />
   </ItemGroup>
