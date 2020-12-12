@@ -13,7 +13,7 @@ namespace Avatars.UnitTests
             Func<string?> method = ToString;
 
             var actual = avatar.AddBehavior(
-                (m, n) => new MethodReturn(m, "foo", null!),
+                (m, n) => new MethodReturn(m, "foo", m.Arguments),
                 m => true,
                 nameof(AddBehavior));
 
@@ -95,7 +95,7 @@ namespace Avatars.UnitTests
             Func<string?> method = ToString;
 
             var actual = avatar.InsertBehavior(0,
-                (m, n) => new MethodReturn(m, "foo", null!),
+                (m, n) => new MethodReturn(m, "foo", m.Arguments),
                 m => true,
                 nameof(InsertAnonymousBehavior));
 

@@ -23,7 +23,7 @@ jobs:
       - name: 🤘 checkout
         uses: actions/checkout@v2
       - name: 🖉 version
-        run: echo "VERSION_SUFFIX=$(git name-rev --name-only --refs=refs/heads/* HEAD).$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        run: echo "VERSION_SUFFIX=$GITHUB_REF.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
         shell: bash
       - name: ⚙ dotnet 5.0.x
         uses: actions/setup-dotnet@v1
@@ -69,6 +69,9 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+      - name: 🖉 version
+        run: echo "VERSION_SUFFIX=$GITHUB_REF.$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+        shell: bash
       - name: 🔽 packages
         uses: actions/download-artifact@v2
         with:
@@ -79,8 +82,14 @@ jobs:
         with:
           dotnet-version: 5.0.x
       - name: 🧪 test
-        run: dotnet test -p:versionsuffix="$VERSION_SUFFIX"
+        run: dotnet test -p:versionsuffix="$VERSION_SUFFIX" -bl:test.binlog
         working-directory: src/Acceptance
+      - name: 🔼 logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: '**/*.binlog'
 
   push:
     name: push nuget.ci

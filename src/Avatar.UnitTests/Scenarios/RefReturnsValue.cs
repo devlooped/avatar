@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Scenarios.RefReturnsValue
 {
-    public interface IMemory
+    interface IMemory
     {
         ref int Get();
     }

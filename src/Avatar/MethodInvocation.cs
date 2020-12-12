@@ -69,7 +69,7 @@ namespace Avatars
 
         /// <inheritdoc />
         public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null)
-            => new MethodReturn(this, returnValue, arguments ?? new ArgumentCollection(Array.Empty<ParameterInfo>()));
+            => new MethodReturn(this, returnValue, arguments ?? Arguments);
 
         /// <summary>
         /// Gets a friendly representation of the invocation.

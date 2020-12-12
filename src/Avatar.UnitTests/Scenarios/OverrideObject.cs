@@ -12,9 +12,6 @@ namespace Scenarios.OverrideObject
     /// </summary>
     public class Test : IRunnable
     {
-        // Run just this test using the TD.NET ad-hoc runner
-        public void RunTest() => new Avatars.UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.OverrideObject);
-
         public void Run()
         {
             var avatar = Avatar.Of<BaseType>();

@@ -21,8 +21,8 @@ namespace Avatars
                     typeof(IAvatar).Assembly,
                     // Avatar.CodeAnalysis.dll
                     typeof(NamingConvention).Assembly,
-                    // Avatar.StaticProxy.Sdk.dll
-                    typeof(ICodeFix).Assembly,
+                    // Avatar.StaticProxy.dll
+                    typeof(AvatarGenerator).Assembly,
                 }));
         }
 

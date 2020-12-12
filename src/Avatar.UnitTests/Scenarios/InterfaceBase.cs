@@ -14,10 +14,6 @@ namespace Avatars.Scenario.InterfaceBase
     /// </summary>
     public class Test : IRunnable
     {
-        // Uncomment to run this scenario only
-        //[Fact]
-        public void RunScenario() => new UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.InterfaceBase);
-
         public void Run()
         {
             BehaviorPipelineFactory.LocalDefault = new RecordingBehaviorPipelineFactory();

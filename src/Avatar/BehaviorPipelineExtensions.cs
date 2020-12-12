@@ -1,12 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 
 namespace Avatars
 {
     /// <summary>
     /// Provides the <c>Execute</c> usability overloads.
     /// </summary>
+    /// <remarks>
+    /// All the <c>Execute</c> overloads are set to invoke the pipeline passing 
+    /// <see langword="true" /> for the <c>throwOnException</c> to 
+    /// <see cref="BehaviorPipeline.Invoke(IMethodInvocation, bool)"/> (or 
+    /// <see cref="BehaviorPipeline.Invoke(IMethodInvocation, ExecuteDelegate, bool)"/>).
+    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class BehaviorPipelineExtensions
     {
@@ -15,9 +20,14 @@ namespace Avatars
         /// defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>
-        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwNotImplemented = true)
-            => pipeline.Invoke(invocation, (i, n)
-                => throwNotImplemented ? throw new NotImplementedException() : i.CreateValueReturn(null, i.Arguments), true);
+        /// <devdoc>
+        /// This method exists so that the generated code can consistently call the pipeline 
+        /// using `Execute` with various overloads, to streamline codegen. It makes all methods 
+        /// more consistent.
+        /// </devdoc>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static IMethodReturn Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation)
+            => pipeline.Invoke(invocation, true);
 
         /// <summary>
         /// Since no <see cref="ExecuteDelegate"/> is provided as a target, and a value is required to 
@@ -57,11 +67,5 @@ namespace Avatars
         /// </summary>
         public static void Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
             => pipeline.Invoke(invocation, target, true);
-
-        /// <summary>
-        /// Invokes pipeline without a target.
-        /// </summary>
-        public static IMethodReturn Invoke(this BehaviorPipeline pipeline, IMethodInvocation invocation, bool throwOnException = false)
-            => pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), throwOnException);
     }
 }

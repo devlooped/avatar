@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -19,74 +20,157 @@ namespace Avatars.UnitTests
     /// </summary>
     public class Scenarios
     {
+        static readonly HashSet<string> additionalSources = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "IRunnable.cs",
+            "Avatar.cs",
+            "Avatar.StaticFactory.cs"
+        };
+
+        // Run particular scenarios using the TD.NET ad-hoc runner.
+        public void RunScenario() => new Scenarios().Run(ThisAssembly.Constants.Scenarios.ClassBaseType);
+
         [Theory]
         [MemberData(nameof(GetScenarios))]
         public void Run(string path)
         {
-            var (diagnostics, compilation) = GetGeneratedOutput(
+            // Getting the generated output can be flaky sometimes, so retry
+            var (diagnostics, compilation) = Retry(() => GetGeneratedOutput(
                 Path.IsPathRooted(path) ? path :
-                Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, path));
+                Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, path)));
 
             Assert.Empty(diagnostics);
 
             var assembly = compilation.Emit();
-            var type = assembly.GetTypes().FirstOrDefault(t => typeof(IRunnable).IsAssignableFrom(t));
+            var type = assembly.GetTypes().FirstOrDefault(t => t.GetInterfaces().Any(i => i.Name == nameof(IRunnable)));
 
             Assert.NotNull(type);
 
-            var runnable = (IRunnable)Activator.CreateInstance(type);
-            runnable.Run();
+            try
+            {
+                var runnable = Activator.CreateInstance(type);
+                type.InvokeMember("Run", BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod, null, runnable, null);
+            }
+            catch (TargetInvocationException tie)
+            {
+                ExceptionDispatchInfo.Capture(tie.InnerException).Throw();
+            }
+        }
+
+        T Retry<T>(Func<T> func, int times = 2)
+        {
+            for (var i = 1; i <= times; i++)
+            {
+                try
+                {
+                    return func();
+                }
+                catch (Exception) when (i < times)
+                {
+                    Thread.Sleep(500);
+                    GC.Collect();
+                }
+            }
+
+            return default;
         }
 
         public static IEnumerable<object[]> GetScenarios()
             => Directory.EnumerateFiles(Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, "Scenarios"), "*.cs")
                 .Select(file => new object[] { Path.Combine("Scenarios", Path.GetFileName(file)) });
 
+        static Scenarios()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                var requested = new AssemblyName(args.Name);
+                if (requested.Name == null)
+                    return null;
+
+                var file = Path.GetFullPath(requested.Name + ".dll");
+                if (File.Exists(file))
+                    return Assembly.LoadFrom(file);
+
+                return null;
+            };
+        }
+
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path),
+            var libs = new HashSet<string>(File.ReadAllLines("lib.txt"), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(x => Path.GetFileName(x));
+
+            var args = CSharpCommandLineParser.Default.Parse(
+                File.ReadAllLines("csc.txt"), ThisAssembly.Project.MSBuildProjectDirectory, sdkDirectory: null);
+
+            var syntaxTree = CSharpSyntaxTree.ParseText(
+                File.ReadAllText(path),
+                options: args.ParseOptions.WithLanguageVersion(LanguageVersion.Latest),
                 path: new FileInfo(path).FullName,
                 encoding: Encoding.UTF8);
 
-            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-                Assembly.Load(name);
+            var sources = new List<SyntaxTree>
+            {
+                syntaxTree
+            };
 
-            Debug.Assert(System.Threading.Tasks.Task.CompletedTask.IsCompleted);
+            foreach (var source in args.SourceFiles.Where(x => additionalSources.Contains(Path.GetFileName(x.Path))))
+            {
+                var filePath = source.Path;
+                var fileName = filePath.StartsWith(ThisAssembly.Project.MSBuildProjectDirectory) ?
+                    filePath.Substring(ThisAssembly.Project.MSBuildProjectDirectory.Length).TrimStart(Path.DirectorySeparatorChar) :
+                    filePath;
 
-            var references = new List<MetadataReference>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies.Where(x => !x.IsDynamic && !string.IsNullOrEmpty(x.Location)))
-                references.Add(MetadataReference.CreateFromFile(assembly.Location));
+                sources.Add(CSharpSyntaxTree.ParseText(
+                    File.ReadAllText(filePath),
+                    options: args.ParseOptions.WithLanguageVersion(LanguageVersion.Latest),
+                    path: filePath,
+                    encoding: Encoding.UTF8));
+            }
 
-            var compilation = CSharpCompilation.Create(Path.GetFileNameWithoutExtension(path),
-                new SyntaxTree[]
-                {
-                    syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"),
-                        path: new FileInfo("Avatar/Avatar.cs").FullName,
-                        encoding: Encoding.UTF8),
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"),
-                        path: new FileInfo("Avatar/Avatar.StaticFactory.cs").FullName,
-                        encoding: Encoding.UTF8),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
-                    nullableContextOptions: NullableContextOptions.Enable));
+            foreach (var thisAssemblyFile in Directory.EnumerateFiles(
+                Path.Combine(
+                    ThisAssembly.Project.MSBuildProjectDirectory,
+                    ThisAssembly.Project.IntermediateOutputPath,
+                    "generated"),
+                "ThisAssembly.*.cs",
+                SearchOption.AllDirectories))
+            {
+                sources.Add(CSharpSyntaxTree.ParseText(
+                    File.ReadAllText(thisAssemblyFile),
+                    options: args.ParseOptions.WithLanguageVersion(LanguageVersion.Latest),
+                    path: thisAssemblyFile,
+                    encoding: Encoding.UTF8));
+            }
 
-            var diagnostics = compilation.GetDiagnostics().RemoveAll(d =>
+            Compilation compilation = CSharpCompilation.Create(
+                Path.GetFileNameWithoutExtension(path),
+                sources,
+                args.MetadataReferences.Select(x => libs.TryGetValue(Path.GetFileName(x.Reference), out var lib) ?
+                    MetadataReference.CreateFromFile(lib) :
+                    MetadataReference.CreateFromFile(x.Reference)),
+                args.CompilationOptions.WithCryptoKeyFile(null).WithOutputKind(OutputKind.DynamicallyLinkedLibrary));
+
+            Predicate<Diagnostic> ignored = d =>
                 d.Severity == DiagnosticSeverity.Hidden ||
-                d.Severity == DiagnosticSeverity.Info ||
-                // Type conflicts with referenced assembly, will happen because scenarios 
-                // are also compiled in the unit test project itself, but also in the scenario 
-                // file compilation, but the locally defined in source wins.
-                d.Id == "CS0436");
+                d.Severity == DiagnosticSeverity.Info;
 
+            var diagnostics = compilation.GetDiagnostics().RemoveAll(ignored);
             if (diagnostics.Any())
                 return (diagnostics, compilation);
 
-            ISourceGenerator generator = new AvatarSourceGenerator();
-            var driver = CSharpGeneratorDriver.Create(generator);
-            var cts = new CancellationTokenSource(10000);
+            var driver = CSharpGeneratorDriver.Create(
+                new[] { new AvatarGenerator() },
+                parseOptions: args.ParseOptions.WithLanguageVersion(LanguageVersion.Latest),
+                optionsProvider: EditorConfigOptionsProvider.Create(Directory.EnumerateFiles(
+                    Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, ThisAssembly.Project.IntermediateOutputPath),
+                    "*.editorconfig", SearchOption.TopDirectoryOnly)));
 
-            driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics, cts.Token);
+            // Don't timeout if we're debugging.
+            var token = Debugger.IsAttached ? default : new CancellationTokenSource(5000).Token;
+
+            driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics, token);
+            diagnostics = diagnostics.RemoveAll(ignored);
 
             return (diagnostics, output);
         }

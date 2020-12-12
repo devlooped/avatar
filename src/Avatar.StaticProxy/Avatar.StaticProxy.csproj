@@ -3,10 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Description>
-      An extensible source generator library for arbitrary avatar code generation 
-      during compile-time.
-    </Description>
+    <Description>An extensible source generator library for arbitrary avatar (a.k.a. dynamic proxy) code generation at compile-time.</Description>
     <PackageTags>dotnet roslyn proxy generator</PackageTags>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
