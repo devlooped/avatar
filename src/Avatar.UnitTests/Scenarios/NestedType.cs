@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS0436
+using System.Collections.Generic;
 using Avatars;
 
 namespace Scenarios.NestedType

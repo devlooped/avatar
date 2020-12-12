@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Xunit;
 
-namespace Avatars
+namespace Avatars.UnitTests
 {
     public class SpansTests
     {

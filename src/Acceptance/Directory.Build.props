@@ -1,6 +1,6 @@
 ﻿<Project TreatAsLocalProperty="VersionSuffix">
   <PropertyGroup>
-    <LangVersion>Preview</LangVersion>
+    <LangVersion>Latest</LangVersion>
     <Nullable>annotations</Nullable>
 
     <VersionPrefix>42.42.42</VersionPrefix>

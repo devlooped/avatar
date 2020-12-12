@@ -12,48 +12,31 @@ namespace Avatars.Processors
     /// <summary>
     /// Adds the <see cref="IAvatar"/> interface implementation.
     /// </summary>
-    public class CSharpAvatar : IDocumentProcessor
+    public class CSharpAvatar : IAvatarProcessor
     {
         /// <summary>
-        /// Applies to <see cref="LanguageNames.CSharp"/> only.
+        /// Applies to <see cref="LanguageNames.CSharp"/>.
         /// </summary>
-        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
+        public string Language { get; } = LanguageNames.CSharp;
 
         /// <summary>
-        /// Runs in the final phase of codegen, <see cref="ProcessorPhase.Fixup"/>.
+        /// Runs in the final phase, <see cref="ProcessorPhase.Fixup"/>.
         /// </summary>
         public ProcessorPhase Phase => ProcessorPhase.Fixup;
 
         /// <summary>
         /// Adds the <see cref="IAvatar"/> interface implementation to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
-        {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
-            if (syntax == null)
-                return document;
-
-            syntax = new CSharpAvatarVisitor(document).Visit(syntax);
-
-            return document.WithSyntaxRoot(syntax);
-        }
+        public SyntaxNode Process(SyntaxNode syntax, ProcessorContext context)
+            => new CSharpAvatarVisitor().Visit(syntax)!;
 
         class CSharpAvatarVisitor : CSharpSyntaxRewriter
         {
-            readonly SyntaxGenerator generator;
-            readonly Document document;
-
-            public CSharpAvatarVisitor(Document document)
-            {
-                this.document = document;
-                generator = SyntaxGenerator.GetGenerator(document);
-            }
-
             public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
                 node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node)!;
 
-                if (!generator.GetBaseAndInterfaceTypes(node).Any(x =>
+                if (node.BaseList != null && !node.BaseList.Types.Any(x =>
                     x.ToString() == nameof(IAvatar) ||
                     x.ToString() == typeof(IAvatar).FullName))
                 {
@@ -61,46 +44,62 @@ namespace Avatars.Processors
                     node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IAvatar))));
                 }
 
-                if (!generator.GetMembers(node).Any(x => generator.GetName(x) == nameof(IAvatar.Behaviors)))
+                if (!node.Members.OfType<PropertyDeclarationSyntax>().Any(prop => prop.Identifier.ToString() == nameof(IAvatar.Behaviors)))
                 {
-                    node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
-                        PropertyDeclaration(
-                            GenericName(
-                                Identifier("IList"),
-                                TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IAvatarBehavior))))),
+                    var behaviors = PropertyDeclaration(
+                        GenericName(
+                            Identifier("IList"),
+                                TypeArgumentList(
+                                    SingletonSeparatedList<TypeSyntax>(
+                                        IdentifierName(nameof(IAvatarBehavior))))),
                             Identifier(nameof(IAvatar.Behaviors)))
-                            .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IAvatar))))
-                            .WithExpressionBody(ArrowExpressionClause(
+                        .WithExplicitInterfaceSpecifier(
+                            ExplicitInterfaceSpecifier(
+                                IdentifierName(nameof(IAvatar))))
+                        .WithExpressionBody(
+                            ArrowExpressionClause(
                                 MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     IdentifierName("pipeline"),
                                     IdentifierName("Behaviors"))))
-                             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                            .NormalizeWhitespace()
-                            .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed)
-                        );
+                                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                        .NormalizeWhitespace()
+                        .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed);
+
+                    if (node.Members.Count > 0)
+                        node = node.InsertNodesAfter(node.Members.First(), new[] { behaviors });
+                    else
+                        node = node.AddMembers(behaviors);
                 }
 
-                if (!generator.GetMembers(node).Any(x => generator.GetName(x) == "pipeline"))
+                if (!node.Members.OfType<FieldDeclarationSyntax>().Any(x => x.Declaration.Variables.Any(v => v.Identifier.ToString() == "pipeline")))
                 {
-                    node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
+                    node = node.InsertNodesBefore(node.Members.First(), new[]
+                    {
                         FieldDeclaration(
-                            VariableDeclaration(IdentifierName(Identifier(nameof(BehaviorPipeline))))
+                            VariableDeclaration(
+                                IdentifierName(
+                                    Identifier(nameof(BehaviorPipeline))))
                             .WithVariables(
                                 SingletonSeparatedList(
                                     VariableDeclarator(Identifier("pipeline"))
                                     .WithInitializer(
                                         EqualsValueClause(
-                                            (ExpressionSyntax)generator.InvocationExpression(
-                                                generator.MemberAccessExpression(
-                                                    generator.MemberAccessExpression(
-                                                        generator.IdentifierName(nameof(BehaviorPipelineFactory)),
-                                                        nameof(BehaviorPipelineFactory.Default)),
-                                                    generator.GenericName(
-                                                        nameof(IBehaviorPipelineFactory.CreatePipeline),
-                                                        generator.IdentifierName(node.Identifier.ValueText))))))))
+                                            InvocationExpression(
+                                                MemberAccessExpression(
+                                                    SyntaxKind.SimpleMemberAccessExpression,
+                                                    MemberAccessExpression(
+                                                        SyntaxKind.SimpleMemberAccessExpression,
+                                                        IdentifierName(nameof(BehaviorPipelineFactory)),
+                                                        IdentifierName(nameof(BehaviorPipelineFactory.Default))),
+                                                    GenericName(
+                                                        Identifier(nameof(IBehaviorPipelineFactory.CreatePipeline)))
+                                                    .WithTypeArgumentList(
+                                                        TypeArgumentList(
+                                                            SingletonSeparatedList<TypeSyntax>(IdentifierName(node.Identifier.ValueText))))))))))
                             .NormalizeWhitespace()
-                        ).WithModifiers(TokenList(Token(SyntaxKind.ReadOnlyKeyword))));
+                        ).WithModifiers(TokenList(Token(SyntaxKind.ReadOnlyKeyword)))
+                    });
                 }
 
                 return node;

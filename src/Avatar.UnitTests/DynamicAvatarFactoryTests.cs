@@ -23,17 +23,17 @@ namespace Avatars.UnitTests
             calculator.AddBehavior(recorder);
 
             calculator.AddBehavior(
-                (m, n) => new MethodReturn(m, "foo", null!),
+                (m, n) => new MethodReturn(m, "foo", m.Arguments),
                 m => m.MethodBase.Name == "ToString",
                 "ToString");
 
             calculator.AddBehavior(
-                (m, n) => new MethodReturn(m, 42, null!),
+                (m, n) => new MethodReturn(m, 42, m.Arguments),
                 m => m.MethodBase.Name == "GetHashCode",
                 "GetHashCode");
 
             calculator.AddBehavior(
-                (m, n) => new MethodReturn(m, true, null!),
+                (m, n) => new MethodReturn(m, true, m.Arguments),
                 m => m.MethodBase.Name == "Equals",
                 "Equals");
 

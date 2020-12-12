@@ -1,23 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Avatars.Processors
 {
     /// <summary>
-    /// Removes unnecessary imports and sorts the used ones.
+    /// Sorts imports.
     /// </summary>
-    public class FixupImports : IDocumentProcessor
+    public class FixupImports : IAvatarProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
         /// </summary>
-        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
+        public string Language { get; } = LanguageNames.CSharp;
 
         /// <summary>
         /// Runs in the last phase of code gen, <see cref="ProcessorPhase.Fixup"/>.
@@ -27,28 +23,20 @@ namespace Avatars.Processors
         /// <summary>
         /// Removes and sorts namespaces.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
+        public SyntaxNode Process(SyntaxNode syntax, ProcessorContext context)
         {
             // This codefix is available for both C# and VB
             //document = await document.ApplyCodeFixAsync(CodeFixNames.All.RemoveUnnecessaryImports);
 
-            var generator = SyntaxGenerator.GetGenerator(document);
-            var syntax = await document.GetSyntaxRootAsync();
-            var imports = generator.GetNamespaceImports(syntax).Select(generator.GetName).ToArray();
+            // TODO: remove unused ones?
 
-            Array.Sort(imports);
+            if (syntax is not CompilationUnitSyntax unit)
+                return syntax;
 
-            syntax = new CSharpRewriteVisitor().Visit(syntax);
-
-            return document.WithSyntaxRoot(generator.AddNamespaceImports(syntax,
-                imports.Select(generator.NamespaceImportDeclaration)));
-        }
-
-        class CSharpRewriteVisitor : CSharpSyntaxRewriter
-        {
-            public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
-                => base.VisitCompilationUnit(node.WithUsings(
-                    SyntaxFactory.List<UsingDirectiveSyntax>()));
+            return unit.WithUsings(
+                List(
+                    unit.Usings
+                        .OrderBy(x => x.Name.ToString())));
         }
     }
 }

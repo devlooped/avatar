@@ -29,6 +29,6 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          path: '*.binlog'
+          path: '**/*.binlog'
       - name: 🚀 nuget
         run: rm ./bin/ManualAvatars*.nupkg && dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate

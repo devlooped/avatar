@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -22,22 +22,13 @@ namespace Avatars
             this.invocation = invocation;
 
             ReturnValue = returnValue;
-
-            var outputArgs = new List<object?>();
-            var outputInfos = new List<ParameterInfo>();
-            var parameters = invocation.MethodBase.GetParameters();
-
-            var outputs = new ArgumentCollection(invocation.MethodBase.GetParameters().Where(x => x.ParameterType.IsByRef).ToArray());
-            foreach (var info in outputs)
-                outputs.Add(info.Name, arguments.GetValue(info.Name));
-
-            Outputs = outputs;
+            Outputs = GetOutputs(arguments);
         }
 
         public MethodReturn(IMethodInvocation invocation, Exception exception)
         {
             this.invocation = invocation;
-            Outputs = new ArgumentCollection(Array.Empty<ParameterInfo>());
+            Outputs = GetOutputs(invocation.Arguments);
             Exception = exception;
         }
 
@@ -61,7 +52,10 @@ namespace Avatars
         /// Annotating this method with DebuggerNonUserCode achieves that.
         /// No actual behavior depends on these strings.
         /// </devdoc>
+        [ExcludeFromCodeCoverage]
+#if !DEBUG
         [DebuggerNonUserCode]
+#endif
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -82,6 +76,17 @@ namespace Avatars
             }
 
             return result.ToString();
+        }
+
+        IArgumentCollection GetOutputs(IArgumentCollection arguments)
+        {
+            var outputs = new ArgumentCollection(invocation.MethodBase.GetParameters()
+                .Where(x => x.ParameterType.IsByRef).ToArray());
+
+            foreach (var info in outputs)
+                outputs.Add(info.Name, arguments.GetValue(info.Name));
+
+            return outputs;
         }
     }
 }

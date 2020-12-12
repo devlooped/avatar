@@ -66,7 +66,7 @@ namespace Samples.TargetInvocation
 
                 return invocation =>
                 {
-                    var args = invocation.Arguments.ToArray();
+                    var args = invocation.Arguments.Select((p, i) => invocation.Arguments.GetValue(i)).ToArray();
                     try
                     {
                         target.DynamicInvoke(new[] { site, this.target }.Concat(args).ToArray());
@@ -94,7 +94,7 @@ namespace Samples.TargetInvocation
 
                 return invocation =>
                 {
-                    var args = invocation.Arguments.ToArray();
+                    var args = invocation.Arguments.Select((p, i) => invocation.Arguments.GetValue(i)).ToArray();
                     try
                     {
                         var result = target.DynamicInvoke(new[] { site, this.target }.Concat(args).ToArray());

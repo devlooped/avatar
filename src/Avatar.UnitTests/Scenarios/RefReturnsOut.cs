@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Scenarios.RefReturnsOut
 {
-    public interface IMemory
+    interface IMemory
     {
         ref int Get(ref string name, out int count);
     }

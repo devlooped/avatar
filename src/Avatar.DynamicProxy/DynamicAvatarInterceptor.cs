@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using Castle.DynamicProxy;
 
 namespace Avatars
 {
     class DynamicAvatarInterceptor : IInterceptor, IAvatar // Implemented to detect breaking changes in Avatar
     {
-        static readonly MethodInfo expressionFactory = typeof(DynamicAvatarInterceptor).GetMethod("CreatePipeline", BindingFlags.Static | BindingFlags.NonPublic);
+        static readonly MethodInfo expressionFactory = typeof(DynamicAvatarInterceptor).GetMethod(nameof(CreatePipeline), BindingFlags.Static | BindingFlags.NonPublic);
         static readonly ConcurrentDictionary<Type, Func<BehaviorPipeline>> createPipelineFactories = new();
 
         readonly bool notImplemented;

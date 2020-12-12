@@ -21,7 +21,7 @@ namespace Samples
             calc.AddBehavior(new DefaultEqualityBehavior());
 
             calc.AddBehavior(
-                (invocation, next) => invocation.CreateValueReturn((int)invocation.Arguments[0]! + (int)invocation.Arguments[1]!),
+                (invocation, next) => invocation.CreateValueReturn(invocation.Arguments.Get<int>(0) + invocation.Arguments.Get<int>(1)),
                 invocation => invocation.MethodBase.Name == nameof(ICalculator.Add),
                 "Add");
 

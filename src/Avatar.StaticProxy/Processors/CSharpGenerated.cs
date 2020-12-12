@@ -1,10 +1,7 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Avatars.Processors
@@ -14,12 +11,12 @@ namespace Avatars.Processors
     /// attribute to all generated members, so that it's possible to distinguish user-authored 
     /// members in a partial class from the generated code.
     /// </summary>
-    public class CSharpGenerated : IDocumentProcessor
+    public class CSharpGenerated : IAvatarProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
         /// </summary>
-        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
+        public string Language { get; } = LanguageNames.CSharp;
 
         /// <summary>
         /// Runs in the final phase of codegen, <see cref="ProcessorPhase.Fixup"/>.
@@ -29,74 +26,69 @@ namespace Avatars.Processors
         /// <summary>
         /// Applies the attribute to all members in the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
-        {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
-            if (syntax == null)
-                return document;
-
-            syntax = new CSharpRewriteVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
-
-            return document.WithSyntaxRoot(syntax);
-        }
+        public SyntaxNode Process(SyntaxNode syntax, ProcessorContext context)
+            => new CSharpRewriteVisitor().Visit(syntax);
 
         class CSharpRewriteVisitor : CSharpSyntaxRewriter
         {
-            readonly SyntaxGenerator generator;
-
-            public CSharpRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
-
             public override SyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitClassDeclaration(node);
 
-                return base.VisitClassDeclaration((ClassDeclarationSyntax)AddAttributes(node));
+                return base.VisitClassDeclaration(AddAttributes(node));
             }
 
             public override SyntaxNode? VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitConstructorDeclaration(node);
 
-                return base.VisitConstructorDeclaration((ConstructorDeclarationSyntax)AddAttributes(node));
+                return base.VisitConstructorDeclaration(AddAttributes(node));
             }
 
             public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitMethodDeclaration(node);
 
-                return base.VisitMethodDeclaration((MethodDeclarationSyntax)AddAttributes(node));
+                return base.VisitMethodDeclaration(AddAttributes(node));
             }
 
             public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitPropertyDeclaration(node);
 
-                return base.VisitPropertyDeclaration((PropertyDeclarationSyntax)AddAttributes(node));
+                return base.VisitPropertyDeclaration(AddAttributes(node));
             }
 
             public override SyntaxNode? VisitIndexerDeclaration(IndexerDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitIndexerDeclaration(node);
 
-                return base.VisitIndexerDeclaration((IndexerDeclarationSyntax)AddAttributes(node));
+                return base.VisitIndexerDeclaration(AddAttributes(node));
             }
 
             public override SyntaxNode? VisitEventDeclaration(EventDeclarationSyntax node)
             {
-                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                if (node.AttributeLists.HasAttribute("CompilerGenerated"))
                     return base.VisitEventDeclaration(node);
 
-                return base.VisitEventDeclaration((EventDeclarationSyntax)AddAttributes(node));
+                return base.VisitEventDeclaration(AddAttributes(node));
             }
 
-            SyntaxNode AddAttributes(SyntaxNode node)
-                => generator.AddAttributes(node,
-                    Attribute(IdentifierName("CompilerGenerated")));
+            TSyntax AddAttributes<TSyntax>(TSyntax node) where TSyntax : MemberDeclarationSyntax
+                => (TSyntax)node.WithAttributeLists(
+                    List(
+                        node.AttributeLists.Concat(new[]
+                        {
+                            AttributeList(
+                                SingletonSeparatedList(
+                                    Attribute(IdentifierName("CompilerGenerated"))
+                            ))
+                        })));
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -11,12 +9,12 @@ namespace Avatars.Processors
     /// Disables all nullable warnings since project may or may not 
     /// have nullable annotations enabled.
     /// </summary>
-    public class CSharpPragmas : IDocumentProcessor
+    public class CSharpPragmas : IAvatarProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
         /// </summary>
-        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
+        public string Language { get; } = LanguageNames.CSharp;
 
         /// <summary>
         /// Runs in the final phase of codegen, <see cref="ProcessorPhase.Fixup"/>.
@@ -26,13 +24,12 @@ namespace Avatars.Processors
         /// <summary>
         /// Adds the <c>auto-generated</c> file header to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
+        public SyntaxNode Process(SyntaxNode syntax, ProcessorContext context)
         {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
-            if (syntax == null)
-                return document;
+            if (syntax is not CompilationUnitSyntax unit)
+                return syntax;
 
-            return document.WithSyntaxRoot(syntax.WithLeadingTrivia(syntax.GetLeadingTrivia()
+            return unit.WithLeadingTrivia(syntax.GetLeadingTrivia()
                 .Add(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
                 .Add(Trivia(PragmaWarningDirectiveTrivia(
                     Token(SyntaxKind.DisableKeyword),
@@ -48,7 +45,7 @@ namespace Avatars.Processors
                         IdentifierName("CS8625"),
                         IdentifierName("CS8765"),
                     }), true)))
-            ));
+            );
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Avatars.Processors
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind)
             => token.RawKind == (int)kind;
 
-        public static bool IsKind(this SyntaxNode node, SyntaxKind kind)
-            => node?.RawKind == (int)kind;
+        //public static bool IsKind(this SyntaxNode node, SyntaxKind kind)
+        //    => node?.RawKind == (int)kind;
 
         public static AccessorDeclarationSyntax WithSemicolon(this AccessorDeclarationSyntax syntax)
             => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));

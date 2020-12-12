@@ -27,19 +27,42 @@ public static class WorkspaceHelper
 
     public static ProjectInfo CreateProjectInfo(string language, string assemblyName, bool includeAvatarApi = true, bool includeMockApi = false)
     {
-        var suffix = language == LanguageNames.CSharp ? "CS" : "VB";
-        var options = language == LanguageNames.CSharp ?
-                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default) :
-                (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-        var parse = language == LanguageNames.CSharp ?
-                (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
-                (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
+        ParseOptions? parse = default;
+        CompilationOptions? options = default;
 
+        var args = CSharpCommandLineParser.Default.Parse(File.ReadAllLines("csc.txt"), ThisAssembly.Project.MSBuildProjectDirectory, sdkDirectory: null);
+
+        if (language == LanguageNames.CSharp)
+        {
+            parse = args.ParseOptions;
+            options = args.CompilationOptions.WithCryptoKeyFile(null).WithOutputKind(OutputKind.DynamicallyLinkedLibrary);
+        }
+
+        if (options == null)
+        {
+            options = language == LanguageNames.CSharp ?
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default) :
+                new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
+        }
+
+        if (parse == null)
+        {
+            parse = language == LanguageNames.CSharp ?
+                new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
+                new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
+        }
+
+        var suffix = language == LanguageNames.CSharp ? "CS" : "VB";
         var projectId = ProjectId.CreateNewId();
         var documents = new List<DocumentInfo>();
-        var references = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(assembly => !assembly.IsDynamic && !string.IsNullOrEmpty(assembly.Location))
-            .Select(assembly => MetadataReference.CreateFromFile(assembly.Location));
+
+        var libs = new HashSet<string>(File.ReadAllLines("lib.txt"), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => Path.GetFileName(x));
+
+        var references = args.MetadataReferences.Select(x =>
+            libs.TryGetValue(Path.GetFileName(x.Reference), out var lib) ?
+            MetadataReference.CreateFromFile(lib) :
+            MetadataReference.CreateFromFile(x.Reference));
 
         var projectDir = Path.Combine(Path.GetTempPath(), "Test", projectId.Id.ToString());
 
@@ -80,6 +103,7 @@ public static class WorkspaceHelper
         var result = compilation.Emit(stream,
             options: options,
             cancellationToken: cts.Token);
+
         result.AssertSuccess();
 
         stream.Seek(0, SeekOrigin.Begin);
@@ -93,7 +117,7 @@ public static class WorkspaceHelper
             Assert.False(true,
                 "Emit failed:\r\n" +
                 Environment.NewLine +
-                string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString())));
+                string.Join(Environment.NewLine, result.Diagnostics.Where(d => d.Id != "CS0436").Select(d => d.ToString())));
         }
     }
 }
