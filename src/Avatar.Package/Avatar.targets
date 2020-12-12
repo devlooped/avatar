@@ -3,26 +3,25 @@
   <!-- If source generators aren't supported, we just won't register the static one -->
   <PropertyGroup>
     <SourceGeneratorSupported Condition="'$(Language)' == 'C#' AND $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
-    <RegisterStaticAvatarFactory Condition="'$(RegisterStaticAvatarFactory)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticAvatarFactory>
+    <EnableCompiledAvatars Condition="'$(EnableCompiledAvatars)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</EnableCompiledAvatars>
   </PropertyGroup>
 
   <PropertyGroup>
     <AvatarAnalyzerDir>$(MSBuildThisFileDirectory)..\..\tools\netstandard2.0</AvatarAnalyzerDir>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true'">
+  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true'">
     <CompilerVisibleProperty Include="DebugSourceGenerators" />
-    <CompilerVisibleProperty Include="DebugAvatarSourceGenerator" />
+    <CompilerVisibleProperty Include="DebugAvatarGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
-    <CompilerVisibleProperty Include="EmitAvatarSource" />
     <CompilerVisibleProperty Include="AvatarAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(AvatarAnalyzerDir)\Avatar*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RegisterStaticAvatarFactory)' == 'true'">
+  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true'">
     <Compile Include="$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)"
              Condition="Exists('$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)')"
              Visible="false" />
@@ -36,6 +35,6 @@
   </ItemGroup>
 
   <Import Project="Avatar.DynamicProxy.targets"
-          Condition="'$(RegisterStaticAvatarFactory)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
+          Condition="'$(EnableCompiledAvatars)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
 
 </Project>

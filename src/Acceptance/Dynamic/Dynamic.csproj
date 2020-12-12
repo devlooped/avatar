@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
-    <RegisterStaticAvatarFactory>false</RegisterStaticAvatarFactory>
+    <EnableCompiledAvatars>false</EnableCompiledAvatars>
   </PropertyGroup>
 
   <ItemGroup>
