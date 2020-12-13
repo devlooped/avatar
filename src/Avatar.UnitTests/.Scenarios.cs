@@ -39,7 +39,10 @@ namespace Avatars.UnitTests
                 Path.IsPathRooted(path) ? path :
                 Path.Combine(ThisAssembly.Project.MSBuildProjectDirectory, path)));
 
-            Assert.Empty(diagnostics);
+            Assert.True(diagnostics.IsEmpty,
+                "Generated code produced diagnostics:\r\n" +
+                Environment.NewLine +
+                string.Join(Environment.NewLine, diagnostics.Where(d => d.Id != "CS0436").Select(d => d.ToString())));
 
             var assembly = compilation.Emit();
             var type = assembly.GetTypes().FirstOrDefault(t => t.GetInterfaces().Any(i => i.Name == nameof(IRunnable)));
