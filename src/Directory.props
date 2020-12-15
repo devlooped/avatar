@@ -1,0 +1,26 @@
+<Project>
+
+  <PropertyGroup>
+    <RootNamespace>Avatars</RootNamespace>
+    
+    <!-- Use Directory.Packages.props -->
+    <ManagePackageVersionsCentrally Condition="'$(MSBuildProjectExtension)' == '.csproj' or '$(MSBuildProjectExtension)' == '.vbproj'">true</ManagePackageVersionsCentrally>
+
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\nugetizer\bin'));$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
+    
+    <TypeNameFormatterInternal>false</TypeNameFormatterInternal>
+  </PropertyGroup>
+
+  <!-- Will only apply for cross-targeting, will be overriden by common targets typically. 
+       This is here for packaging projects only, which upon resolving references from dotnet-nugetize 
+       will call GetTargetPath and that would otherwise fail -->
+  <Target Name="GetTargetPath" DependsOnTargets="_SetGetTargetPathInnerTarget;DispatchToInnerBuilds" />
+
+  <Target Name="_SetGetTargetPathInnerTarget" Returns="@(InnerOutput)">
+    <PropertyGroup  Condition="'$(InnerTargets)' == ''">
+      <InnerTargets>GetTargetPath</InnerTargets>
+    </PropertyGroup>
+  </Target>
+
+</Project>

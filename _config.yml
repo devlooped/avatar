@@ -1,7 +1,1 @@
-remote_theme: pages-themes/slate
-plugins:
-  - jekyll-remote-theme
-baseurl: avatar
-exclude: 
-  - src
-  - samples
+theme: jekyll-theme-slate

@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Avatars
 {
+#pragma warning disable RS1022 // Remove accesses to Workspace API
     /// <summary>
     /// Analyzer that flags types that have overridable members as 
     /// exposed by <see cref="RoslynInternals.GetOverridableMembers"/>.

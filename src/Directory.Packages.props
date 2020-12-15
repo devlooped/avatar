@@ -10,7 +10,7 @@
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
-    <PackageVersion Include="ThisAssembly" Version="42.42.42-main.143" />
+    <PackageVersion Include="ThisAssembly" Version="1.0.3" />
     <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
     <PackageVersion Include="NuGetizer" Version="0.6.0" />
     <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />

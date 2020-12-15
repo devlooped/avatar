@@ -1,28 +1,22 @@
-﻿<Project TreatAsLocalProperty="VersionSuffix">
+﻿<Project>
+
+  <Import Project="..\src\Directory.Build.props"/>
 
   <PropertyGroup>
-    <LangVersion>Preview</LangVersion>
-    <VersionPrefix>42.42.42</VersionPrefix>
-    <VersionSuffix>$(VersionSuffix.Replace('refs/heads/', ''))</VersionSuffix>
-    <VersionSuffix Condition="$(VersionSuffix.Contains('refs/pull/'))">$(VersionSuffix.TrimEnd('.0123456789'))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('refs/pull/', 'pr'))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('/merge', ''))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('/', '-'))</VersionSuffix>
-
-    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
+    <Nullable>annotations</Nullable>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)../bin')">
       $(MSBuildThisFileDirectory)../bin;
-      $(RestoreSources)
+      https://api.nuget.org/v3/index.json
     </RestoreSources>
   </PropertyGroup>
-  
+
+  <!-- Imported early so $(Version) in our references Just Works -->
+  <Import Project="..\src\Directory.Build.targets"/>
+
   <PropertyGroup Label="Use latest CI build from main"
                  Condition="!Exists('$(MSBuildThisFileDirectory)../bin')">
     <VersionSuffix>-main.*</VersionSuffix>
-    <RestoreSources>
-      https://kzu.blob.core.windows.net/nuget/index.json;
-      $(RestoreSources)
-    </RestoreSources>
   </PropertyGroup>
   
 </Project>

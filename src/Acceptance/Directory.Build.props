@@ -1,18 +1,17 @@
-﻿<Project TreatAsLocalProperty="VersionSuffix">
+﻿<Project>
+
+  <Import Project="..\Directory.Build.props"/>
+  
   <PropertyGroup>
-    <LangVersion>Latest</LangVersion>
     <Nullable>annotations</Nullable>
-
-    <VersionPrefix>42.42.42</VersionPrefix>
-    <VersionSuffix>$(VersionSuffix.Replace('refs/heads/', ''))</VersionSuffix>
-    <VersionSuffix Condition="$(VersionSuffix.Contains('refs/pull/'))">$(VersionSuffix.TrimEnd('.0123456789'))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('refs/pull/', 'pr'))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('/merge', ''))</VersionSuffix>
-    <VersionSuffix>$(VersionSuffix.Replace('/', '-'))</VersionSuffix>
-
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <RestoreSources>
       $(MSBuildThisFileDirectory)../../bin;
       https://api.nuget.org/v3/index.json
     </RestoreSources>
   </PropertyGroup>
+
+  <!-- Imported early so $(Version) in our references Just Works -->
+  <Import Project="..\Directory.Build.targets"/>
+
 </Project>
