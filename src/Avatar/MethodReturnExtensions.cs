@@ -23,7 +23,7 @@ namespace Avatars
             if (@return.ReturnValue is Ref<T> wrapped)
                 return wrapped;
 
-            return new Ref<T>((T)@return.ReturnValue);
+            return new Ref<T>((T)@return.ReturnValue!);
         }
     }
 }

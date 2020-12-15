@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -16,7 +17,7 @@ namespace Avatars.AcceptanceTests
 {
     public class InternalTests
     {
-        ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public InternalTests(ITestOutputHelper output) => this.output = output;
 
@@ -24,14 +25,20 @@ namespace Avatars.AcceptanceTests
         [MemberData(nameof(GetPackageVersions))]
         public void CanAccessRequiredInternalsViaReflection(PackageIdentity package, string targetFramework)
         {
-            var projectFile = Path.GetFullPath($"InternalAccess\\test-{package}-{targetFramework}.csproj")!;
+            Assert.True(FindDotNet(out var dotnet), dotnet ?? "Could not find dotnet");
+            output.WriteLine($"Located dotnet at '{dotnet}'");
+
+            var projectFile = Path.GetFullPath(Path.Combine("InternalAccess", $"test-{package}-{targetFramework}.csproj"))!;
+            var outputType = targetFramework == "net472" ? "Exe" : "Library";
+
             File.WriteAllText(projectFile,
 $@"<Project Sdk='Microsoft.NET.Sdk'>
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>{targetFramework}</TargetFramework>
-        <OutputPath>bin\{package.Version}</OutputPath>
-        <IntermediateOutputPath>obj\{package.Version}</IntermediateOutputPath>
+        <UseAppHost>false</UseAppHost>
+        <OutputPath>bin/{package.Version}</OutputPath>
+        <IntermediateOutputPath>obj/{package.Version}</IntermediateOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,37 +47,14 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
     </ItemGroup>
 </Project>");
 
-            var restore = Path.ChangeExtension(projectFile, "-restore.binlog");
-            var process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild {projectFile} -t:restore" + (Debugger.IsAttached ? $" -bl:{restore}" : ""))
-            {
-                CreateNoWindow = !Debugger.IsAttached,
-                RedirectStandardError = !Debugger.IsAttached,
-                RedirectStandardOutput = !Debugger.IsAttached,
-                UseShellExecute = Debugger.IsAttached
-            }) ?? throw new InvalidOperationException();
+            output.WriteLine($"Writing temp project to '{projectFile}'");
 
-            process.WaitForExit();
+            var outDir = Path.Combine(Path.Combine(
+                Path.GetDirectoryName(projectFile) ?? "",
+                Path.Combine("pub", package.Version.ToString(), targetFramework)));
 
-#if DEBUG
-            if (process.ExitCode != 0)
-            {
-                if (!Debugger.IsAttached)
-                {
-                    output.WriteLine(process.StandardError.ReadToEnd());
-                    output.WriteLine(process.StandardOutput.ReadToEnd());
-                }
-                else
-                {
-                    try { Process.Start(restore); }
-                    catch { }
-                }
-            }
-#endif
-
-            Assert.Equal(0, process.ExitCode);
-
-            var build = Path.ChangeExtension(projectFile, "-build.binlog");
-            process = Process.Start(new ProcessStartInfo("dotnet", $"msbuild {projectFile} -t:build" + (Debugger.IsAttached ? $" -bl:{build}" : ""))
+            var binlog = Path.ChangeExtension(projectFile, ".binlog");
+            var process = Process.Start(new ProcessStartInfo(dotnet, $"publish {projectFile} -o {outDir} -bl:{binlog} --self-contained false")
             {
                 CreateNoWindow = !Debugger.IsAttached,
                 RedirectStandardError = !Debugger.IsAttached,
@@ -90,7 +74,7 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
                 }
                 else
                 {
-                    try { Process.Start(build); }
+                    try { Process.Start(binlog); }
                     catch { }
                 }
             }
@@ -98,20 +82,24 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
 
             Assert.Equal(0, process.ExitCode);
 
-            var info = new ProcessStartInfo(Path.Combine(
-                Path.GetDirectoryName(projectFile) ?? "",
-                $@"bin\{package.Version}\{targetFramework}",
-                Path.ChangeExtension(Path.GetFileName(projectFile), ".exe")), Debugger.IsAttached.ToString())
-            {
-                CreateNoWindow = !Debugger.IsAttached,
-                RedirectStandardError = !Debugger.IsAttached,
-                RedirectStandardOutput = !Debugger.IsAttached,
-                UseShellExecute = Debugger.IsAttached
-            };
+            var executable = Path.Combine(outDir, Path.ChangeExtension(Path.GetFileName(projectFile),
+                    // .exe for net472, .dll otherwise
+                    targetFramework == "net472" ? ".exe" : ".dll"));
+
+            Assert.True(File.Exists(executable), "Did not find expected executable at: " + executable);
+
+            var info = targetFramework == "net472" ?
+                new ProcessStartInfo(executable, Debugger.IsAttached.ToString()) :
+                new ProcessStartInfo(dotnet, executable + " " + Debugger.IsAttached.ToString());
+
+            info.CreateNoWindow = !Debugger.IsAttached;
+            info.RedirectStandardError = !Debugger.IsAttached;
+            info.RedirectStandardOutput = !Debugger.IsAttached;
+            info.UseShellExecute = Debugger.IsAttached;
 
             process = Process.Start(info) ?? throw new InvalidOperationException();
-            process.WaitForExit();
 
+            process.WaitForExit();
             if (process.ExitCode != 0 && !Debugger.IsAttached)
             {
                 output.WriteLine(process.StandardError.ReadToEnd());
@@ -119,6 +107,39 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             }
 
             Assert.Equal(0, process.ExitCode);
+        }
+
+        static bool FindDotNet(out string? output)
+        {
+            output = null;
+            var fileName = "dotnet";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                fileName += ".exe";
+
+            var mainModule = Process.GetCurrentProcess().MainModule;
+            if (!string.IsNullOrEmpty(mainModule?.FileName)
+                && Path.GetFileName(mainModule.FileName).Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            {
+                output = mainModule.FileName;
+                return true;
+            }
+
+            // Fallback to running where/which
+            output = Process.Start(new ProcessStartInfo(
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "where" : "which", fileName)
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            })?.StandardOutput.ReadToEnd()
+               .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+               .Select(line => line.Trim())
+               .FirstOrDefault();
+
+            if (!File.Exists(output))
+                output = null;
+
+            return output != null;
         }
 
         public static IEnumerable<object[]> GetPackageVersions()

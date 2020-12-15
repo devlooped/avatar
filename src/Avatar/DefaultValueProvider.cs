@@ -48,7 +48,7 @@ namespace Avatars
         /// <summary>
         /// Gets a default value for the given type <typeparamref name="T"/>.
         /// </summary>
-        public T? GetDefault<T>() => (T)GetDefault(typeof(T));
+        public T? GetDefault<T>() => (T?)GetDefault(typeof(T));
 
         /// <summary>
         /// Gets a default value for the given type <paramref name="type"/>
