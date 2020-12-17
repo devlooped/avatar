@@ -3,25 +3,25 @@
   <!-- If source generators aren't supported, we just won't register the static one -->
   <PropertyGroup>
     <SourceGeneratorSupported Condition="'$(Language)' == 'C#' AND $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
-    <EnableCompiledAvatars Condition="'$(EnableCompiledAvatars)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</EnableCompiledAvatars>
+    <EnableCompileTimeAvatars Condition="'$(EnableCompileTimeAvatars)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</EnableCompileTimeAvatars>
   </PropertyGroup>
 
   <PropertyGroup>
     <AvatarAnalyzerDir>$(MSBuildThisFileDirectory)..\..\tools\netstandard2.0</AvatarAnalyzerDir>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true'">
+  <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true'">
     <CompilerVisibleProperty Include="DebugSourceGenerators" />
     <CompilerVisibleProperty Include="DebugAvatarGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
     <CompilerVisibleProperty Include="AvatarAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(AvatarAnalyzerDir)\Avatar*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(EnableCompiledAvatars)' == 'true'">
+  <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true'">
     <Compile Include="$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)"
              Condition="Exists('$(MSBuildThisFileDirectory)Avatar.StaticFactory$(DefaultLanguageSourceExtension)')"
              Visible="false" />
@@ -35,6 +35,6 @@
   </ItemGroup>
 
   <Import Project="Avatar.DynamicProxy.targets"
-          Condition="'$(EnableCompiledAvatars)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
+          Condition="'$(EnableCompileTimeAvatars)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
 
 </Project>
