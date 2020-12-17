@@ -58,13 +58,13 @@ jobs:
           dotnet-version: 2.1.x
 
       - name: 🙏 build
-        run: dotnet build -m:1 -bl:build.binlog -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet build -m:1 -bl:build.binlog -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
 
       - name: 🧪 test
         run: dotnet test --no-build -m:1 --blame-hang --blame-hang-timeout 5m -d $GITHUB_WORKSPACE/logs/${{ matrix.os }}.txt -r $GITHUB_WORKSPACE/logs
 
       - name: 📦 pack
-        run: dotnet pack -m:1 -bl:pack.binlog -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet pack -m:1 -bl:pack.binlog -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
 
       - name: 🔼 logs
         if: always()
@@ -72,9 +72,9 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: |
-            *.binlog
+            **/*.binlog
             logs/**/*.*
-
+      
       - name: 🔼 packages
         uses: actions/upload-artifact@v2
         with:
