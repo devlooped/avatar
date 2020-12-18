@@ -19,10 +19,5 @@
       <ProjectReference Remove="@(NonPackableProjectReference)" />
     </ItemGroup>
   </Target>
-  
-  <!-- Pending https://github.com/microsoft/MSBuildSdks/pull/211 -->
-  <Target Name="CompileDesignTime" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" 
-          Condition="'$(DebuggerFlavor)' == '' AND Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
 
 </Project>
