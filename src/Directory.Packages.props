@@ -1,6 +1,6 @@
 <Project>
 
-  <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.msbuildproj'">
+  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" Visible="false" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" Visible="false" />
     <PackageReference Include="NuGetizer" PrivateAssets="all" Visible="false" />
@@ -8,12 +8,18 @@
   </ItemGroup>
 
   <ItemGroup Label="Core">
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
+    <SourceLinkVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'Microsoft.SourceLink.GitHub'))" />
+
     <PackageVersion Include="ThisAssembly" Version="1.0.3" />
     <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
+    <ThisAssemblyVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'ThisAssembly'))" />
+
     <PackageVersion Include="NuGetizer" Version="0.6.0" />
     <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
+    <NuGetizerVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'NuGetizer'))" />
 
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
@@ -28,10 +34,12 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.8.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.8.0" />
 
-    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+    <!-- When running under .netframework, this dependency will be needed -->
+    <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     
     <!-- For packaging purposes -->
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
 
     <!-- Unit tests need to pack this for tests to run on macOS, for example -->
     <PackageVersion Include="SQLitePCLRaw.bundle_green" Version="2.0.4" />

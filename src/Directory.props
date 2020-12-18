@@ -12,6 +12,20 @@
     <TypeNameFormatterInternal>false</TypeNameFormatterInternal>
   </PropertyGroup>
 
+  <!-- We need this in .props so it kicks-in before all the common.props defaulting -->
+  <PropertyGroup Label="Avatar.StaticProxy" Condition="$(MSBuildProjectName.StartsWith('Avatar.StaticProxy'))">
+    <RoslynVersion>$(MSBuildProjectName.Substring(18).TrimStart('.'))</RoslynVersion>
+    <RoslynVersion Condition="'$(RoslynVersion)' == ''">3.8.0</RoslynVersion>
+    <BaseIntermediateOutputPath>obj\$(RoslynVersion)\</BaseIntermediateOutputPath>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <OutputPath>bin\$(RoslynVersion)\$(Configuration)</OutputPath>
+    <!-- Source generators can only target NS2.0 -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Exclude from one level above the $(BaseIntermediateOutputPath) which is the default in the SDK, 
+         since otherwise we would be including compile artifacts from the other versions. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**</DefaultItemExcludes>    
+  </PropertyGroup>
+
   <!-- Will only apply for cross-targeting, will be overriden by common targets typically. 
        This is here for packaging projects only, which upon resolving references from dotnet-nugetize 
        will call GetTargetPath and that would otherwise fail -->

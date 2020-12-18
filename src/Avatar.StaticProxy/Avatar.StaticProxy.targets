@@ -1,0 +1,55 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <Description>An extensible source generator library for arbitrary avatar (a.k.a. dynamic proxy) code generation at compile-time.</Description>
+    <PackageTags>dotnet roslyn proxy generator</PackageTags>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- When packaged as part of Avatar.Package, we get this property as false so we pack differently as a tool -->
+  <PropertyGroup Condition="'$(IsPackable)' != 'true'">
+    <PackFolder>tools\$(RoslynVersion)</PackFolder>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <DisableTransitiveFrameworkReferences>true</DisableTransitiveFrameworkReferences>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Grab versions from Directory.Packages.props for the Core group -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="@(SourceLinkVersion -> '%(Version)')" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="@(NuGetizerVersion -> '%(Version)')" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="@(ThisAssemblyVersion -> '%(Version)')"  PrivateAssets="all" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
+
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+    <!-- Don't bump these dependencies to 5.0.0 because that breaks net472 source generator runs -->
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" Pack="false" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Avatar\Avatar.csproj" />
+    <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" Pack="!$(IsPackable)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Avatar.UnitTests" />
+  </ItemGroup>
+
+  <!-- Replaced by common targets, required for the multitargeting DependsOnTargets below -->
+  <Target Name="ResolveReferences" />
+  <Target Name="AddDependencies" Condition="'$(IsPackable)' != 'true'" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
+    <ItemGroup Condition="'$(TargetFramework)' != ''">
+      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)" 
+                    Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'" 
+                    Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' OR 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' OR 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'" />
+      <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(RoslynVersion)\%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

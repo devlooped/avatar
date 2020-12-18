@@ -3,43 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>true</IsPackable>
-    <Description>An extensible source generator library for arbitrary avatar (a.k.a. dynamic proxy) code generation at compile-time.</Description>
-    <PackageTags>dotnet roslyn proxy generator</PackageTags>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RoslynVersion>3.8.0</RoslynVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(IsPackable)' != 'true'">
-    <PackFolder>tools\$(TargetFramework)</PackFolder>
-    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
-    <DisableTransitiveFrameworkReferences>true</DisableTransitiveFrameworkReferences>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Pack="false" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Pack="false" />
-
-    <PackageReference Include="System.ComponentModel.Composition" Pack="false" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Pack="false" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" Pack="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Avatar\Avatar.csproj" />
-    <ProjectReference Include="..\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj" Pack="!$(IsPackable)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="Avatar.UnitTests" />
-  </ItemGroup>
-
-  <!-- Replaced by common targets, required for the multitargeting DependsOnTargets below -->
-  <Target Name="ResolveReferences" />
-  <Target Name="AddDependencies" Condition="'$(IsPackable)' != 'true'" AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
-    <ItemGroup Condition="'$(TargetFramework)' != ''">
-      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)" Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' or &#xD;&#xA;                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' or &#xD;&#xA;                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'" Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'" />
-      <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
-    </ItemGroup>
-  </Target>
+  <Import Project="Avatar.StaticProxy.targets"/>
 
 </Project>
