@@ -3,8 +3,11 @@
   <Import Project="..\Directory.Build.props"/>
   
   <PropertyGroup>
+    <DebugSymbols>true</DebugSymbols>
     <Nullable>annotations</Nullable>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <RestoreSources>
       $(MSBuildThisFileDirectory)../../bin;
       https://api.nuget.org/v3/index.json
@@ -13,5 +16,10 @@
 
   <!-- Imported early so $(Version) in our references Just Works -->
   <Import Project="..\Directory.Build.targets"/>
+
+  <PropertyGroup Label="Use latest CI build from main"
+                 Condition="!Exists('$(MSBuildThisFileDirectory)../../bin')">
+    <VersionSuffix>-main.*</VersionSuffix>
+  </PropertyGroup>
 
 </Project>

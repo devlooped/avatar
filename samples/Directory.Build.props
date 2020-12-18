@@ -1,22 +1,5 @@
 ﻿<Project>
 
-  <Import Project="..\src\Directory.Build.props"/>
+  <Import Project="..\src\Acceptance\Directory.Build.props"/>
 
-  <PropertyGroup>
-    <Nullable>annotations</Nullable>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)../bin')">
-      $(MSBuildThisFileDirectory)../bin;
-      https://api.nuget.org/v3/index.json
-    </RestoreSources>
-  </PropertyGroup>
-
-  <!-- Imported early so $(Version) in our references Just Works -->
-  <Import Project="..\src\Directory.Build.targets"/>
-
-  <PropertyGroup Label="Use latest CI build from main"
-                 Condition="!Exists('$(MSBuildThisFileDirectory)../bin')">
-    <VersionSuffix>-main.*</VersionSuffix>
-  </PropertyGroup>
-  
 </Project>

@@ -1,7 +1,6 @@
 ﻿<Project>
   
   <!-- Supports the main Avatar Pack project -->
-
   <Target Name="IsPackable" Returns="@(IsPackable)">
     <ItemGroup>
       <IsPackable Include="$(MSBuildProjectFullPath)" IsPackable="false" PackageId="" />

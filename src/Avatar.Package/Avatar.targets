@@ -1,4 +1,4 @@
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- If source generators aren't supported, we just won't register the static one -->
   <PropertyGroup>
@@ -6,19 +6,11 @@
     <EnableCompileTimeAvatars Condition="'$(EnableCompileTimeAvatars)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</EnableCompileTimeAvatars>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <AvatarAnalyzerDir>$(MSBuildThisFileDirectory)..\..\tools\netstandard2.0</AvatarAnalyzerDir>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true'">
     <CompilerVisibleProperty Include="DebugSourceGenerators" />
     <CompilerVisibleProperty Include="DebugAvatarGenerator" />
     <CompilerVisibleProperty Include="SkipCompilerExecution" />
     <CompilerVisibleProperty Include="AvatarAnalyzerDir" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
-    <Analyzer Include="$(AvatarAnalyzerDir)\Avatar*.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(EnableCompileTimeAvatars)' == 'true'">
@@ -34,7 +26,45 @@
     </Compile>
   </ItemGroup>
 
+  <Target Name="ResolveCompileTimeAvatars" BeforeTargets="CoreCompile;GenerateMSBuildEditorConfigFileShouldRun"
+          Condition="'$(EnableCompileTimeAvatars)' == 'true' AND '$(SkipCompilerExecution)' != 'true' AND '$(DesignTimeBuild)' != 'true'">
+
+    <GetRoslynVersion TargetsPath="$(CSharpCoreTargetsPath)">
+      <Output TaskParameter="Version" PropertyName="RoslynVersion" />
+    </GetRoslynVersion>
+
+    <PropertyGroup>
+      <AvatarAnalyzerDir>$([MSBuild]::NormalizePath($(MSBuildThisFileDirectory)..\..\tools\$(RoslynVersion)))</AvatarAnalyzerDir>
+    </PropertyGroup>
+
+    <Error Condition="!Exists($(AvatarAnalyzerDir))" Code="AV001"
+           Text="The current compiler uses Roslyn version $(RoslynVersion) which is not supported yet. Please install package Microsoft.Net.Compilers.Toolset version $(AvatarGeneratorLatestRoslyn) to get the latest supported compiler, or set 'EnableCompileTimeAvatars=false' in the project to switch to run-time avatars." />
+
+    <ItemGroup>
+      <Analyzer Include="$(AvatarAnalyzerDir)\Avatar.StaticProxy.dll" NuGetPackageId="Avatar" NuGetPackageVersion="$(AvatarVersion)" />
+    </ItemGroup>
+
+  </Target>
+
   <Import Project="Avatar.DynamicProxy.targets"
           Condition="'$(EnableCompileTimeAvatars)' != 'true' AND  Exists('Avatar.DynamicProxy.targets')" />
+
+  <UsingTask TaskName="GetRoslynVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <TargetsPath />
+      <Version Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Reflection" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        // NOTE: we use the tasks assembly because the Microsoft.CodeAnalysis.dll itself has a different location in VS MSBuild and dotnet SDK
+        var name = AssemblyName.GetAssemblyName(Path.Combine(Path.GetDirectoryName(TargetsPath), "Microsoft.Build.Tasks.CodeAnalysis.dll"));
+        Version = name.Version.ToString(2) + ".0";
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
 
 </Project>
