@@ -9,8 +9,7 @@ namespace Avatars
     /// <remarks>
     /// All the <c>Execute</c> overloads are set to invoke the pipeline passing 
     /// <see langword="true" /> for the <c>throwOnException</c> to 
-    /// <see cref="BehaviorPipeline.Invoke(IMethodInvocation, bool)"/> (or 
-    /// <see cref="BehaviorPipeline.Invoke(IMethodInvocation, ExecuteDelegate, bool)"/>).
+    /// <see cref="BehaviorPipeline.Invoke(IMethodInvocation, bool)"/>.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class BehaviorPipelineExtensions
@@ -35,7 +34,7 @@ namespace Avatars
         /// behavior returns before reaching the target.
         /// </summary>
         public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation)
-            => (T?)pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), true).ReturnValue;
+            => (T?)pipeline.Invoke(invocation, true).ReturnValue;
 
         /// <summary>
         /// Executes the pipeline and returns a <see cref="Ref{T}"/> to it. If the returned 
@@ -44,28 +43,6 @@ namespace Avatars
         /// <see cref="Ref{T}"/>.
         /// </summary>
         public static Ref<T> ExecuteRef<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation)
-            => pipeline.Invoke(invocation, (input, next) => throw new NotImplementedException(), true).AsRef<T>();
-
-        /// <summary>
-        /// Executes the pipeline and returns a <see cref="Ref{T}"/> to it. If the returned 
-        /// value from the pipeline execution is already a <see cref="Ref{Type}"/>, it's 
-        /// returned as-is, otherwise, the <typeparamref name="T"/> value is wrapped in a new
-        /// <see cref="Ref{T}"/>.
-        /// </summary>
-        public static Ref<T> ExecuteRef<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
-            => pipeline.Invoke(invocation, target, true).AsRef<T>();
-
-        /// <summary>
-        /// Since a value is required to return, this executes the pipeline and requests to throw on 
-        /// exceptions.
-        /// </summary>
-        public static T? Execute<T>(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
-            => (T?)pipeline.Invoke(invocation, target, true).ReturnValue;
-
-        /// <summary>
-        /// Executes and forces an exception, for void methods.
-        /// </summary>
-        public static void Execute(this BehaviorPipeline pipeline, IMethodInvocation invocation, ExecuteDelegate target)
-            => pipeline.Invoke(invocation, target, true);
+            => pipeline.Invoke(invocation, true).AsRef<T>();
     }
 }

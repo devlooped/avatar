@@ -1,10 +1,8 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
+using static Avatars.SyntaxFactoryGenerator;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Avatars.Processors
@@ -48,18 +46,15 @@ namespace Avatars.Processors
                 {
                     var behaviors = PropertyDeclaration(
                         GenericName(
-                            Identifier("IList"),
-                                TypeArgumentList(
-                                    SingletonSeparatedList<TypeSyntax>(
-                                        IdentifierName(nameof(IAvatarBehavior))))),
-                            Identifier(nameof(IAvatar.Behaviors)))
+                            "IList",
+                            IdentifierName(nameof(IAvatarBehavior))),
+                        Identifier(nameof(IAvatar.Behaviors)))
                         .WithExplicitInterfaceSpecifier(
                             ExplicitInterfaceSpecifier(
                                 IdentifierName(nameof(IAvatar))))
                         .WithExpressionBody(
                             ArrowExpressionClause(
                                 MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
                                     IdentifierName("pipeline"),
                                     IdentifierName("Behaviors"))))
                                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
@@ -78,25 +73,17 @@ namespace Avatars.Processors
                     {
                         FieldDeclaration(
                             VariableDeclaration(
-                                IdentifierName(
-                                    Identifier(nameof(BehaviorPipeline))))
-                            .WithVariables(
-                                SingletonSeparatedList(
-                                    VariableDeclarator(Identifier("pipeline"))
-                                    .WithInitializer(
-                                        EqualsValueClause(
-                                            InvocationExpression(
-                                                MemberAccessExpression(
-                                                    SyntaxKind.SimpleMemberAccessExpression,
-                                                    MemberAccessExpression(
-                                                        SyntaxKind.SimpleMemberAccessExpression,
-                                                        IdentifierName(nameof(BehaviorPipelineFactory)),
-                                                        IdentifierName(nameof(BehaviorPipelineFactory.Default))),
-                                                    GenericName(
-                                                        Identifier(nameof(IBehaviorPipelineFactory.CreatePipeline)))
-                                                    .WithTypeArgumentList(
-                                                        TypeArgumentList(
-                                                            SingletonSeparatedList<TypeSyntax>(IdentifierName(node.Identifier.ValueText))))))))))
+                                "pipeline",
+                                IdentifierName(nameof(BehaviorPipeline)),
+                                InvocationExpression(
+                                    MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        MemberAccessExpression(
+                                            nameof(BehaviorPipelineFactory),
+                                            nameof(BehaviorPipelineFactory.Default)),
+                                        GenericName(
+                                            nameof(IBehaviorPipelineFactory.CreatePipeline),
+                                            IdentifierName(node.Identifier.ValueText)))))
                             .NormalizeWhitespace()
                         ).WithModifiers(TokenList(Token(SyntaxKind.ReadOnlyKeyword)))
                     });

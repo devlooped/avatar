@@ -68,26 +68,20 @@ namespace Avatars
         public IList<IAvatarBehavior> Behaviors { get; }
 
         /// <summary>
-        /// Invokes pipeline without a target.
-        /// </summary>
-        /// <remarks>
-        /// If the target is reached, a <see cref="NotImplementedException"/> will be thrown.
-        /// </remarks>
-        public IMethodReturn Invoke(IMethodInvocation invocation, bool throwOnException = false)
-            => Invoke(invocation, (input, next) => throw new NotImplementedException(), throwOnException);
-
-        /// <summary>
         /// Invoke the pipeline with the given input.
         /// </summary>
         /// <param name="invocation">Input to the method call.</param>
-        /// <param name="target">The ultimate target of the call.</param>
         /// <param name="throwOnException">Whether to throw the <see cref="IMethodReturn.Exception"/> if it has a value after running 
         /// the behaviors.</param>
         /// <returns>Return value from the pipeline.</returns>
-        public IMethodReturn Invoke(IMethodInvocation invocation, ExecuteDelegate target, bool throwOnException = false)
+        public IMethodReturn Invoke(IMethodInvocation invocation, bool throwOnException = false)
         {
+            IMethodReturn CallBaseOrThrow(IMethodInvocation invocation) => invocation.SupportsCallBase ?
+                invocation.CreateCallBaseReturn() :
+                throw new NotImplementedException(ThisAssembly.Strings.PipelineNotImplemented(invocation));
+
             if (Behaviors.Count == 0)
-                return target(invocation, GetNextThrows);
+                return CallBaseOrThrow(invocation);
 
             // We convert to array so that the collection of behaviors can potentially 
             // be modified by behaviors themselves for a subsequent pipeline execution. 
@@ -105,7 +99,7 @@ namespace Avatars
             }
 
             if (index == -1)
-                return target(invocation, GetNextThrows);
+                return CallBaseOrThrow(invocation);
 
             var result = behaviors[index].Execute(invocation, () =>
             {
@@ -117,7 +111,7 @@ namespace Avatars
 
                 return (index < behaviors.Length) ?
                     behaviors[index].Execute :
-                    target;
+                    (m, n) => CallBaseOrThrow(m);
             });
 
             if (throwOnException && result.Exception != null)
@@ -125,8 +119,5 @@ namespace Avatars
 
             return result;
         }
-
-        ExecuteDelegate GetNextThrows() => (m, n)
-            => throw new InvalidOperationException(ThisAssembly.Strings.PipelineTargetShouldNeverCallNext);
     }
 }

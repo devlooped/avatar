@@ -150,4 +150,13 @@
   <data name="ArgumentsMismatch" xml:space="preserve">
     <value>The number of argument values does not match the number of parameters.</value>
   </data>
+  <data name="CallBaseNotImplemented" xml:space="preserve">
+    <value>Member {method} does not have a base implementation to call.</value>
+  </data>
+  <data name="CallBaseGetNextNotSupported" xml:space="preserve">
+    <value>Getting the next behavior from the base method call is not supported.</value>
+  </data>
+  <data name="PipelineNotImplemented" xml:space="preserve">
+    <value>No implementation found for {method}.</value>
+  </data>
 </root>
