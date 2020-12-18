@@ -38,25 +38,27 @@ namespace Avatars
                 return;
             }
 
-            var input = new MethodInvocation(invocation.Proxy, invocation.Method, invocation.Arguments);
-            var returns = pipeline.Invoke(input, (i, next) =>
-            {
-                try
+            var input = new MethodInvocation(invocation.Proxy, invocation.Method,
+                (m, i) =>
                 {
-                    if (notImplemented)
-                        throw new NotImplementedException();
+                    try
+                    {
+                        if (notImplemented)
+                            throw new NotImplementedException();
 
-                    invocation.Proceed();
-                    var returnValue = invocation.ReturnValue;
-                    return input.CreateValueReturn(returnValue, invocation.Arguments);
-                }
-                catch (Exception ex)
-                {
-                    return input.CreateExceptionReturn(ex);
-                }
-            });
+                        invocation.Proceed();
+                        var returnValue = invocation.ReturnValue;
+                        return m.CreateValueReturn(returnValue, invocation.Arguments);
+                    }
+                    catch (Exception ex)
+                    {
+                        return m.CreateExceptionReturn(ex);
+                    }
+                }, invocation.Arguments);
 
+            var returns = pipeline.Invoke(input);
             var exception = returns.Exception;
+
             if (exception != null)
                 throw exception;
 

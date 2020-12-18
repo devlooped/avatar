@@ -33,27 +33,27 @@ namespace Avatars.UnitTests
     {
         readonly BehaviorPipeline pipeline = BehaviorPipelineFactory.Default.CreatePipeline<BaseClassAvatar>();
         [CompilerGenerated]
-        public BaseClassAvatar() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(this, m.Arguments));
+        public BaseClassAvatar() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), (m, n) => m.CreateValueReturn(this, m.Arguments)));
         [CompilerGenerated]
         IList<IAvatarBehavior> IAvatar.Behaviors => pipeline.Behaviors;
         [CompilerGenerated]
-        public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj), (m, n) => m.CreateValueReturn(base.Equals(obj), obj));
+        public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), (m, n) => m.CreateValueReturn(base.Equals(obj), obj), obj));
         [CompilerGenerated]
-        public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.GetHashCode()));
+        public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), (m, n) => m.CreateValueReturn(base.GetHashCode())));
         [CompilerGenerated]
-        public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.ToString()));
+        public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), (m, n) => m.CreateValueReturn(base.ToString())));
         [CompilerGenerated]
         public override bool TryMixed(int x, int? y, ref string name, out int? z)
         {
             var _method = MethodBase.GetCurrentMethod();
             z = default;
-            var _result = pipeline.Invoke(new MethodInvocation(this, _method, x, y, name, z), (m, n) =>
+            var _result = pipeline.Invoke(new MethodInvocation(this, _method, (m, n) =>
             {
                 var _name = m.Arguments.Get<string>("name");
                 var _z = m.Arguments.Get<int?>("z");
                 return m.CreateValueReturn(base.TryMixed(x, y, ref _name, out _z), new ArgumentCollection(_method.GetParameters())
                 {{"x", x}, {"y", y}, {"name", _name}, {"z", _z}});
-            }, true);
+            }, x, y, name, z), true);
             x = _result.Outputs.Get<int>("x");
             y = _result.Outputs.Get<int?>("y");
             name = _result.Outputs.Get<string>("name");

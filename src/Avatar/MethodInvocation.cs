@@ -15,7 +15,7 @@ namespace Avatars
     /// </summary>
     public class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
     {
-        static readonly object NullArgument = new object();
+        readonly ExecuteDelegate callBase;
 
         /// <summary>
         /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
@@ -25,6 +25,18 @@ namespace Avatars
         /// <param name="arguments">The arguments of the method invocation.</param>
         public MethodInvocation(object target, MethodBase method, params object?[] arguments)
             : this(target, method, new ArgumentCollection(method.GetParameters(), arguments))
+        {
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
+        /// </summary>
+        /// <param name="target">The target object where the invocation is being performed.</param>
+        /// <param name="method">The method being invoked.</param>
+        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
+        /// <param name="arguments">The arguments of the method invocation.</param>
+        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, params object?[] arguments)
+            : this(target, method, callBase, new ArgumentCollection(method.GetParameters(), arguments))
         {
         }
 
@@ -45,14 +57,36 @@ namespace Avatars
             if (method.GetParameters().Length != Arguments.Count)
                 throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count), nameof(arguments));
 
-            Context = new Dictionary<string, object>();
+            callBase = (m, n) => throw new NotImplementedException(ThisAssembly.Strings.CallBaseNotImplemented(ToString()));
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
+        /// </summary>
+        /// <param name="target">The target object where the invocation is being performed.</param>
+        /// <param name="method">The method being invoked.</param>
+        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
+        /// <param name="arguments">The arguments of the method invocation. Can be <see langword="null"/> or not specified 
+        /// if the <paramref name="method"/> does not have any parameters.</param>
+        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, IArgumentCollection? arguments = null)
+        {
+            // TODO: validate that arguments length and type match the method info?
+            Target = target ?? throw new ArgumentNullException(nameof(target));
+            MethodBase = method ?? throw new ArgumentNullException(nameof(method));
+            Arguments = arguments ?? new ArgumentCollection(method.GetParameters());
+
+            if (method.GetParameters().Length != Arguments.Count)
+                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count), nameof(arguments));
+
+            this.callBase = callBase;
+            SupportsCallBase = true;
         }
 
         /// <inheritdoc />
         public IArgumentCollection Arguments { get; }
 
         /// <inheritdoc />
-        public IDictionary<string, object> Context { get; }
+        public IDictionary<string, object> Context { get; } = new Dictionary<string, object>();
 
         /// <inheritdoc />
         public MethodBase MethodBase { get; }
@@ -64,12 +98,20 @@ namespace Avatars
         public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
 
         /// <inheritdoc />
+        public bool SupportsCallBase { get; }
+
+        /// <inheritdoc />
         public IMethodReturn CreateExceptionReturn(Exception exception)
             => new MethodReturn(this, exception);
 
         /// <inheritdoc />
         public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null)
             => new MethodReturn(this, returnValue, arguments ?? Arguments);
+
+        /// <inheritdoc />
+        public IMethodReturn CreateCallBaseReturn(IArgumentCollection? arguments = null)
+            => callBase.Invoke(arguments == null ? this : new MethodInvocation(Target, MethodBase, arguments),
+                () => (m, n) => throw new NotSupportedException(ThisAssembly.Strings.CallBaseGetNextNotSupported));
 
         /// <summary>
         /// Gets a friendly representation of the invocation.

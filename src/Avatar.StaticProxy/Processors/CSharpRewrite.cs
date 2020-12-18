@@ -5,7 +5,6 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 using static Avatars.SyntaxFactoryGenerator;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -105,26 +104,26 @@ namespace Avatars.Processors
                 if (node.Body != null)
                     node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)!;
 
-                var create = CreateMethodInvocation(node.ParameterList.Parameters);
+                var create = CreateMethodInvocation(node.ParameterList.Parameters,
+                    LambdaExpression(
+                        new[]
+                        {
+                            Parameter("m"),
+                            Parameter("n")
+                        },
+                        InvocationExpression(
+                            "m",
+                            "CreateValueReturn",
+                            Argument(ThisExpression()),
+                            Argument(
+                                MemberAccessExpression(
+                                    "m",
+                                    nameof(IMethodInvocation.Arguments))))));
+
                 var body = InvocationExpression(
                     "pipeline",
                     nameof(BehaviorPipelineExtensions.Execute),
-                    Argument(create),
-                    Argument(
-                        LambdaExpression(
-                            new[]
-                            {
-                                Parameter("m"),
-                                Parameter("n")
-                            },
-                            InvocationExpression(
-                                "m",
-                                "CreateValueReturn",
-                                Argument(ThisExpression()),
-                                Argument(
-                                    MemberAccessExpression(
-                                        "m",
-                                        nameof(IMethodInvocation.Arguments)))))));
+                    Argument(create));
 
                 node = node.WithExpressionBody(ArrowExpressionClause(body))
                         .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -164,21 +163,24 @@ namespace Avatars.Processors
                                     DefaultLiteralExpression)))
                             .ToArray());
 
-                    var invocation = ObjectCreationExpression(
-                        nameof(MethodInvocation),
-                        new[]
-                        {
-                            Argument(ThisExpression()),
-                            Argument(prefix + "method")
-                        }
-                        .Concat(method.ParameterList.Parameters.Select(x =>
-                                Argument(x.Identifier))));
-
                     var args = Array.Empty<ArgumentSyntax>();
                     if (baseCall == null)
                     {
-                        // Simple pipeline execute without target.
-                        args = new[] { Argument(invocation) };
+                        // Simple pipeline execute without base call.
+                        args = new[]
+                        {
+                            Argument(
+                                ObjectCreationExpression(
+                                    nameof(MethodInvocation),
+                                    new[]
+                                    {
+                                        Argument(ThisExpression()),
+                                        Argument(prefix + "method")
+                                    }
+                                    .Concat(method.ParameterList.Parameters.Select(x =>
+                                            Argument(x.Identifier))))),
+                            Argument(TrueLiteralExpression)
+                        };
                     }
                     else
                     {
@@ -206,49 +208,60 @@ namespace Avatars.Processors
 
                         args = new[]
                         {
-                            Argument(invocation),
                             Argument(
-                                // (m, n) => ...,
-                                LambdaExpression(
-                                    new []
+                                ObjectCreationExpression(
+                                    nameof(MethodInvocation),
+                                    new[]
                                     {
-                                        Parameter(Identifier("m")),
-                                        Parameter(Identifier("n")),
-                                    },
-                                    // var _NAME = m.Arguments.Get<int>("NAME");
-                                    method.ParameterList.Parameters.Where(x => x.IsRefOut()).Select(InitLocal)
-                                    // If method was void, we must call base before returning
-                                    .Concat(method.ReturnType.IsVoid() ?
-                                        new [] { ExpressionStatement(baseCall) } :
-                                        Array.Empty<StatementSyntax>())
-                                    .Concat(new StatementSyntax[]
+                                        Argument(ThisExpression()),
+                                        Argument(prefix + "method")
+                                    }
+                                    .Concat(new []
                                     {
-                                        // return m.CreateValueReturn(base.METHOD(_NAME, ...))
-                                        ReturnStatement(
-                                            InvocationExpression(
-                                                "m",
-                                                "CreateValueReturn",
-                                                Argument(value),
-                                                Argument(
-                                                    //  new ArgumentCollection(method.GetParameters())
-                                                    ObjectCreationExpression(
-                                                        nameof(ArgumentCollection),
-                                                        Argument(
-                                                            InvocationExpression(
-                                                                prefix + "method",
-                                                                nameof(MethodBase.GetParameters))))
-                                                    .WithInitializer(
-                                                        // { { "x", _x }, ... }
-                                                        InitializerExpression(
-                                                            SyntaxKind.CollectionInitializerExpression,
-                                                            method.ParameterList.Parameters.Select(x =>
-                                                                InitializerExpression(
-                                                                    SyntaxKind.ComplexElementInitializerExpression,
-                                                                    LiteralExpression(x.Identifier.ToString()),
-                                                                    x.IsRefOut() ?
-                                                                        IdentifierName(prefix + x.Identifier.ToString()) :
-                                                                        IdentifierName(x.Identifier))))))))
-                                    }))),
+                                        Argument(
+                                            // (m, n) => ...,
+                                            LambdaExpression(
+                                                new []
+                                                {
+                                                    Parameter(Identifier("m")),
+                                                    Parameter(Identifier("n")),
+                                                },
+                                                // var _NAME = m.Arguments.Get<int>("NAME");
+                                                method.ParameterList.Parameters.Where(x => x.IsRefOut()).Select(InitLocal)
+                                                // If method was void, we must call base before returning
+                                                .Concat(method.ReturnType.IsVoid() ?
+                                                    new [] { ExpressionStatement(baseCall) } :
+                                                    Array.Empty<StatementSyntax>())
+                                                .Concat(new StatementSyntax[]
+                                                {
+                                                    // return m.CreateValueReturn(base.METHOD(_NAME, ...))
+                                                    ReturnStatement(
+                                                        InvocationExpression(
+                                                            "m",
+                                                            "CreateValueReturn",
+                                                            Argument(value),
+                                                            Argument(
+                                                                //  new ArgumentCollection(method.GetParameters())
+                                                                ObjectCreationExpression(
+                                                                    nameof(ArgumentCollection),
+                                                                    Argument(
+                                                                        InvocationExpression(
+                                                                            prefix + "method",
+                                                                            nameof(MethodBase.GetParameters))))
+                                                                .WithInitializer(
+                                                                    // { { "x", _x }, ... }
+                                                                    InitializerExpression(
+                                                                        SyntaxKind.CollectionInitializerExpression,
+                                                                        method.ParameterList.Parameters.Select(x =>
+                                                                            InitializerExpression(
+                                                                                SyntaxKind.ComplexElementInitializerExpression,
+                                                                                LiteralExpression(x.Identifier.ToString()),
+                                                                                x.IsRefOut() ?
+                                                                                    IdentifierName(prefix + x.Identifier.ToString()) :
+                                                                                    IdentifierName(x.Identifier))))))))
+                                                })))
+                                    })
+                                    .Concat(method.ParameterList.Parameters.Select(x => Argument(x.Identifier))))),
                             Argument(TrueLiteralExpression)
                         };
                     }
@@ -586,7 +599,7 @@ namespace Avatars.Processors
                                     Argument(MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)))))));
             }
 
-            static InvocationExpressionSyntax CreatePipelineInvocation(TypeSyntax? returnType, IEnumerable<ParameterSyntax> parameters, ExpressionSyntax? target = null)
+            static InvocationExpressionSyntax CreatePipelineInvocation(TypeSyntax? returnType, IEnumerable<ParameterSyntax> parameters, LambdaExpressionSyntax? target = null)
             {
                 SimpleNameSyntax execute = returnType.IsVoid() ?
                     IdentifierName("Execute") :
@@ -594,33 +607,32 @@ namespace Avatars.Processors
                     GenericName("ExecuteRef", ((RefTypeSyntax)returnType).Type) :
                     GenericName("Execute", returnType!);
 
-                var create = CreateMethodInvocation(parameters);
-
-                if (target == null)
-                    return InvocationExpression(
-                        IdentifierName("pipeline"),
-                        execute,
-                        Argument(create));
+                var create = CreateMethodInvocation(parameters, target);
 
                 return InvocationExpression(
                         IdentifierName("pipeline"),
                         execute,
-                        Argument(create),
-                        Argument(target));
+                        Argument(create));
             }
 
-            static ObjectCreationExpressionSyntax CreateMethodInvocation(IEnumerable<ParameterSyntax> parameters)
-                => ObjectCreationExpression(
-                    nameof(MethodInvocation),
-                    new[]
-                    {
-                        Argument(ThisExpression()),
-                        Argument(
-                            InvocationExpression(
-                            nameof(MethodBase),
-                            nameof(MethodBase.GetCurrentMethod)))
-                    }
-                    .Concat(parameters.Select(parameter => Argument(parameter.Identifier))));
+            static ObjectCreationExpressionSyntax CreateMethodInvocation(IEnumerable<ParameterSyntax> parameters, LambdaExpressionSyntax? target = null)
+            {
+                var arguments = new List<ArgumentSyntax>
+                {
+                    Argument(ThisExpression()),
+                    Argument(
+                        InvocationExpression(
+                        nameof(MethodBase),
+                        nameof(MethodBase.GetCurrentMethod)))
+                };
+
+                if (target != null)
+                    arguments.Add(Argument(target));
+
+                arguments.AddRange(parameters.Select(parameter => Argument(parameter.Identifier)));
+
+                return ObjectCreationExpression(nameof(MethodInvocation), arguments);
+            }
         }
     }
 }
