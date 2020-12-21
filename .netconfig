@@ -79,7 +79,7 @@
 [file "src/Directory.Build.targets"]
 	url = https://github.com/kzu/oss/blob/main/src/Directory.Build.targets
 	weak
-	etag = 5493a6e0a33cf0efe11b49d71f30bbd2555c4f94924f07a3f39fa47e466b705d
+	etag = 236390b1c5b2576d6d013656e24f6d74a0042a0e4071a19e8c626cf6b7005b54
 [file "src/kzu.snk"]
 	url = https://github.com/kzu/oss/blob/main/src/kzu.snk
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
