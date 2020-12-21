@@ -18,6 +18,16 @@ namespace Avatars
         readonly ExecuteDelegate callBase;
 
         /// <summary>
+        /// Initializes the <see cref="MethodInvocation"/> for a method that has no parameters.
+        /// </summary>
+        /// <param name="target">The target object where the invocation is being performed.</param>
+        /// <param name="method">The method being invoked.</param>
+        public MethodInvocation(object target, MethodBase method)
+            : this(target, method, default(IArgumentCollection))
+        {
+        }
+
+        /// <summary>
         /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
         /// </summary>
         /// <param name="target">The target object where the invocation is being performed.</param>
