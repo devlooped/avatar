@@ -15,7 +15,7 @@ namespace Avatars
 
         /// <summary>
         /// Optional exception if the method invocation results in 
-        /// an exception being thrown.
+        /// an exception being thrown. <see langword="null"/> otherwise.
         /// </summary>
         Exception? Exception { get; }
 
@@ -26,7 +26,8 @@ namespace Avatars
 
         /// <summary>
         /// The value being returned for a non-void method if no exception 
-        /// was thrown.
+        /// was thrown. <see langword="null"/> for void method or whenever 
+        /// <see cref="Exception"/> is non-<see langword="null"/>.
         /// </summary>
         object? ReturnValue { get; }
     }
