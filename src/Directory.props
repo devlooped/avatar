@@ -10,6 +10,7 @@
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
     
     <TypeNameFormatterInternal>false</TypeNameFormatterInternal>
+    <PackageProjectUrl>https://clarius.org/avatar</PackageProjectUrl>
   </PropertyGroup>
 
   <!-- We need this in .props so it kicks-in before all the common.props defaulting -->
