@@ -3,4 +3,4 @@
 <script type="text/javascript" src="{{_rel}}styles/docfx.vendor.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js"></script>
 <script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
-<script type="text/javascript" src="{{_rel}}styles/main.js"></script>
+<script type="text/javascript" src="{{_rel}}assets/scripts/main.js"></script>

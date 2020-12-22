@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Directory.Packages.props = src\Directory.Packages.props
 		src\Directory.props = src\Directory.props
 		src\Directory.targets = src\Directory.targets
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.UnitTests", "src\Avatar.UnitTests\Avatar.UnitTests.csproj", "{766CB6E6-24EF-4CC4-AB05-A45637765838}"
@@ -24,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\pages.yml = .github\workflows\pages.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
+		.github\workflows\tag.yml = .github\workflows\tag.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.CodeAnalysis", "src\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj", "{6668E6C9-128B-4D2C-9041-C3EB573DC9A7}"
@@ -45,6 +47,48 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolsets", "Toolsets", "{C1AA62FB-A439-4D67-8CE8-3C8CD3D64CCA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.StaticProxy.3.9.0", "src\Avatar.StaticProxy\Avatar.StaticProxy.3.9.0.csproj", "{DCF50EAC-6E65-472E-ADEF-569F7A5CA3B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{273BC3C6-5343-4E99-8F88-F1A3FC7BB353}"
+	ProjectSection(SolutionItems) = preProject
+		docs\docfx.json = docs\docfx.json
+		docs\favicon.ico = docs\favicon.ico
+		docs\filter.yml = docs\filter.yml
+		docs\index.md = docs\index.md
+		docs\logo.svg = docs\logo.svg
+		docs\toc.yml = docs\toc.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{0667EE64-CBCC-4F36-AA18-53A64B115191}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{4D8E739B-92BA-418F-85AF-930680B81EBB}"
+	ProjectSection(SolutionItems) = preProject
+		docs\api\.gitignore = docs\api\.gitignore
+		docs\api\index.md = docs\api\index.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "template", "template", "{6786DCE6-40F9-432D-A15A-C6D7253D73CA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "partials", "partials", "{0DEBAC63-84A2-49AD-817A-2FB7E6AC67D1}"
+	ProjectSection(SolutionItems) = preProject
+		docs\template\partials\head.tmpl.partial = docs\template\partials\head.tmpl.partial
+		docs\template\partials\scripts.tmpl.partial = docs\template\partials\scripts.tmpl.partial
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "favicon", "favicon", "{E568D845-08A0-4C21-8E4F-0E0AD1D95ABB}"
+	ProjectSection(SolutionItems) = preProject
+		docs\favicon\android-chrome-192x192.png = docs\favicon\android-chrome-192x192.png
+		docs\favicon\android-chrome-512x512.png = docs\favicon\android-chrome-512x512.png
+		docs\favicon\apple-touch-icon.png = docs\favicon\apple-touch-icon.png
+		docs\favicon\favicon-16x16.png = docs\favicon\favicon-16x16.png
+		docs\favicon\favicon-32x32.png = docs\favicon\favicon-32x32.png
+		docs\favicon\site.webmanifest = docs\favicon\site.webmanifest
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "styles", "styles", "{74F67E99-20EA-43BF-8585-76420607FA13}"
+	ProjectSection(SolutionItems) = preProject
+		docs\styles\main.css = docs\styles\main.css
+		docs\styles\main.js = docs\styles\main.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,9 +141,14 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E1FA02D5-89FF-4C7D-80F1-F94117386637} = {AB748028-AEB8-4CB5-B19F-15E5F92ED71F}
-		{0E7B5D81-4B5E-46D5-8AD1-5F24CF767A55} = {AB748028-AEB8-4CB5-B19F-15E5F92ED71F}
+		{E1FA02D5-89FF-4C7D-80F1-F94117386637} = {0667EE64-CBCC-4F36-AA18-53A64B115191}
+		{0E7B5D81-4B5E-46D5-8AD1-5F24CF767A55} = {0667EE64-CBCC-4F36-AA18-53A64B115191}
 		{DCF50EAC-6E65-472E-ADEF-569F7A5CA3B3} = {C1AA62FB-A439-4D67-8CE8-3C8CD3D64CCA}
+		{4D8E739B-92BA-418F-85AF-930680B81EBB} = {273BC3C6-5343-4E99-8F88-F1A3FC7BB353}
+		{6786DCE6-40F9-432D-A15A-C6D7253D73CA} = {273BC3C6-5343-4E99-8F88-F1A3FC7BB353}
+		{0DEBAC63-84A2-49AD-817A-2FB7E6AC67D1} = {6786DCE6-40F9-432D-A15A-C6D7253D73CA}
+		{E568D845-08A0-4C21-8E4F-0E0AD1D95ABB} = {273BC3C6-5343-4E99-8F88-F1A3FC7BB353}
+		{74F67E99-20EA-43BF-8585-76420607FA13} = {273BC3C6-5343-4E99-8F88-F1A3FC7BB353}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5EC1923A-DA53-4C10-99E5-F3862D5F4445}
