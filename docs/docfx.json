@@ -8,7 +8,8 @@
           "src": "../src/Avatar"
         }
       ],
-      "dest": "docs/api"
+      "dest": "docs/api",
+      "filter": "filter.yml"
     }
   ],
   "build": {
@@ -35,8 +36,7 @@
           "logo.svg",
           "favicon.ico",
           "favicon/*.*",
-          "styles/*.css",
-          "styles/*.js"
+          "assets/**/*.*"
         ]
       }
     ],

@@ -11,19 +11,20 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: ⚙ jekyll
-        run: |
-          sudo gem install bundler
-          bundle install
+      - name: ⚙ dotnet 5.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: 🙏 build
+        run: dotnet build -p:BuildDocFx=true
+        working-directory: src/Avatar
 
       - name: 🖉 repo
         run: echo "REPOSITORY=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
-
-      - name: 🙏 build
-        run: bundle exec jekyll build -b ${{ env.REPOSITORY }}
-        env:
-          JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ✓ commit
         run: |
