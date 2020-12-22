@@ -93,6 +93,20 @@ public static T Of<T, T1>(params object[] constructorArgs) => Create<T>(construc
 
 As you can see, the Avatar API itself uses the same extensibility mechanism that your own custom factory methods can use.
 
+### Static vs Dynamic Avatars
+
+Depending on the project and platform, Avatars will automatically choose whether to use run-time proxies or compile-time ones (powered by Roslyn source generators). The latter are only supported when building C# 9.0+ projects.
+
+You can opt out of the static avatars by setting `EnableCompiledAvatars=false` in your project file:
+
+```xml
+<PropertyGroup>
+    <EnableCompiledAvatars>false</EnableCompiledAvatars>
+</PropertyGroup>
+```
+
+This will switch the project to run-time proxies based on Castle.Core.
+
 ## Debugging Optimizations
 
 There is nothing more frustrating than a proxy you have carefully configured that doesn't behave the way you expect it to. In order to make this a less frustrating experience, avatars are carefully optimized for debugger display and inspection, so that it's clear what behaviors are configured, and invocations and results are displayed clearly and concisely. Here's the debugging display of the `RecordingBehavior` that just keeps track of invocations and their return values for example:
@@ -118,3 +132,13 @@ The `samples` folder in the repository contains a few interesting examples of ho
 * Configuring the built-in *DefaultValueBehavior* so that every time a string property is retrieved, it gets a random lorem ipsum value.
 
 * Logging all calls to an avatar to the Xunit output helper.
+
+
+
+## Sponsors
+
+<h3 style="vertical-align: text-top" id="by-clarius">
+<img src="https://raw.githubusercontent.com/devlooped/oss/main/assets/images/sponsors.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">&nbsp;&nbsp;by&nbsp;<a href="https://github.com/clarius">@clarius</a>&nbsp;<img src="https://raw.githubusercontent.com/clarius/branding/main/logo/logo.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">
+</h3>
+
+*[get mentioned here too](https://github.com/sponsors/devlooped)!*

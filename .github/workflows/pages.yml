@@ -5,31 +5,40 @@ on:
       - main
       - pages
 
-env:
-  DOTNET_NOLOGO: true
-
 jobs:
-  deploy:
+  gh-pages:
     runs-on: ubuntu-latest
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: ⚙ dotnet 5.0.x
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
+
+      - name: ⚙ jekyll
+        run: |
+          sudo gem install bundler
+          bundle install
+
+      - name: 🖉 repo
+        run: echo "REPOSITORY=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+
       - name: 🙏 build
-        run: dotnet build -p:BuildDocFx=true
-        working-directory: src/Avatar
-      - name: 🚀 deploy
-        uses: appleboy/gh-pages-action@v0.0.2
+        run: bundle exec jekyll build -b ${{ env.REPOSITORY }}
+        env:
+          JEKYLL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ✓ commit
+        run: |
+          cd _site
+          git init
+          git add -A
+          git config --local user.email "hello@clarius.org"
+          git config --local user.name "GitHub Action"
+          git commit -m "Publish ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
+
+      - name: 🚀 push
+        uses: ad-m/github-push-action@v0.6.0
         with:
-          pages_directory: _site
-          commit_author: helloclarius
-          commit_author_email: hello@clarius.org
-          username: helloclarius
-          password: ${{ secrets.ACCESS_TOKEN }}
-          remote_url: https://github.com/clarius/avatar.git
-          target_branch: main
+          github_token: ${{ secrets.CLARIUS_ACCESS_TOKEN }}
+          repository: clarius/${{ env.REPOSITORY }}
+          branch: gh-pages
+          force: true
+          directory: ./_site
