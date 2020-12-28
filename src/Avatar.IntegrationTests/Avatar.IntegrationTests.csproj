@@ -36,7 +36,7 @@
 
   <ItemGroup Label="net5 Targets" Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="5.0.1" />
 
     <PackageReference Include="Microsoft.AspNetCore.Mvc" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
