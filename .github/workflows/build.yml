@@ -129,26 +129,50 @@ jobs:
       run:
         shell: pwsh
     runs-on: windows-latest
-    needs: build
+
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+
+      # > VS Preview
+      - name: 🔽 dotnet-vs
+        run: dotnet tool update -g dotnet-vs
+      - name: 🔽 vs preview
+        run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core +Microsoft.NetCore.Component.DevelopmentTools
+      - name: ≥ msbuild
+        run: echo "$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin" >> $env:GITHUB_PATH
+      # < VS Preview
+
+      - name: ⚙ curl
+        run: choco install curl -y
+
+      - name: 🔍 status for PR
+        if: ${{ github.event.pull_request.head.sha }}
+        run: echo "STATUS_SHA=${{ github.event.pull_request.head.sha }}" >> $env:GITHUB_ENV
+
+      - name: 🔍 status for branch
+        if: ${{ !github.event.pull_request.head.sha }}
+        run: echo "STATUS_SHA=$($env:GITHUB_SHA)" >> $env:GITHUB_ENV
+
+      - name: ⌛ wait on build
+        env:
+          CHECK: build-windows-latest
+          SHA: ${{ env.STATUS_SHA }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./.github/workflows/wait-status.ps1
+
+      - name: ⌛ wait on acceptance
+        env:
+          CHECK: acceptance-windows-latest
+          SHA: ${{ env.STATUS_SHA }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./.github/workflows/wait-status.ps1
 
       - name: 🔽 packages
         uses: actions/download-artifact@v2
         with:
           name: bin
           path: bin
-
-      # > VS Preview
-      - name: 🔽 dotnet-vs
-        run: dotnet tool update -g dotnet-vs
-      - name: 🔽 vs preview
-        run: vs install preview --quiet +Microsoft.VisualStudio.Component.ManagedDesktop.Core	+Microsoft.NetCore.Component.DevelopmentTools
-      - name: ≥ msbuild
-        run: echo "$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin" >> $GITHUB_PATH
-        shell: bash
-      # < VS Preview
 
       - name: 🧪 test
         run: msbuild -r -t:build,test -p:TargetFramework=net472 -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -bl:preview.binlog
