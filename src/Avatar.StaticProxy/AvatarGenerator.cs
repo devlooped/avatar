@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Avatars.CodeAnalysis;
 using Avatars.Processors;
@@ -21,13 +22,9 @@ namespace Avatars
     /// generators that wish to customize the process for their own flavors of avatars.
     /// </summary>
     [Generator]
-    public class AvatarGenerator : ISourceGenerator
+    public record AvatarGenerator : ISourceGenerator
     {
-        readonly NamingConvention naming;
-        readonly Type generatorAttribute;
-
         ImmutableArray<Func<ISyntaxReceiver>> receivers = ImmutableArray<Func<ISyntaxReceiver>>.Empty;
-        ImmutableArray<IAvatarProcessor> processors = ImmutableArray<IAvatarProcessor>.Empty;
 
         // Configured processors, by language, then phase.
         Dictionary<string, Dictionary<ProcessorPhase, IAvatarProcessor[]>>? configuredProcessors = null;
@@ -59,8 +56,8 @@ namespace Avatars
         };
 
         /// <summary>
-        /// Creates a default avatar generator, using <see cref="DefaultNamingConvention"/> and 
-        /// <see cref="DefaultGeneratorAttribute"/>.
+        /// Creates a default avatar generator, using <see cref="DefaultNamingConvention"/>, 
+        /// <see cref="DefaultGeneratorAttribute"/> and <see cref="DefaultProcessors"/>.
         /// </summary>
         public AvatarGenerator() : this(DefaultNamingConvention, DefaultGeneratorAttribute, DefaultProcessors) { }
 
@@ -75,7 +72,7 @@ namespace Avatars
         /// </param>
         /// <param name="processors">Processors to use during source generation.</param>
         public AvatarGenerator(NamingConvention naming, Type generatorAttribute, params IAvatarProcessor[] processors)
-            => (this.naming, this.generatorAttribute, this.processors)
+            => (NamingConvention, GeneratorAttribute, Processors)
             = (naming, generatorAttribute, processors.ToImmutableArray());
 
         /// <summary>
@@ -89,14 +86,25 @@ namespace Avatars
         /// </param>
         /// <param name="processors">Processors to use during source generation.</param>
         public AvatarGenerator(NamingConvention naming, Type generatorAttribute, IEnumerable<IAvatarProcessor> processors)
-            => (this.naming, this.generatorAttribute, this.processors)
+            => (NamingConvention, GeneratorAttribute, Processors)
             = (naming, generatorAttribute, processors.ToImmutableArray());
+
+        /// <summary>
+        /// Naming convention used for generated types.
+        /// </summary>
+        public NamingConvention NamingConvention { get; init; }
+
+        /// <summary>
+        /// The attribute used to flag generic methods that 
+        /// should trigger avatar generation.
+        /// </summary>
+        public Type GeneratorAttribute { get; init; }
 
         /// <summary>
         /// Registered <see cref="IAvatarProcessor"/> that are applied when the generator 
         /// executes.
         /// </summary>
-        public ImmutableArray<IAvatarProcessor> Processors => processors;
+        public ImmutableArray<IAvatarProcessor> Processors { get; init; }
 
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -107,7 +115,14 @@ namespace Avatars
             if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.AvatarAnalyzerDir", out var analyerDir))
                 DependencyResolver.AddSearchPath(analyerDir);
 
-            OnExecute(new ProcessorContext(context, naming));
+            var generatorAttr = context.Compilation.GetTypeByMetadataName(GeneratorAttribute.FullName);
+            if (generatorAttr == null)
+            {
+                // TODO: context.ReportDiagnostic(...)
+                return;
+            }
+
+            OnExecute(new ProcessorContext(context, NamingConvention, generatorAttr));
         }
 
         /// <inheritdoc/>
@@ -116,6 +131,30 @@ namespace Avatars
                 => new AggregateSyntaxReceiver(
                     new ISyntaxReceiver[] { new AvatarGeneratorReceiver() }
                     .Concat(receivers.Select(x => x())).ToArray()));
+
+        /// <summary>
+        /// Replaces the <see cref="GeneratorAttribute"/> in use.
+        /// </summary>
+        public AvatarGenerator WithGeneratorAttribute(Type generatorAttribute)
+            => this with { GeneratorAttribute = generatorAttribute };
+
+        /// <summary>
+        /// Replaces the <see cref="NamingConvention"/> in use.
+        /// </summary>
+        public AvatarGenerator WithNamingConvention(NamingConvention naming)
+            => this with { NamingConvention = naming };
+
+        /// <summary>
+        /// Registers an additional <see cref="IAvatarProcessor"/> to use during the generation phase.
+        /// </summary>
+        public AvatarGenerator WithProcessor(IAvatarProcessor processor)
+            => this with { Processors = Processors.Add(processor) };
+
+        /// <summary>
+        /// Replaces all previously registered processors with the given <paramref name="processors"/>.
+        /// </summary>
+        public AvatarGenerator WithProcessors(params IAvatarProcessor[] processors)
+            => this with { Processors = processors.ToImmutableArray() };
 
         /// <summary>
         /// Registers an additional syntax receiver factory that can collect syntax nodes for the generation 
@@ -129,24 +168,12 @@ namespace Avatars
         /// </code>
         /// </remarks>
         public AvatarGenerator WithSyntaxReceiver(Func<ISyntaxReceiver> receiverFactory)
-            => new AvatarGenerator(naming, generatorAttribute) { receivers = receivers.Add(receiverFactory) };
-
-        /// <summary>
-        /// Registers an additional <see cref="IAvatarProcessor"/> to use during the generation phase.
-        /// </summary>
-        public AvatarGenerator WithProcessor(IAvatarProcessor processor)
-            => new AvatarGenerator(naming, generatorAttribute) { receivers = receivers, processors = processors.Add(processor) };
-
-        /// <summary>
-        /// Replaces all previously registered processors with the given <paramref name="processors"/>.
-        /// </summary>
-        public AvatarGenerator WithProcessors(params IAvatarProcessor[] processors)
-            => new AvatarGenerator(naming, generatorAttribute) { receivers = receivers, processors = processors.ToImmutableArray() };
+            => this with { receivers = receivers.Add(receiverFactory) };
 
         void OnExecute(ProcessorContext context)
         {
             // Once configured, the dictionary is immutable.
-            configuredProcessors ??= processors
+            configuredProcessors ??= Processors
                 .GroupBy(processor => processor.Language)
                 .ToDictionary(
                     bylang => bylang.Key,
@@ -156,42 +183,13 @@ namespace Avatars
                             byphase => byphase.Key,
                             byphase => byphase.Select(proclang => proclang).ToArray()));
 
-            if (context.SyntaxReceivers.OfType<AvatarGeneratorReceiver>().FirstOrDefault() is not AvatarGeneratorReceiver receiver)
-                return;
-
-            var generatorAttr = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
-            if (generatorAttr == null)
-                return;
-
-            IEnumerable<INamedTypeSymbol[]> GetCandidates()
-            {
-                foreach (var (invocation, genericName) in receiver.Invocations)
-                {
-                    var semantic = context.Compilation.GetSemanticModel(invocation.SyntaxTree);
-                    var symbol = semantic.GetSymbolInfo(invocation, context.CancellationToken);
-                    if (symbol.Symbol is not IMethodSymbol method)
-                        continue;
-
-                    if (!method.GetAttributes().Any(attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, generatorAttr)))
-                        continue;
-
-                    var typeArgs = genericName.TypeArgumentList.Arguments
-                        .Select(name => semantic.GetSymbolInfo(name, context.CancellationToken).Symbol as INamedTypeSymbol)
-                        .ToList();
-
-                    // A corresponding diagnostics analyzer would flag this as a compile error.
-                    if (!typeArgs.All(CanGenerateFor))
-                        continue;
-
-                    yield return typeArgs.Cast<INamedTypeSymbol>().ToArray();
-                }
-            };
-
             var factory = AvatarSyntaxFactory.CreateFactory(context.Language);
             AvatarScaffold? defaultScaffold = null;
             var avatars = new HashSet<string>();
 
-            foreach (var candidate in GetCandidates().ToArray())
+            foreach (var candidate in context.SyntaxReceivers
+                .OfType<IAvatarCandidatesReceiver>()
+                .SelectMany(receiver => receiver.GetCandidates(context)).ToArray())
             {
                 var name = context.NamingConvention.GetName(candidate);
                 if (avatars.Contains(name))
@@ -293,9 +291,33 @@ namespace Avatars
         /// A <see cref="ISyntaxReceiver"/> that collects invocations to generic methods, 
         /// which are initial candidates for lookup.
         /// </summary>
-        class AvatarGeneratorReceiver : ISyntaxReceiver
+        class AvatarGeneratorReceiver : IAvatarCandidatesReceiver
         {
-            public List<(InvocationExpressionSyntax, GenericNameSyntax)> Invocations { get; } = new();
+            readonly List<(InvocationExpressionSyntax, GenericNameSyntax)> invocations = new();
+
+            public IEnumerable<INamedTypeSymbol[]> GetCandidates(ProcessorContext context)
+            {
+                foreach (var (invocation, genericName) in invocations)
+                {
+                    var semantic = context.Compilation.GetSemanticModel(invocation.SyntaxTree);
+                    var symbol = semantic.GetSymbolInfo(invocation, context.CancellationToken);
+                    if (symbol.Symbol is not IMethodSymbol method)
+                        continue;
+
+                    if (!method.GetAttributes().Any(attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, context.GeneratorAttribute)))
+                        continue;
+
+                    var typeArgs = genericName.TypeArgumentList.Arguments
+                        .Select(name => semantic.GetSymbolInfo(name, context.CancellationToken).Symbol as INamedTypeSymbol)
+                        .ToList();
+
+                    // A corresponding diagnostics analyzer would flag this as a compile error.
+                    if (!typeArgs.All(CanGenerateFor))
+                        continue;
+
+                    yield return typeArgs.Cast<INamedTypeSymbol>().ToArray();
+                }
+            }
 
             public void OnVisitSyntaxNode(SyntaxNode node)
             {
@@ -306,10 +328,10 @@ namespace Avatars
                     // Both Class.Method<T, ...>()
                     if (invocation.Expression is MemberAccessExpressionSyntax member &&
                         member.Name is GenericNameSyntax memberName)
-                        Invocations.Add((invocation, memberName));
+                        invocations.Add((invocation, memberName));
                     // And Method<T, ...>()
                     else if (invocation.Expression is GenericNameSyntax methodName)
-                        Invocations.Add((invocation, methodName));
+                        invocations.Add((invocation, methodName));
                 }
             }
         }

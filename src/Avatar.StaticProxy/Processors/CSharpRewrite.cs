@@ -559,9 +559,7 @@ namespace Avatars.Processors
             }
 
             static InvocationExpressionSyntax? GetBaseInvocation(SyntaxNode? syntax)
-                => syntax == null ? null :
-                    // Find first invocation that calls base
-                    syntax.DescendantNodes().OfType<InvocationExpressionSyntax>().FirstOrDefault(i =>
+                => syntax?.DescendantNodes().OfType<InvocationExpressionSyntax>().FirstOrDefault(i =>
                         i.DescendantNodes().OfType<BaseExpressionSyntax>().Any());
 
             static ExpressionSyntax Execute(TypeSyntax? returnType, IEnumerable<ParameterSyntax> parameters, ExpressionSyntax? baseCall = null)

@@ -37,7 +37,7 @@ namespace Avatars.AcceptanceTests
                 return (diagnostics, compilation);
 
             ISourceGenerator generator = new AvatarGenerator();
-
+            
             var driver = CSharpGeneratorDriver.Create(generator);
             driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out diagnostics);
 

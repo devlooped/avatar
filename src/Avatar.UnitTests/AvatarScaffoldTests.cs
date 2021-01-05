@@ -23,7 +23,7 @@ namespace Avatars.UnitTests
             var (_, project) = CreateWorkspaceAndProject(LanguageNames.CSharp);
             var compilation = await project.GetCompilationAsync();
             var naming = new NamingConvention();
-            var context = new ProcessorContext(naming, compilation, project.ParseOptions);
+            var context = new ProcessorContext(naming, compilation.GetTypeByMetadataName(typeof(AvatarGeneratorAttribute).FullName), compilation, project.ParseOptions);
             var scaffold = new AvatarScaffold(context);
 
             var types = new INamedTypeSymbol[]
