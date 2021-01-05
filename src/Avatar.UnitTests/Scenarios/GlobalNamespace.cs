@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS0436
-using System;
 using Avatars;
 using Xunit;
 

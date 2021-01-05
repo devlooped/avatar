@@ -1,5 +1,4 @@
 ﻿#pragma warning disable CS0436
-using System.Diagnostics;
 using Xunit;
 
 namespace Avatars.Scenarios.ClassBaseTypeCtors
