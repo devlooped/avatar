@@ -2,7 +2,8 @@
 
   <ItemGroup>
     <ProjectCapability Include="Pack" />
-    <ProjectReference Include="..\**\*.csproj" Exclude="..\**\bin\**\*.*;..\**\obj\**\*.*;..\**\*Tests.csproj;..\Acceptance\**\*.csproj" />
+    <ProjectReference Include="..\**\*.csproj;..\**\Avatar.Package.msbuildproj" 
+                      Exclude="..\**\bin\**\*.*;..\**\obj\**\*.*;..\**\*Tests.csproj;..\Acceptance\**\*.csproj" />
   </ItemGroup>
   
   <!-- Remove IsPackable=false projects from the globing -->
