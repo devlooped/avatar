@@ -73,7 +73,22 @@ namespace Avatars
         /// of those methods are used when invoking <see cref="IAvatarProcessor.Process"/> in 
         /// the <see cref="ProcessorContext.TypeArguments"/>.
         /// </param>
+        /// <param name="processors">Processors to use during source generation.</param>
         public AvatarGenerator(NamingConvention naming, Type generatorAttribute, params IAvatarProcessor[] processors)
+            => (this.naming, this.generatorAttribute, this.processors)
+            = (naming, generatorAttribute, processors.ToImmutableArray());
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="AvatarGenerator"/>.
+        /// </summary>
+        /// <param name="naming">The naming convention to apply to generated code.</param>
+        /// <param name="generatorAttribute">The attribute used to flag generic methods that 
+        /// should trigger avatar generation. The generic type parameters passed to invocations 
+        /// of those methods are used when invoking <see cref="IAvatarProcessor.Process"/> in 
+        /// the <see cref="ProcessorContext.TypeArguments"/>.
+        /// </param>
+        /// <param name="processors">Processors to use during source generation.</param>
+        public AvatarGenerator(NamingConvention naming, Type generatorAttribute, IEnumerable<IAvatarProcessor> processors)
             => (this.naming, this.generatorAttribute, this.processors)
             = (naming, generatorAttribute, processors.ToImmutableArray());
 
