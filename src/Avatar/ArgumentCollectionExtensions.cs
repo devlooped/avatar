@@ -25,6 +25,20 @@ namespace Avatars
         }
 
         /// <summary>
+        /// Sets a typed argument on the <paramref name="arguments"/> collection 
+        /// with the given <paramref name="name"/>.
+        /// </summary>
+        public static void Set<T>(this IArgumentCollection arguments, string name, T value)
+            => arguments.SetValue(name, value);
+
+        /// <summary>
+        /// Sets a typed argument on the <paramref name="arguments"/> collection 
+        /// with the given <paramref name="index"/>.
+        /// </summary>
+        public static void Set<T>(this IArgumentCollection arguments, int index, T value)
+            => arguments.SetValue(index, value);
+
+        /// <summary>
         /// Gets a typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="name"/>.
         /// </summary>
