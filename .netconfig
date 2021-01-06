@@ -34,7 +34,7 @@
 	weak
 [file ".github/workflows/build.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/build.yml
-	etag = 868172e62b2cac855039731fd1ea929f0a569f675586903450d24bc232c43ea9
+	etag = a65d351062bf119617b5861aea7e2038ee2b637cbf703993c3cf68b1f219a65c
 	weak
 [file ".github/workflows/release.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/release.yml
@@ -75,7 +75,7 @@
 [file "src/Directory.Build.props"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.props
 	weak
-	etag = 1ea71942b9ff7830612ceb3a2927c0d011c54891a7653b07ef01b914347e306f
+	etag = 16762b7a7fbdc00c1912c469962131c912856115826db7628167517eea918324
 [file "src/Directory.Build.targets"]
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
 	weak
