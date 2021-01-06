@@ -132,9 +132,7 @@ namespace Avatars
         /// No actual behavior depends on these strings.
         /// </devdoc>
         [ExcludeFromCodeCoverage]
-#if !DEBUG
         [DebuggerNonUserCode]
-#endif
         public override string ToString()
         {
             var result = new StringBuilder();

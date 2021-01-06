@@ -164,9 +164,7 @@ namespace Avatars
         public override string ToString() => string.Join(", ", infos.Select(ToString));
 
         [ExcludeFromCodeCoverage]
-#if !DEBUG
         [DebuggerNonUserCode]
-#endif
         string ToString(ParameterInfo parameter) =>
             (parameter.IsOut ? parameter.ParameterType.GetFormattedName().Replace("ref ", "out ") : parameter.ParameterType.GetFormattedName()) +
             " " + parameter.Name +

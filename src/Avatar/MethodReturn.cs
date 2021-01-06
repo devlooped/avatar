@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -65,9 +66,7 @@ namespace Avatars
         /// No actual behavior depends on these strings.
         /// </devdoc>
         [ExcludeFromCodeCoverage]
-#if !DEBUG
-    [DebuggerNonUserCode]
-#endif
+        [DebuggerNonUserCode]
         public override string ToString()
         {
             var result = new StringBuilder();
