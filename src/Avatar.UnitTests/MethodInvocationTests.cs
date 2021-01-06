@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Sample;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -155,5 +156,16 @@ namespace Avatars.UnitTests
         [Fact]
         public void ThrowsIfNullMethodBase()
             => Assert.Throws<ArgumentNullException>(() => new MethodInvocation(this, null!));
+
+        [Fact]
+        public void ReturnOutputsContainsRefAndOut()
+        {
+            var calculator = new Calculator();
+            var invocation = new MethodInvocation(calculator, typeof(ICalculator).GetMethod(nameof(ICalculator.TryAdd))!, 2, 3, 5);
+
+            var result = invocation.CreateValueReturn(true);
+
+            Assert.Equal(3, result.Outputs.Count);
+        }
     }
 }
