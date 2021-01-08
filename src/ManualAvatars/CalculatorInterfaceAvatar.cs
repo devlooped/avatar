@@ -14,8 +14,8 @@ namespace Sample
 
         public event EventHandler TurnedOn
         {
-            add => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-            remove => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+            add => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+            remove => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
         }
 
         public bool IsOn
