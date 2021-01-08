@@ -4,7 +4,7 @@ using System.Reflection;
 namespace Avatars
 {
     /// <summary>
-    /// Contains a reflection-based factory for <see cref="Ref{T}"/>.
+    /// Contains a factory methods for <see cref="Ref{T}"/>.
     /// </summary>
     public class Ref
     {
