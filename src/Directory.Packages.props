@@ -22,6 +22,8 @@
     <NuGetizerVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'NuGetizer'))" />
 
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+
+    <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn">
