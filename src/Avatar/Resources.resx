@@ -127,13 +127,13 @@
     <value>Default factory does not implement avatar creation. Please ensure AvatarFactory.Default is assigned to a valid factory before usage.</value>
   </data>
   <data name="ValueIsNull" xml:space="preserve">
-    <value>Expected argument {arg} to be non-null.</value>
+    <value>Expected argument '{arg}' to be non-null.</value>
   </data>
   <data name="ValueNotCompatible" xml:space="preserve">
-    <value>Requested {arg} has a value of type {actualType} which cannot be converted to the requested type {requestedType}.</value>
+    <value>Requested '{arg}' has a value of type '{actualType}' which cannot be converted to the expected type '{requestedType}'.</value>
   </data>
   <data name="ValueTypeIsNull" xml:space="preserve">
-    <value>Argument {arg} is null and cannot be converted to requested type {type} because it is not a nullable value type.</value>
+    <value>Argument '{arg}' is null and cannot be converted to expected type '{type}' because it is not a nullable value type.</value>
   </data>
   <data name="StaticAvatarTypeNotFoundInAssembly" xml:space="preserve">
     <value>Expected avatar type named '{type}' in assembly '{assembly}' was not found. The static source generator may have failed to generate the required types during build, or the avatar types may be located in a different assembly.</value>
@@ -158,5 +158,8 @@
   </data>
   <data name="PipelineNotImplemented" xml:space="preserve">
     <value>No implementation found for {method}.</value>
+  </data>
+  <data name="TypeNotCompatible" xml:space="preserve">
+    <value>Argument type '{argType}' is not compatible with its parameter '{paramType} {paramName}'.</value>
   </data>
 </root>

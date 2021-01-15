@@ -10,7 +10,7 @@ namespace Avatars.UnitTests
             var method = typeof(Foo).GetMethod(nameof(object.GetHashCode))!;
             var behavior = new DefaultEqualityBehavior();
 
-            Assert.True(behavior.AppliesTo(new MethodInvocation(new Foo(), method, new object[0])));
+            Assert.True(behavior.AppliesTo(MethodInvocation.Create(new Foo(), method)));
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace Avatars.UnitTests
             var method = typeof(Foo).GetMethod(nameof(object.Equals))!;
             var behavior = new DefaultEqualityBehavior();
 
-            Assert.True(behavior.AppliesTo(new MethodInvocation(new Foo(), method, new object[] { new Foo() })));
+            Assert.True(behavior.AppliesTo(MethodInvocation.Create(new Foo(), method, new Foo())));
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Avatars.UnitTests
             var target = new Foo();
 
             var expected = target.GetHashCode();
-            var actual = (int?)behavior.Execute(new MethodInvocation(target, method, new object[0]), () => null!).ReturnValue;
+            var actual = (int?)behavior.Execute(MethodInvocation.Create(target, method), () => null!).ReturnValue;
 
             Assert.Equal(expected, actual);
         }
@@ -42,7 +42,7 @@ namespace Avatars.UnitTests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool?)behavior.Execute(new MethodInvocation(target, method, new object[] { target }), () => null!).ReturnValue;
+            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, target), () => null!).ReturnValue;
 
             Assert.True(actual);
         }
@@ -54,7 +54,7 @@ namespace Avatars.UnitTests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool?)behavior.Execute(new MethodInvocation(target, method, new object[] { new Foo() }), () => null!).ReturnValue;
+            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, new Foo()), () => null!).ReturnValue;
 
             Assert.False(actual);
         }
@@ -68,11 +68,11 @@ namespace Avatars.UnitTests
             var nextCalled = false;
 
             behavior.Execute(
-                new MethodInvocation(target, method),
+                MethodInvocation.Create(target, method),
                 () => (m, n) =>
                 {
                     nextCalled = true;
-                    return m.CreateValueReturn(null);
+                    return m.CreateReturn();
                 });
 
             Assert.True(nextCalled);

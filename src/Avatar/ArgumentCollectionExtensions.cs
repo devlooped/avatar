@@ -11,32 +11,34 @@ namespace Avatars
     public static class ArgumentCollectionExtensions
     {
         /// <summary>
-        /// Ensures the length of both the arguments and the method or constructor 
-        /// arguments matches.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void EnsureSameLength(this IArgumentCollection arguments, MethodBase member)
-        {
-            if (member is MethodInfo info && info.GetParameters().Length != arguments.Count)
-                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(info.Name, info.GetParameters().Length, arguments.Count));
-
-            if (member is MethodInfo ctor && ctor.GetParameters().Length != arguments.Count)
-                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(ctor.Name, ctor.GetParameters().Length, arguments.Count));
-        }
-
-        /// <summary>
         /// Sets a typed argument on the <paramref name="arguments"/> collection 
         /// with the given <paramref name="name"/>.
         /// </summary>
-        public static void Set<T>(this IArgumentCollection arguments, string name, T value)
-            => arguments.SetValue(name, value);
+        public static IArgumentCollection Set<T>(this IArgumentCollection arguments, string name, T value)
+        {
+            var argument = arguments[name];
+            if (argument is Argument<T> typed)
+                arguments[name] = typed.WithValue(value);
+            else
+                arguments[name] = argument.WithRawValue(value);
+
+            return arguments;
+        }
 
         /// <summary>
         /// Sets a typed argument on the <paramref name="arguments"/> collection 
         /// with the given <paramref name="index"/>.
         /// </summary>
-        public static void Set<T>(this IArgumentCollection arguments, int index, T value)
-            => arguments.SetValue(index, value);
+        public static IArgumentCollection Set<T>(this IArgumentCollection arguments, int index, T value)
+        {
+            var argument = arguments[index];
+            if (argument is Argument<T> typed)
+                arguments[argument.Parameter.Name] = typed.WithValue(value);
+            else
+                arguments[argument.Parameter.Name] = argument.WithRawValue(value);
+
+            return arguments;
+        }
 
         /// <summary>
         /// Gets a typed argument from the <paramref name="arguments"/> collection 
@@ -44,7 +46,7 @@ namespace Avatars
         /// </summary>
         /// <exception cref="ArgumentNullException">The value in the collection was <see langword="null"/>.</exception>
         public static T Get<T>(this IArgumentCollection arguments, string name) where T : notnull
-            => Get<T>("'" + name + "'", arguments.GetValue(name));
+            => Get<T>(arguments[name]);
 
         /// <summary>
         /// Gets a typed argument from the <paramref name="arguments"/> collection 
@@ -52,25 +54,29 @@ namespace Avatars
         /// </summary>
         /// <exception cref="ArgumentNullException">The value in the collection was <see langword="null"/>.</exception>
         public static T Get<T>(this IArgumentCollection arguments, int index) where T : notnull
-            => Get<T>(index.ToString(), arguments.GetValue(index));
+            => Get<T>(arguments[index]);
 
         /// <summary>
         /// Gets an optional (nullable) typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="name"/>.
         /// </summary>
         public static T? GetNullable<T>(this IArgumentCollection arguments, string name)
-            => GetNullable<T>("'" + name + "'", arguments.GetValue(name));
+            => GetNullable<T>(arguments[name]);
 
         /// <summary>
         /// Gets an optional (nullable) typed argument from the <paramref name="arguments"/> collection 
         /// with the given <paramref name="index"/>.
         /// </summary>
         public static T? GetNullable<T>(this IArgumentCollection arguments, int index)
-            => GetNullable<T>(index.ToString(), arguments.GetValue(index));
+            => GetNullable<T>(arguments[index]);
 
-        static T Get<T>(string argument, object? value) where T : notnull
+        static T Get<T>(Argument argument) where T : notnull
         {
+            if (argument is Argument<T> typed)
+                return typed.Value!;
+
             var type = typeof(T);
+            var value = argument.RawValue;
             if (value == null)
             {
                 // Nullable<T> can handle a null return, and in that case 
@@ -79,11 +85,11 @@ namespace Avatars
                 if (type.IsValueType &&
                     type.IsGenericType &&
                     type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    return default(T)!;
+                    return default!;
                 else if (type.IsValueType)
-                    throw new ArgumentNullException(ThisAssembly.Strings.ValueTypeIsNull(argument, type), argument);
+                    throw new ArgumentNullException(argument.Parameter.Name, ThisAssembly.Strings.ValueTypeIsNull(argument.Parameter.Name, type));
 
-                throw new ArgumentNullException(argument, ThisAssembly.Strings.ValueIsNull(argument));
+                throw new ArgumentNullException(argument.Parameter.Name, ThisAssembly.Strings.ValueIsNull(argument.Parameter.Name));
             }
 
             if (type.IsAssignableFrom(value.GetType()))
@@ -92,9 +98,13 @@ namespace Avatars
             throw new ArgumentException(ThisAssembly.Strings.ValueNotCompatible(argument, value.GetType(), type));
         }
 
-        static T? GetNullable<T>(string argument, object? value)
+        static T? GetNullable<T>(Argument argument)
         {
+            if (argument is Argument<T> typed)
+                return typed.Value!;
+
             var type = typeof(T);
+            var value = argument.RawValue;
             if (value == null)
             {
                 // non-value type or Nullable<T> can handle a null return.
@@ -102,7 +112,7 @@ namespace Avatars
                     type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                     return default;
 
-                throw new ArgumentException(ThisAssembly.Strings.ValueTypeIsNull(argument, type), argument);
+                throw new ArgumentNullException(argument.Parameter.Name, ThisAssembly.Strings.ValueIsNull(argument.Parameter.Name));
             }
 
             if (type.IsAssignableFrom(value.GetType()))

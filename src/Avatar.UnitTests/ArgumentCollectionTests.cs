@@ -14,36 +14,36 @@ namespace Avatars.UnitTests
 
         [Fact]
         public void ThrowsIfMismatchValuesLength()
-            => Assert.Throws<ArgumentException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5, "Foo"));
+            => Assert.Throws<TargetParameterCountException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5, "Foo"));
 
         [Fact]
-        public void ThrowsIfParameterNameNotFound()
-            => Assert.Throws<KeyNotFoundException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5)["foo"]);
+        public void ThrowsIfNameNotFound()
+            => Assert.Throws<KeyNotFoundException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5)["foo"]);
 
         [Fact]
-        public void ThrowsIfParameterIndexNotFound()
-            => Assert.Throws<IndexOutOfRangeException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5)[42]);
+        public void ThrowsIfIndexNotFound()
+            => Assert.Throws<IndexOutOfRangeException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5)[42]);
 
         [Fact]
         public void ThrowsIfGetValueNameNotFound()
-            => Assert.Throws<KeyNotFoundException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5).GetValue("foo"));
+            => Assert.Throws<KeyNotFoundException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).GetValue("foo"));
 
         [Fact]
         public void ThrowsIfGetValueIndexNotFound()
-            => Assert.Throws<IndexOutOfRangeException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5).GetValue(42));
+            => Assert.Throws<IndexOutOfRangeException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).GetValue(42));
 
         [Fact]
         public void ThrowsIfSetValueNameNotFound()
-            => Assert.Throws<KeyNotFoundException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5).SetValue("foo", 42));
+            => Assert.Throws<KeyNotFoundException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).SetValue("foo", 42));
 
         [Fact]
         public void ThrowsIfSetValueIndexNotFound()
-            => Assert.Throws<IndexOutOfRangeException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), 5).SetValue(42, 42));
+            => Assert.Throws<IndexOutOfRangeException>(() => ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).SetValue(42, 42));
 
         [Fact]
         public void AccessValueByIndex()
         {
-            var arguments = new ArgumentCollection(valueTypeMethod.GetParameters(), 5);
+            var arguments = ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5);
 
             Assert.Equal(5, arguments.GetValue(0));
         }
@@ -51,7 +51,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void AccessValueByName()
         {
-            var arguments = new ArgumentCollection(valueTypeMethod.GetParameters(), 5);
+            var arguments = ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5);
 
             Assert.Equal(5, arguments.GetValue("value"));
 
@@ -61,77 +61,58 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public void GetInfoFromIndex()
-            => Assert.NotNull(new ArgumentCollection(valueTypeMethod.GetParameters())[0]);
-
-        [Fact]
-        public void GetInfoFromName()
-            => Assert.NotNull(new ArgumentCollection(valueTypeMethod.GetParameters())["value"]);
-
-        [Fact]
         public void Count()
 #pragma warning disable xUnit2013 // Do not use equality check to check for collection size.
-            => Assert.Equal(1, new ArgumentCollection(valueTypeMethod.GetParameters()).Count);
+            => Assert.Equal(1, ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).Count);
 #pragma warning restore xUnit2013 // Do not use equality check to check for collection size.
-
 
         [Fact]
         public void GetTyped()
         {
-            Assert.Equal(5, new ArgumentCollection(valueTypeMethod.GetParameters(), 5).Get<int>(0));
-            Assert.Equal(5, new ArgumentCollection(valueTypeMethod.GetParameters(), 5).Get<int>("value"));
+            Assert.Equal(5, ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).Get<int>(0));
+            Assert.Equal(5, ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).Get<int>("value"));
 
             // If nullable annotations are ignored and we request a nullable int, it should still work.
 #nullable disable
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters(), new object[] { null }).Get<int?>(0));
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters(), new object[] { null }).Get<int?>("value"));
+            Assert.Equal((int?)null, ArgumentCollection.Create(nullableValueTypeMethod.GetParameters(), default(int?)).Get<int?>(0));
+            Assert.Equal((int?)null, ArgumentCollection.Create(nullableValueTypeMethod.GetParameters(), default(int?)).Get<int?>("value"));
 #nullable restore
 
-            Assert.Equal("foo", new ArgumentCollection(referenceTypeMethod.GetParameters(), "foo").Get<string>(0));
-            Assert.Equal("foo", new ArgumentCollection(referenceTypeMethod.GetParameters(), "foo").Get<string>("value"));
+            Assert.Equal("foo", ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").Get<string>(0));
+            Assert.Equal("foo", ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").Get<string>("value"));
         }
 
         [Fact]
         public void GetOptionalTyped()
         {
-            Assert.Equal(5, new ArgumentCollection(valueTypeMethod.GetParameters(), 5).GetNullable<int>(0));
-            Assert.Equal(5, new ArgumentCollection(valueTypeMethod.GetParameters(), 5).GetNullable<int>("value"));
+            Assert.Equal(5, ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).GetNullable<int>(0));
+            Assert.Equal(5, ArgumentCollection.Create(valueTypeMethod.GetParameters(), 5).GetNullable<int>("value"));
 
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters(), new object[] { null }).GetNullable<int?>(0));
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters(), new object[] { null }).GetNullable<int?>("value"));
+            Assert.Equal((int?)null, ArgumentCollection.Create<int?>(nullableValueTypeMethod.GetParameters(), null).GetNullable<int?>(0));
+            Assert.Equal((int?)null, ArgumentCollection.Create<int?>(nullableValueTypeMethod.GetParameters(), null).GetNullable<int?>("value"));
 
-            Assert.Equal("foo", new ArgumentCollection(referenceTypeMethod.GetParameters(), "foo").GetNullable<string>(0));
-            Assert.Equal("foo", new ArgumentCollection(referenceTypeMethod.GetParameters(), "foo").GetNullable<string>("value"));
+            Assert.Equal("foo", ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").GetNullable<string>(0));
+            Assert.Equal("foo", ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").GetNullable<string>("value"));
 
-            Assert.Null(new ArgumentCollection(referenceTypeMethod.GetParameters(), new object[] { null }).GetNullable<string>(0));
-            Assert.Null(new ArgumentCollection(referenceTypeMethod.GetParameters(), new object[] { null }).GetNullable<string>("value"));
-        }
-
-        [Fact]
-        public void GetOptionalTypedWithNoValue()
-        {
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters()).GetNullable<int?>(0));
-            Assert.Equal((int?)null, new ArgumentCollection(nullableValueTypeMethod.GetParameters()).GetNullable<int?>("value"));
-
-            Assert.Null(new ArgumentCollection(referenceTypeMethod.GetParameters()).GetNullable<string>(0));
-            Assert.Null(new ArgumentCollection(referenceTypeMethod.GetParameters()).GetNullable<string>("value"));
+            Assert.Null(ArgumentCollection.Create<string>(referenceTypeMethod.GetParameters(), null).GetNullable<string>(0));
+            Assert.Null(ArgumentCollection.Create<string>(referenceTypeMethod.GetParameters(), null).GetNullable<string>("value"));
         }
 
         [Fact]
         public void GetTypedThrowsIfNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), new object[] { null }).Get<int>(0));
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), new object[] { null }).Get<int>("value"));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new ObjectArgument(valueTypeMethod.GetParameters()[0], null)).Get<int>(0));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new ObjectArgument(valueTypeMethod.GetParameters()[0], null)).Get<int>("value"));
 
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), new object[] { null }).Get<string>(0));
-            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), new object[] { null }).Get<string>("value"));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new ObjectArgument(referenceTypeMethod.GetParameters()[0], null)).Get<string>(0));
+            Assert.Throws<ArgumentNullException>(() => new ArgumentCollection(new ObjectArgument(referenceTypeMethod.GetParameters()[0], null)).Get<string>("value"));
         }
 
         [Fact]
         public void GetTypedThrowsIfIncompatible()
         {
-            Assert.Throws<ArgumentException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), "foo").Get<int>(0));
-            Assert.Throws<ArgumentException>(() => new ArgumentCollection(valueTypeMethod.GetParameters(), "foo").Get<int>("value"));
+            Assert.Throws<ArgumentException>(() => ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").Get<int>(0));
+            Assert.Throws<ArgumentException>(() => ArgumentCollection.Create(referenceTypeMethod.GetParameters(), "foo").Get<int>("value"));
         }
 
         [Fact]
@@ -153,5 +134,12 @@ namespace Avatars.UnitTests
         public static void DoNullableValueType(int? value) { }
         public static void DoReferenceType(string value) { }
         public static void DoMultiple(string message, int count, bool enabled) { }
+    }
+
+    public class CustomType
+    {
+        public CustomType(int value) => Value = value;
+
+        public int Value { get; }
     }
 }
