@@ -67,11 +67,11 @@ namespace Avatars
         public bool Contains(string name) => arguments.ContainsKey(name);
 
         /// <inheritdoc />
-        public Argument this[int index] => (index < 0 || index >= Parameters.Length)
-                ? throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index))
-                : arguments.TryGetValue(Parameters[index].Name, out var argument)
+        public Argument this[int index] => index >= 0 && index < Parameters.Length
+                ? arguments.TryGetValue(Parameters[index].Name, out var argument)
                 ? argument
-                : throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(Parameters[index].Name));
+                : throw new KeyNotFoundException(ThisAssembly.Strings.ArgumentNotFound(Parameters[index].Name))
+                : throw new IndexOutOfRangeException(ThisAssembly.Strings.ArgumentIndexNotFound(index));
 
         /// <inheritdoc />
         public Argument this[string name]
