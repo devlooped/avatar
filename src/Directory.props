@@ -9,7 +9,7 @@
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\nugetizer\bin'));$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
     
-    <TypeNameFormatterInternal>false</TypeNameFormatterInternal>
+    <TypeNameFormatterInternal>true</TypeNameFormatterInternal>
     <PackageProjectUrl>https://clarius.org/avatar</PackageProjectUrl>
   </PropertyGroup>
 
