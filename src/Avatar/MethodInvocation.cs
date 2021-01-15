@@ -13,7 +13,7 @@ namespace Avatars
     /// <summary>
     /// Default implementation of <see cref="IMethodInvocation"/>.
     /// </summary>
-    public class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
+    public partial class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
     {
         readonly ExecuteDelegate callBase;
 
@@ -23,7 +23,7 @@ namespace Avatars
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
         public MethodInvocation(object target, MethodBase method)
-            : this(target, method, default(IArgumentCollection))
+            : this(target, method, new ArgumentCollection())
         {
         }
 
@@ -33,39 +33,15 @@ namespace Avatars
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
         /// <param name="arguments">The arguments of the method invocation.</param>
-        public MethodInvocation(object target, MethodBase method, params object?[] arguments)
-            : this(target, method, new ArgumentCollection(method.GetParameters(), arguments))
-        {
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
-        /// </summary>
-        /// <param name="target">The target object where the invocation is being performed.</param>
-        /// <param name="method">The method being invoked.</param>
-        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
-        /// <param name="arguments">The arguments of the method invocation.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, params object?[] arguments)
-            : this(target, method, callBase, new ArgumentCollection(method.GetParameters(), arguments))
-        {
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
-        /// </summary>
-        /// <param name="target">The target object where the invocation is being performed.</param>
-        /// <param name="method">The method being invoked.</param>
-        /// <param name="arguments">The arguments of the method invocation. Can be <see langword="null"/> or not specified 
-        /// if the <paramref name="method"/> does not have any parameters.</param>
-        public MethodInvocation(object target, MethodBase method, IArgumentCollection? arguments = null)
+        public MethodInvocation(object target, MethodBase method, IArgumentCollection arguments)
         {
             // TODO: validate that arguments length and type match the method info?
             Target = target ?? throw new ArgumentNullException(nameof(target));
             MethodBase = method ?? throw new ArgumentNullException(nameof(method));
-            Arguments = arguments ?? new ArgumentCollection(method.GetParameters());
+            Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
 
             if (method.GetParameters().Length != Arguments.Count)
-                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count), nameof(arguments));
+                throw new TargetParameterCountException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count));
 
             callBase = (m, n) => throw new NotImplementedException(ThisAssembly.Strings.CallBaseNotImplemented(ToString()));
         }
@@ -76,17 +52,27 @@ namespace Avatars
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
         /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
-        /// <param name="arguments">The arguments of the method invocation. Can be <see langword="null"/> or not specified 
-        /// if the <paramref name="method"/> does not have any parameters.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, IArgumentCollection? arguments = null)
+        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase)
+            : this(target, method, callBase, new ArgumentCollection())
+        {
+        }
+
+        /// <summary>
+        /// Initializes the <see cref="MethodInvocation"/> with the given parameters.
+        /// </summary>
+        /// <param name="target">The target object where the invocation is being performed.</param>
+        /// <param name="method">The method being invoked.</param>
+        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
+        /// <param name="arguments">The arguments of the method invocation.</param>
+        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, IArgumentCollection arguments)
         {
             // TODO: validate that arguments length and type match the method info?
             Target = target ?? throw new ArgumentNullException(nameof(target));
             MethodBase = method ?? throw new ArgumentNullException(nameof(method));
-            Arguments = arguments ?? new ArgumentCollection(method.GetParameters());
+            Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
 
             if (method.GetParameters().Length != Arguments.Count)
-                throw new ArgumentException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count), nameof(arguments));
+                throw new TargetParameterCountException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count));
 
             this.callBase = callBase;
             SupportsCallBase = true;
@@ -115,7 +101,7 @@ namespace Avatars
             => new MethodReturn(this, exception);
 
         /// <inheritdoc />
-        public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null)
+        public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection arguments)
             => new MethodReturn(this, returnValue, arguments ?? Arguments);
 
         /// <inheritdoc />

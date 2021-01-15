@@ -66,11 +66,11 @@ namespace Samples.TargetInvocation
 
                 return invocation =>
                 {
-                    var args = invocation.Arguments.Select((p, i) => invocation.Arguments.GetValue(i)).ToArray();
+                    var args = invocation.Arguments.Select(x => x.RawValue).ToArray();
                     try
                     {
                         target.DynamicInvoke(new[] { site, this.target }.Concat(args).ToArray());
-                        return invocation.CreateValueReturn(null, args);
+                        return invocation.CreateReturn();
                     }
                     catch (TargetInvocationException tie)
                     {
@@ -94,11 +94,11 @@ namespace Samples.TargetInvocation
 
                 return invocation =>
                 {
-                    var args = invocation.Arguments.Select((p, i) => invocation.Arguments.GetValue(i)).ToArray();
+                    var args = invocation.Arguments.Select(x => x.RawValue).ToArray();
                     try
                     {
                         var result = target.DynamicInvoke(new[] { site, this.target }.Concat(args).ToArray());
-                        return invocation.CreateValueReturn(result, args);
+                        return invocation.CreateValueReturn(result);
                     }
                     catch (TargetInvocationException tie)
                     {

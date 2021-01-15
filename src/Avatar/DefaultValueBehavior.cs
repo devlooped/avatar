@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 
 namespace Avatars
 {
@@ -35,26 +36,15 @@ namespace Avatars
         /// by the <see cref="DefaultValueProvider"/> utility class.
         /// </summary>
         IMethodReturn IAvatarBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
-        {
-            var arguments = new ArgumentCollection(invocation.Arguments);
-            foreach (var parameter in arguments)
-            {
-                // Only provide default values for out parameters. 
-                // NOTE: does not touch ByRef values.
-                if (parameter.IsOut)
-                    arguments.SetValue(parameter.Name, Provider.GetDefault(parameter.ParameterType));
-                else
-                    arguments.SetValue(parameter.Name, invocation.Arguments.GetValue(parameter.Name));
-            }
-
-            var returnValue = default(object);
-            if (invocation.MethodBase is MethodInfo info &&
-                info.ReturnType != typeof(void))
-            {
-                returnValue = Provider.GetDefault(info.ReturnType);
-            }
-
-            return invocation.CreateValueReturn(returnValue, arguments);
-        }
+            => invocation.CreateValueReturn(
+                invocation.MethodBase is MethodInfo info && info.ReturnType != typeof(void)
+                    ? Provider.GetDefault(info.ReturnType)
+                    : default,
+                new ArgumentCollection(
+                    invocation.Arguments.Select(arg => arg.Parameter.IsOut
+                        // Only provide default values for out parameters. 
+                        // NOTE: does not touch ByRef values.
+                        ? arg.WithRawValue(Provider.GetDefault(arg.Parameter.ParameterType))
+                        : arg).ToArray()));
     }
 }

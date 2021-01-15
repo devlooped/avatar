@@ -39,22 +39,33 @@ namespace Avatars
             }
 
             var input = new MethodInvocation(invocation.Proxy, invocation.Method,
-                (m, i) =>
+                (m, n) =>
                 {
                     try
                     {
                         if (notImplemented)
                             throw new NotImplementedException();
 
+                        // We need to adapt the invocation so it uses the potentially 
+                        // updated values from the pipeline.
+                        for (var i = 0; i < m.Arguments.Count; i++)
+                            invocation.SetArgumentValue(i, m.Arguments.GetValue(i));
+
                         invocation.Proceed();
-                        var returnValue = invocation.ReturnValue;
-                        return m.CreateValueReturn(returnValue, invocation.Arguments);
+
+                        // return the new values, including arguments.
+                        return m.CreateValueReturn(
+                            invocation.ReturnValue,
+                            new ArgumentCollection(m.Arguments.Select((arg, index) =>
+                                arg.WithRawValue(invocation.GetArgumentValue(index))).ToArray()));
                     }
                     catch (Exception ex)
                     {
                         return m.CreateExceptionReturn(ex);
                     }
-                }, invocation.Arguments);
+                },
+                new ArgumentCollection(invocation.Method.GetParameters().Select((p, i) =>
+                    new ObjectArgument(p, invocation.GetArgumentValue(i))).ToArray()));
 
             var returns = pipeline.Invoke(input);
             var exception = returns.Exception;
@@ -63,12 +74,9 @@ namespace Avatars
                 throw exception;
 
             invocation.ReturnValue = returns.ReturnValue;
-            var indexed = input.Arguments.Select((p, i) => (p.Name, i)).ToDictionary(x => x.Name, x => x.i);
-            foreach (var prm in returns.Outputs)
-            {
-                var index = indexed[prm.Name];
-                invocation.SetArgumentValue(index, returns.Outputs.GetValue(prm.Name));
-            }
+            var indexed = input.Arguments.Select((p, i) => (p.Parameter.Name, i)).ToDictionary(x => x.Name, x => x.i);
+            foreach (var output in returns.Outputs)
+                invocation.SetArgumentValue(indexed[output.Parameter.Name], output.RawValue);
         }
 
         static Expression<Func<BehaviorPipeline>> CreatePipeline<TAvatar>() => () => BehaviorPipelineFactory.Default.CreatePipeline<TAvatar>();

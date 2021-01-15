@@ -91,11 +91,9 @@ namespace Avatars
 
         IArgumentCollection GetOutputs(IArgumentCollection arguments)
         {
-            var outputs = new ArgumentCollection(invocation.MethodBase.GetParameters()
-                .Where(x => x.ParameterType.IsByRef || x.IsOut).ToArray());
-
-            foreach (var info in outputs)
-                outputs.Add(info.Name, arguments.GetValue(info.Name));
+            var outputs = new ArgumentCollection(
+                arguments.Where(x => x.Parameter.ParameterType.IsByRef || x.Parameter.IsOut)
+                .ToArray());
 
             return outputs;
         }

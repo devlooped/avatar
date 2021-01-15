@@ -60,10 +60,9 @@ namespace Avatars
         /// values.
         /// </summary>
         /// <param name="returnValue">Optional return value from the method invocation. <see langword="null"/> for <see langword="void"/> methods.</param>
-        /// <param name="arguments">Ordered list of all arguments to the method invocation, including ref/out arguments.
-        /// If not provided, the arguments from the current invocation will be used.</param>
+        /// <param name="arguments">Ordered list of all arguments to the method invocation, including ref/out arguments.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
-        IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null);
+        IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection arguments);
 
         /// <summary>
         /// Creates a method invocation return that represents 

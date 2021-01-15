@@ -19,10 +19,7 @@ namespace Avatars
 
         static DynamicAvatarFactory()
         {
-#pragma warning disable 618
             AttributesToAvoidReplicating.Add<SecurityPermissionAttribute>();
-#pragma warning restore 618
-
             AttributesToAvoidReplicating.Add<System.Runtime.InteropServices.MarshalAsAttribute>();
             AttributesToAvoidReplicating.Add<System.Runtime.InteropServices.TypeIdentifierAttribute>();
 

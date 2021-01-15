@@ -28,7 +28,7 @@ namespace Avatars.UnitTests
         };
 
         // Run particular scenarios using the TD.NET ad-hoc runner.
-        public void RunScenario() => new Scenarios().Run(ThisAssembly.Constants.Scenarios.ClassBaseType);
+        public void RunScenario() => new Scenarios().Run(ThisAssembly.Constants.Scenarios.ClassBaseAbstractType);
 
         [Theory]
         [MemberData(nameof(GetScenarios))]

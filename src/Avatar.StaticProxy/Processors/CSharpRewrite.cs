@@ -113,12 +113,7 @@ namespace Avatars.Processors
                         },
                         InvocationExpression(
                             "m",
-                            "CreateValueReturn",
-                            Argument(ThisExpression()),
-                            Argument(
-                                MemberAccessExpression(
-                                    "m",
-                                    nameof(IMethodInvocation.Arguments))))));
+                            "CreateReturn")));
 
                 var body = InvocationExpression(
                     "pipeline",
@@ -170,16 +165,16 @@ namespace Avatars.Processors
                         args = new[]
                         {
                             Argument(
-                                ObjectCreationExpression(
+                                InvocationExpression(
                                     nameof(MethodInvocation),
-                                    new[]
+                                    nameof(MethodInvocation.Create),
+                                    new []
                                     {
                                         Argument(ThisExpression()),
-                                        Argument(prefix + "method")
+                                        Argument(prefix + "method"),
                                     }
                                     .Concat(method.ParameterList.Parameters.Select(x =>
-                                            Argument(x.Identifier))))),
-                            Argument(TrueLiteralExpression)
+                                            Argument(x.Identifier)))))
                         };
                     }
                     else
@@ -238,6 +233,8 @@ namespace Avatars.Processors
                                                     ReturnStatement(
                                                         InvocationExpression(
                                                             "m",
+                                                            // We could call CreateReturn for void methods, but 
+                                                            // this works too and makes the argument passing simpler
                                                             "CreateValueReturn",
                                                             Argument(value),
                                                             Argument(
@@ -259,9 +256,25 @@ namespace Avatars.Processors
                                                                                 x.IsRefOut() ?
                                                                                     IdentifierName(prefix + x.Identifier.ToString()) :
                                                                                     IdentifierName(x.Identifier))))))))
-                                                })))
-                                    })
-                                    .Concat(method.ParameterList.Parameters.Select(x => Argument(x.Identifier))))),
+                                                }))),
+                                        Argument(
+                                            //  new ArgumentCollection(method.GetParameters())
+                                            ObjectCreationExpression(
+                                                nameof(ArgumentCollection),
+                                                Argument(
+                                                    InvocationExpression(
+                                                        prefix + "method",
+                                                        nameof(MethodBase.GetParameters))))
+                                            .WithInitializer(
+                                                // { { "x", x }, ... }
+                                                InitializerExpression(
+                                                    SyntaxKind.CollectionInitializerExpression,
+                                                    method.ParameterList.Parameters.Select(x =>
+                                                        InitializerExpression(
+                                                            SyntaxKind.ComplexElementInitializerExpression,
+                                                            LiteralExpression(x.Identifier.ToString()),
+                                                            IdentifierName(x.Identifier))))))
+                                    }))),
                             Argument(TrueLiteralExpression)
                         };
                     }
@@ -578,8 +591,7 @@ namespace Avatars.Processors
                             InvocationExpression(
                                 "m",
                                 "CreateValueReturn",
-                                Argument(baseCall),
-                                Argument(MemberAccessExpression("m", nameof(IMethodInvocation.Arguments))))));
+                                Argument(baseCall))));
 
                 return CreatePipelineInvocation(null, parameters,
                         LambdaExpression(
@@ -592,9 +604,7 @@ namespace Avatars.Processors
                             ReturnStatement(
                                 InvocationExpression(
                                     "m",
-                                    "CreateValueReturn",
-                                    Argument(NullLiteralExpression),
-                                    Argument(MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)))))));
+                                    "CreateReturn"))));
             }
 
             static InvocationExpressionSyntax CreatePipelineInvocation(TypeSyntax? returnType, IEnumerable<ParameterSyntax> parameters, LambdaExpressionSyntax? target = null)
@@ -613,7 +623,7 @@ namespace Avatars.Processors
                         Argument(create));
             }
 
-            static ObjectCreationExpressionSyntax CreateMethodInvocation(IEnumerable<ParameterSyntax> parameters, LambdaExpressionSyntax? target = null)
+            static ExpressionSyntax CreateMethodInvocation(IEnumerable<ParameterSyntax> parameters, LambdaExpressionSyntax? target = null)
             {
                 var arguments = new List<ArgumentSyntax>
                 {
@@ -629,7 +639,10 @@ namespace Avatars.Processors
 
                 arguments.AddRange(parameters.Select(parameter => Argument(parameter.Identifier)));
 
-                return ObjectCreationExpression(nameof(MethodInvocation), arguments);
+                return InvocationExpression(
+                    nameof(MethodInvocation),
+                    nameof(MethodInvocation.Create),
+                    arguments);
             }
         }
     }

@@ -41,7 +41,7 @@ namespace Avatars.UnitTests
                 count = default;
                 var local_index = index;
 
-                var returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), local_index, count));
+                var returns = pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), local_index, count));
                 index = returns.Outputs.GetNullable<int>("index");
                 count = returns.Outputs.GetNullable<int>("count");
 

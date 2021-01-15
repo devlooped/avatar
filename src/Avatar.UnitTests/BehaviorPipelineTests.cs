@@ -21,8 +21,8 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipelineWithNoBehaviors_ThenInvokesTarget;
 
-            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                (m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+            pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(),
+                (m, n) => { targetCalled = true; return m.CreateReturn(); }));
 
             Assert.True(targetCalled);
         }
@@ -51,8 +51,8 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 
-            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                (m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+            pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(),
+                (m, n) => { targetCalled = true; return m.CreateReturn(); }));
 
             Assert.True(firstCalled);
             Assert.True(secondCalled);
@@ -72,8 +72,8 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipelineWithNoApplicableBehaviors_ThenInvokesTarget;
 
-            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                (m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+            pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(),
+                (m, n) => { targetCalled = true; return m.CreateReturn(); }));
 
             Assert.False(firstCalled);
             Assert.False(secondCalled);
@@ -93,8 +93,8 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 
-            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                (m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+            pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(),
+                (m, n) => { targetCalled = true; return m.CreateReturn(); }));
 
             Assert.True(firstCalled);
             Assert.False(secondCalled);
@@ -109,13 +109,13 @@ namespace Avatars.UnitTests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => { firstCalled = true; return m.CreateValueReturn(null); }),
+                new ExecuteDelegate((m, n) => { firstCalled = true; return m.CreateReturn(); }),
                 new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenBehaviorCanShortcircuitInvocation;
 
-            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                (m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+            pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(),
+                (m, n) => { targetCalled = true; return m.CreateReturn(); }));
 
             Assert.True(firstCalled);
             Assert.False(secondCalled);
@@ -134,7 +134,7 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanPassDataWithContext;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), (m, n) => m.CreateValueReturn(null)));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(), (m, n) => m.CreateReturn()));
 
             Assert.Equal(expected, actual);
             Assert.True(result.Context.ContainsKey("guid"));
@@ -151,7 +151,7 @@ namespace Avatars.UnitTests
 
             Func<object?> a = NonVoidMethod;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo()));
 
             Assert.Equal(expected, result.ReturnValue);
         }
@@ -166,7 +166,7 @@ namespace Avatars.UnitTests
 
             Func<object, object?> a = NonVoidMethodWithArg;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(), expected));
 
             Assert.Equal(expected, result.ReturnValue);
         }
@@ -182,7 +182,7 @@ namespace Avatars.UnitTests
 
             NonVoidMethodWithArgRefDelegate a = NonVoidMethodWithArgRef;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, output));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(), expected, output));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(output, result.Outputs.GetValue(0));
@@ -196,7 +196,7 @@ namespace Avatars.UnitTests
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
 
-            Assert.Throws<ArgumentException>(() => pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), true)));
+            Assert.Throws<ArgumentException>(() => pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo()), true));
         }
 
         [Fact]
@@ -210,8 +210,7 @@ namespace Avatars.UnitTests
 
             NonVoidMethodWithArgOutDelegate a = NonVoidMethodWithArgOut;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(),
-                expected, output));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(), expected, output));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(output, result.Outputs.GetValue(0));
@@ -229,7 +228,7 @@ namespace Avatars.UnitTests
 
             NonVoidMethodWithArgRefOutDelegate a = NonVoidMethodWithArgRefOut;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, byref, output));
+            var result = pipeline.Invoke(MethodInvocation.Create(this, a.GetMethodInfo(), expected, byref, output));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(byref, result.Outputs.GetValue(0));
@@ -245,7 +244,7 @@ namespace Avatars.UnitTests
 
             Func<object?> f = NonVoidMethod;
 
-            Assert.Same(value, pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
+            Assert.Same(value, pipeline.Execute<object>(MethodInvocation.Create(this, f.GetMethodInfo())));
         }
 
         [Fact]
@@ -257,14 +256,14 @@ namespace Avatars.UnitTests
 
             Func<object?> f = NonVoidMethod;
 
-            Assert.Same(value, pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo(),
+            Assert.Same(value, pipeline.Execute<object>(MethodInvocation.Create(this, f.GetMethodInfo(),
                 (m, n) => m.CreateValueReturn(value))));
         }
 
         [Fact]
         public void CanExecutePipelineNoTarget()
         {
-            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateValueReturn(null)));
+            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateReturn()));
 
             Action a = CanExecutePipelineNoTarget;
 
@@ -278,7 +277,7 @@ namespace Avatars.UnitTests
 
             Action a = CanExecutePipelineWithTarget;
 
-            pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo(), (m, n) => m.CreateValueReturn(null)));
+            pipeline.Execute(MethodInvocation.Create(this, a.GetMethodInfo(), (m, n) => m.CreateReturn()));
         }
 
         [Fact]
@@ -288,7 +287,8 @@ namespace Avatars.UnitTests
 
             Action a = CanExecutePipelineNoTarget;
 
-            Assert.Throws<NotImplementedException>(() => pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo())));
+            Assert.Throws<NotImplementedException>(()
+                => pipeline.Execute(MethodInvocation.Create(this, a.GetMethodInfo())));
         }
 
         [Fact]
@@ -300,7 +300,7 @@ namespace Avatars.UnitTests
             Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
 
             Assert.Throws<ArgumentException>(()
-                => pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo())));
+                => pipeline.Execute(MethodInvocation.Create(this, a.GetMethodInfo())));
         }
 
         [Fact]
@@ -312,7 +312,7 @@ namespace Avatars.UnitTests
             Func<object?> f = NonVoidMethod;
 
             Assert.Throws<ArgumentException>(()
-                => pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
+                => pipeline.Execute<object>(MethodInvocation.Create(this, f.GetMethodInfo())));
         }
 
         [Fact]
@@ -323,7 +323,7 @@ namespace Avatars.UnitTests
             Func<object?> f = NonVoidMethod;
 
             Assert.Throws<NotImplementedException>(()
-                => pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
+                => pipeline.Execute<object>(MethodInvocation.Create(this, f.GetMethodInfo())));
         }
 
         [Fact]
@@ -333,7 +333,7 @@ namespace Avatars.UnitTests
 
             pipeline.Behaviors.Add(new TestBehavior());
 
-            var invocation = new MethodInvocation(new object(), typeof(object).GetMethod("ToString")!);
+            var invocation = MethodInvocation.Create(new object(), typeof(object).GetMethod("ToString")!);
             invocation.SkipBehavior<TestBehavior>();
 
             Assert.Throws<NotImplementedException>(()

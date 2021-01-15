@@ -24,7 +24,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoWithInt()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
 
             var actual = invocation.ToString();
 
@@ -34,8 +34,8 @@ namespace Avatars.UnitTests
         [Fact]
         public void EqualIfTargetMethodAndArgumentsMatch()
         {
-            var doThis = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
-            var doThiss = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
+            var doThis = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
+            var doThiss = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
 
             Assert.Equal((object)doThis, doThiss);
             Assert.Equal(doThis, doThiss);
@@ -43,23 +43,23 @@ namespace Avatars.UnitTests
             Assert.True(doThis.Equals(doThiss));
             Assert.True(doThis.Equals((object)doThiss));
 
-            var doOther = new MethodInvocation(new MethodInvocationTests(), typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
+            var doOther = MethodInvocation.Create(new MethodInvocationTests(), typeof(MethodInvocationTests).GetMethod(nameof(Do))!);
 
             Assert.NotEqual(doThis, doOther);
 
-            var doInt5 = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
-            var doInt5s = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
+            var doInt5 = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
+            var doInt5s = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 5);
 
             Assert.NotEqual(doThis, doInt5);
             Assert.Equal(doInt5, doInt5s);
             Assert.Equal(doInt5.GetHashCode(), doInt5s.GetHashCode());
 
-            var doInt6 = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 6);
+            var doInt6 = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt))!, 6);
 
             Assert.NotEqual(doInt5, doInt6);
 
-            var doIntNull = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, 5);
-            var doIntNulls = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, new object[] { null! });
+            var doIntNull = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, 5);
+            var doIntNulls = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, default(int?));
 
             Assert.NotEqual(doIntNull, doIntNulls);
             Assert.NotEqual(doIntNull.GetHashCode(), doIntNulls.GetHashCode());
@@ -70,7 +70,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoWithNullableInt()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, 5);
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableInt))!, 5);
 
             var actual = invocation.ToString();
 
@@ -82,7 +82,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoWithNullableIntNull()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableIntNull))!, default(int?));
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullableIntNull))!, default(int?));
 
             var actual = invocation.ToString();
 
@@ -94,7 +94,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoWithString()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithString))!, "foo");
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithString))!, "foo");
 
             var actual = invocation.ToString();
 
@@ -106,7 +106,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoWithNullString()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullString))!, default(string));
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithNullString))!, default(string));
 
             var actual = invocation.ToString();
 
@@ -118,7 +118,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoReturn()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoReturn))!);
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoReturn))!);
 
             var actual = invocation.ToString();
 
@@ -130,7 +130,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoRef()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoRef))!, 5);
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoRef))!, 5);
 
             var actual = invocation.ToString();
 
@@ -142,7 +142,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void TestDoOut()
         {
-            var invocation = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoOut))!, 5);
+            var invocation = MethodInvocation.Create(this, typeof(MethodInvocationTests).GetMethod(nameof(DoOut))!, 5);
 
             var actual = invocation.ToString();
 
@@ -161,7 +161,7 @@ namespace Avatars.UnitTests
         public void ReturnOutputsContainsRefAndOut()
         {
             var calculator = new Calculator();
-            var invocation = new MethodInvocation(calculator, typeof(ICalculator).GetMethod(nameof(ICalculator.TryAdd))!, 2, 3, 5);
+            var invocation = MethodInvocation.Create(calculator, typeof(ICalculator).GetMethod(nameof(ICalculator.TryAdd))!, 2, 3, 5);
 
             var result = invocation.CreateValueReturn(true);
 

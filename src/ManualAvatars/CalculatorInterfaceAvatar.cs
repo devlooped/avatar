@@ -8,41 +8,41 @@ namespace Sample
 {
     public class CalculatorInterfaceAvatar : ICalculator, IDisposable, IAvatar
     {
-        BehaviorPipeline pipeline = new BehaviorPipeline();
+        readonly BehaviorPipeline pipeline = new();
 
         IList<IAvatarBehavior> IAvatar.Behaviors => pipeline.Behaviors;
 
         public event EventHandler TurnedOn
         {
-            add => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-            remove => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+            add => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), value));
+            remove => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), value));
         }
 
         public bool IsOn
         {
-            get => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+            get => pipeline.Execute<bool>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
         }
 
         public CalculatorMode Mode
         {
-            get => pipeline.Execute<CalculatorMode>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-            set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+            get => pipeline.Execute<CalculatorMode>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
+            set => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), value));
         }
 
         public int? this[string name]
         {
-            get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
-            set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value));
+            get => pipeline.Execute<int?>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), name));
+            set => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), name, value));
         }
 
-        public int Add(int x, int y) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y));
+        public int Add(int x, int y) => pipeline.Execute<int>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), x, y));
 
-        public int Add(int x, int y, int z) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z));
+        public int Add(int x, int y, int z) => pipeline.Execute<int>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), x, y, z));
 
         public bool TryAdd(ref int x, ref int y, out int z)
         {
             z = default;
-            var returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z));
+            var returns = pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), x, y, z));
 
             x = returns.Outputs.GetNullable<int>("x");
             y = returns.Outputs.GetNullable<int>("y");
@@ -51,19 +51,19 @@ namespace Sample
             return (bool)returns.ReturnValue!;
         }
 
-        public void TurnOn() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        public void TurnOn() => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
 
-        public void Store(string name, int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value));
+        public void Store(string name, int value) => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), name, value));
 
-        public int? Recall(string name) => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
+        public int? Recall(string name) => pipeline.Execute<int?>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), name));
 
-        public void Clear(string name) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
+        public void Clear(string name) => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), name));
 
-        public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        public void Dispose() => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
 
         public ICalculatorMemory Memory
         {
-            get => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()))!;
+            get => pipeline.Execute<ICalculatorMemory>(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()))!;
         }
     }
 }
