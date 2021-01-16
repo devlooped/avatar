@@ -1,5 +1,4 @@
 ﻿using Avatars;
-using Samples;
 using Xunit;
 
 namespace Samples.TargetInvocation

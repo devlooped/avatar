@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avatars;
+﻿using Avatars;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,9 +12,9 @@ namespace Samples
 
         public bool AppliesTo(IMethodInvocation invocation) => true;
 
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
         {
-            var result = next().Invoke(invocation, next);
+            var result = next.Invoke(invocation, next);
             output.WriteLine(result.ToString());
             return result;
         }

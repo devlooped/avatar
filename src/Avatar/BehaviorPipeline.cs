@@ -14,20 +14,20 @@ namespace Avatars
     {
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/> with the given set of 
-        /// <see cref="ExecuteDelegate"/> delegates.
+        /// <see cref="ExecuteHandler"/> delegates.
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
-        public BehaviorPipeline(params ExecuteDelegate[] behaviors)
-            : this((IEnumerable<ExecuteDelegate>)behaviors)
+        public BehaviorPipeline(params ExecuteHandler[] behaviors)
+            : this((IEnumerable<ExecuteHandler>)behaviors)
         {
         }
 
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/> with the given set of 
-        /// <see cref="ExecuteDelegate"/> delegates.
+        /// <see cref="ExecuteHandler"/> delegates.
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
-        public BehaviorPipeline(IEnumerable<ExecuteDelegate> behaviors)
+        public BehaviorPipeline(IEnumerable<ExecuteHandler> behaviors)
             : this(behaviors.Select(behavior => new AnonymousBehavior(behavior)))
         {
         }
@@ -101,18 +101,18 @@ namespace Avatars
             if (index == -1)
                 return CallBaseOrThrow(invocation);
 
-            var result = behaviors[index].Execute(invocation, () =>
+            Func<ExecuteHandler> getNext = () =>
             {
                 for (index++; index < behaviors.Length; index++)
-                {
                     if (!invocation.SkipBehaviors.Contains(behaviors[index].GetType()) && behaviors[index].AppliesTo(invocation))
                         break;
-                }
 
                 return (index < behaviors.Length) ?
                     behaviors[index].Execute :
                     (m, n) => CallBaseOrThrow(m);
-            });
+            };
+
+            var result = behaviors[index].Execute(invocation, (m, n) => getNext().Invoke(m, n));
 
             if (throwOnException && result.Exception != null)
                 throw result.Exception;

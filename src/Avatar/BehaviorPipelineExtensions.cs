@@ -15,7 +15,7 @@ namespace Avatars
     public static class BehaviorPipelineExtensions
     {
         /// <summary>
-        /// Since no <see cref="ExecuteDelegate"/> is provided as a target, this 
+        /// Since no <see cref="ExecuteHandler"/> is provided as a target, this 
         /// defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>
@@ -29,7 +29,7 @@ namespace Avatars
             => pipeline.Invoke(invocation, true);
 
         /// <summary>
-        /// Since no <see cref="ExecuteDelegate"/> is provided as a target, and a value is required to 
+        /// Since no <see cref="ExecuteHandler"/> is provided as a target, and a value is required to 
         /// return, this defaults to throwing a <see cref="NotImplementedException"/> if no 
         /// behavior returns before reaching the target.
         /// </summary>

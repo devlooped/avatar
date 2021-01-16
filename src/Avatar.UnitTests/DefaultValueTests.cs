@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -16,7 +17,7 @@ namespace Avatars.UnitTests
             IAvatarBehavior behavior = new DefaultValueBehavior();
             var value = new object[] { new object() };
 
-            var result = behavior.Execute(MethodInvocation.Create(new object(), method, value), () => null!);
+            var result = behavior.Execute(MethodInvocation.Create(new object(), method, value), null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs.GetValue(0));
@@ -30,7 +31,7 @@ namespace Avatars.UnitTests
             IAvatarBehavior behavior = new DefaultValueBehavior();
             var platform = PlatformID.Xbox;
 
-            var result = behavior.Execute(MethodInvocation.Create(new object(), method, platform), () => null!);
+            var result = behavior.Execute(MethodInvocation.Create(new object(), method, platform), null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs.GetValue(0));
@@ -43,7 +44,7 @@ namespace Avatars.UnitTests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut))!;
             IAvatarBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Execute(MethodInvocation.Create(new object(), method, new object[0]), () => null!);
+            var result = behavior.Execute(MethodInvocation.Create(new object(), method, Array.Empty<object>()), null!);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs.GetValue(0));
@@ -56,7 +57,7 @@ namespace Avatars.UnitTests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum))!;
             IAvatarBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Execute(MethodInvocation.Create(new object(), method), () => null!);
+            var result = behavior.Execute(MethodInvocation.Create(new object(), method), null!);
 
             Assert.Equal(default(PlatformID), result.ReturnValue);
         }
@@ -67,7 +68,7 @@ namespace Avatars.UnitTests
             var ctor = typeof(Foo).GetConstructors().First();
             IAvatarBehavior behavior = new DefaultValueBehavior();
 
-            behavior.Execute(MethodInvocation.Create(new object(), ctor, PlatformID.Win32NT), () => null!);
+            behavior.Execute(MethodInvocation.Create(new object(), ctor, PlatformID.Win32NT), null!);
         }
 
         [Fact]
@@ -112,12 +113,12 @@ namespace Avatars.UnitTests
         }
 
         [Fact]
-        public void DefaultForValueTaskTIsCompleted()
+        public async Task DefaultForValueTaskTIsCompleted()
         {
             var value = new DefaultValueProvider().GetDefault<ValueTask<bool>>();
 
             Assert.True(value.IsCompleted);
-            Assert.False(value.Result);
+            Assert.False(await value);
         }
 
         [Fact]
@@ -127,7 +128,7 @@ namespace Avatars.UnitTests
 
             Assert.NotNull(value);
             Assert.True(value.IsCompleted);
-            Assert.Equal(default(PlatformID), value.Result);
+            Assert.Equal(default, value.Result);
         }
 
         [Fact]

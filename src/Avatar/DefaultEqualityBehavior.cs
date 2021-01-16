@@ -19,14 +19,14 @@ namespace Avatars
         /// Implements the <see cref="object.GetHashCode"/> and <see cref="object.Equals(object)"/> 
         /// methods.
         /// </summary>
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
         {
             if (invocation.MethodBase.Name == nameof(GetHashCode))
                 return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target), invocation.Arguments);
             if (invocation.MethodBase.Name == nameof(Equals))
                 return invocation.CreateValueReturn(ReferenceEquals(invocation.Target, invocation.Arguments.GetValue(0)), invocation.Arguments);
 
-            return next().Invoke(invocation, next);
+            return next.Invoke(invocation, next);
         }
     }
 }

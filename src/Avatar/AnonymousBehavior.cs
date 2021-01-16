@@ -4,37 +4,34 @@ namespace Avatars
 {
     /// <summary>
     /// A general purpose <see cref="IAvatarBehavior"/> that invokes the provided 
-    /// delegates for the <see cref="IAvatarBehavior.Execute(IMethodInvocation, GetNextBehavior)"/> 
-    /// (via a <see cref="ExecuteDelegate"/>) and 
-    /// <see cref="IAvatarBehavior.AppliesTo(IMethodInvocation)"/> (via a <see cref="AppliesToDelegate"/>) 
-    /// interface methods.
+    /// handlers for the <see cref="IAvatarBehavior.Execute"/> (via a <see cref="ExecuteHandler"/>) 
+    /// and <see cref="IAvatarBehavior.AppliesTo"/> (via a <see cref="AppliesToHandler"/>) interface methods.
     /// </summary>
     class AnonymousBehavior : IAvatarBehavior
     {
-        readonly AppliesToDelegate appliesTo;
-        readonly ExecuteDelegate behavior;
+        readonly AppliesToHandler appliesTo;
+        readonly ExecuteHandler behavior;
         readonly string? name;
 
         /// <summary>
         /// Creates the behavior from the given delegates.
         /// </summary>
-        public AnonymousBehavior(ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public AnonymousBehavior(ExecuteHandler behavior, AppliesToHandler? appliesTo = null, string? name = null)
         {
             this.behavior = behavior;
-            this.appliesTo = appliesTo ?? new AppliesToDelegate(invocation => true);
+            this.appliesTo = appliesTo ?? new AppliesToHandler(invocation => true);
             this.name = name;
         }
 
         /// <summary>
-        /// Executes the provided <see cref="AppliesToDelegate"/> provided in the constructor.
+        /// Executes the provided <see cref="AppliesToHandler"/> provided in the constructor.
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation) => appliesTo(invocation);
 
         /// <summary>
-        /// Executes the provided <see cref="ExecuteDelegate"/> provided in the constructor.
+        /// Executes the provided <see cref="ExecuteHandler"/> provided in the constructor.
         /// </summary>
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) =>
-            behavior(invocation, next);
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next) => behavior(invocation, next);
 
         /// <summary>
         /// Gets a friendly representation of the object.

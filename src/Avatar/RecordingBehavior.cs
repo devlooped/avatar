@@ -26,9 +26,9 @@ namespace Avatars
         /// Invokes the next behavior in the pipeline and records 
         /// the invocation and the result.
         /// </summary>
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
         {
-            var result = next().Invoke(invocation, next);
+            var result = next.Invoke(invocation, next);
             Invocations.Add(new RecordedInvocation(invocation, result));
             return result;
         }

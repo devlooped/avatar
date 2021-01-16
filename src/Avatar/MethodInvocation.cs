@@ -15,7 +15,7 @@ namespace Avatars
     /// </summary>
     public partial class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
     {
-        readonly ExecuteDelegate callBase;
+        readonly ExecuteHandler callBase;
 
         /// <summary>
         /// Initializes the <see cref="MethodInvocation"/> for a method that has no parameters.
@@ -52,7 +52,7 @@ namespace Avatars
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
         /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase)
+        public MethodInvocation(object target, MethodBase method, ExecuteHandler callBase)
             : this(target, method, callBase, new ArgumentCollection())
         {
         }
@@ -64,7 +64,7 @@ namespace Avatars
         /// <param name="method">The method being invoked.</param>
         /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
         /// <param name="arguments">The arguments of the method invocation.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteDelegate callBase, IArgumentCollection arguments)
+        public MethodInvocation(object target, MethodBase method, ExecuteHandler callBase, IArgumentCollection arguments)
         {
             // TODO: validate that arguments length and type match the method info?
             Target = target ?? throw new ArgumentNullException(nameof(target));
@@ -107,7 +107,7 @@ namespace Avatars
         /// <inheritdoc />
         public IMethodReturn CreateCallBaseReturn(IArgumentCollection? arguments = null)
             => callBase.Invoke(arguments == null ? this : new MethodInvocation(Target, MethodBase, arguments),
-                () => (m, n) => throw new NotSupportedException(ThisAssembly.Strings.CallBaseGetNextNotSupported));
+                (m, n) => throw new NotSupportedException(ThisAssembly.Strings.CallBaseGetNextNotSupported));
 
         /// <summary>
         /// Gets a friendly representation of the invocation.

@@ -19,26 +19,19 @@
         /// <param name="invocation">The current method invocation.</param>
         /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
         /// <returns>The result of the method invocation.</returns>
-        IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next);
+        IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next);
     }
 
     /// <summary>
-    /// Method signature for getting the next behavior in a pipeline.
-    /// </summary>
-    /// <returns>The delegate to invoke the next behavior in a pipeline.</returns>
-    public delegate ExecuteDelegate GetNextBehavior();
-
-    /// <summary>
-    /// Method signature for invoking the next behavior in a pipeline.
+    /// Handler to invoke the <see cref="IAvatarBehavior.Execute"/> method of a behavior.
     /// </summary>
     /// <param name="invocation">The current method invocation.</param>
-    /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
+    /// <param name="next">Handler for executing the next behavior in the pipeline.</param>
     /// <returns>The result of the method invocation.</returns>
-    public delegate IMethodReturn ExecuteDelegate(IMethodInvocation invocation, GetNextBehavior next);
+    public delegate IMethodReturn ExecuteHandler(IMethodInvocation invocation, ExecuteHandler next);
 
     /// <summary>
-    /// Method signature of <see cref="IAvatarBehavior.AppliesTo"/> for use in 
-    /// anonymous behaviors.
+    /// Implements the <see cref="IAvatarBehavior.AppliesTo"/> method in anonymous behaviors.
     /// </summary>
-    public delegate bool AppliesToDelegate(IMethodInvocation invocation);
+    public delegate bool AppliesToHandler(IMethodInvocation invocation);
 }

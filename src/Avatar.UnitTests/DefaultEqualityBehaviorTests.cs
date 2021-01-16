@@ -30,7 +30,7 @@ namespace Avatars.UnitTests
             var target = new Foo();
 
             var expected = target.GetHashCode();
-            var actual = (int?)behavior.Execute(MethodInvocation.Create(target, method), () => null!).ReturnValue;
+            var actual = (int?)behavior.Execute(MethodInvocation.Create(target, method), null).ReturnValue;
 
             Assert.Equal(expected, actual);
         }
@@ -42,7 +42,7 @@ namespace Avatars.UnitTests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, target), () => null!).ReturnValue;
+            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, target), null!).ReturnValue;
 
             Assert.True(actual);
         }
@@ -54,7 +54,7 @@ namespace Avatars.UnitTests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, new Foo()), () => null!).ReturnValue;
+            var actual = (bool?)behavior.Execute(MethodInvocation.Create(target, method, new Foo()), null!).ReturnValue;
 
             Assert.False(actual);
         }
@@ -69,7 +69,7 @@ namespace Avatars.UnitTests
 
             behavior.Execute(
                 MethodInvocation.Create(target, method),
-                () => (m, n) =>
+                (m, n) =>
                 {
                     nextCalled = true;
                     return m.CreateReturn();

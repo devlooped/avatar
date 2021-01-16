@@ -35,7 +35,7 @@ namespace Avatars
         /// Fills in the ref, out and return values with the defaults determined 
         /// by the <see cref="DefaultValueProvider"/> utility class.
         /// </summary>
-        IMethodReturn IAvatarBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
+        IMethodReturn IAvatarBehavior.Execute(IMethodInvocation invocation, ExecuteHandler next)
             => invocation.CreateValueReturn(
                 invocation.MethodBase is MethodInfo info && info.ReturnType != typeof(void)
                     ? Provider.GetDefault(info.ReturnType)

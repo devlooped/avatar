@@ -58,7 +58,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void AddAnonymousBehaviorToNonAvatarThrows()
         {
-            object avatar = new object();
+            var avatar = new object();
             Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => avatar.AddBehavior(
@@ -70,7 +70,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void AddBehaviorToNonAvatarThrows()
         {
-            object avatar = new object();
+            var avatar = new object();
             Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => avatar.AddBehavior(new TestBehavior()));
@@ -140,7 +140,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void InsertAnonymousBehaviorToNonAvatarThrows()
         {
-            object avatar = new object();
+            var avatar = new object();
             Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => avatar.InsertBehavior(0,
@@ -152,7 +152,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void InsertBehaviorToNonAvatarThrows()
         {
-            object avatar = new object();
+            var avatar = new object();
             Func<string?> method = ToString;
 
             Assert.Throws<ArgumentException>(() => avatar.InsertBehavior(0, new TestBehavior()));
@@ -174,7 +174,7 @@ namespace Avatars.UnitTests
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
-            public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+            public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
                 => new MethodReturn(invocation, "test", invocation.Arguments);
 
             public override string ToString() => nameof(TestBehavior);
