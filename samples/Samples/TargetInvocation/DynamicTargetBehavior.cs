@@ -25,7 +25,7 @@ namespace Samples.TargetInvocation
                // scenario is significantly more complicated than for "normal" method calls.
                !invocation.MethodBase.GetParameters().Any(p => p.IsOut || p.ParameterType.IsByRef);
 
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
         {
             var invoker = invokers.GetOrAdd(invocation.MethodBase, method => GetInvoker(method));
 
@@ -36,7 +36,7 @@ namespace Samples.TargetInvocation
             catch (RuntimeBinderException)
             {
                 unsupported.Add(invocation.MethodBase);
-                return next().Invoke(invocation, next);
+                return next.Invoke(invocation, next);
             }
         }
 

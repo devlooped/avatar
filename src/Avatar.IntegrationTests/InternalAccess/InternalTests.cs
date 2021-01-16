@@ -154,7 +154,9 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             return metadata
                 .Select(m => m.Identity)
                 .Where(m => m.Version >= new NuGetVersion("3.8.0"))
+#pragma warning disable CS0436 // Type conflicts with imported type
                 .Select(v => new object[] { v, ThisAssembly.Project.TargetFramework });
+#pragma warning restore CS0436 // Type conflicts with imported type
         }
 
         class Logger : NuGet.Common.ILogger

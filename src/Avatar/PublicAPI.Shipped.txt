@@ -1,7 +1,7 @@
 ﻿#nullable enable
 abstract Avatars.Argument.RawValue.get -> object?
 abstract Avatars.Argument.WithRawValue(object? rawValue) -> Avatars.Argument!
-Avatars.AppliesToDelegate
+Avatars.AppliesToHandler
 Avatars.Argument
 Avatars.Argument.Argument(System.Reflection.ParameterInfo! parameter) -> void
 Avatars.Argument.CheckValue(object? value) -> object?
@@ -38,9 +38,9 @@ Avatars.AvatarGeneratorAttribute.AvatarGeneratorAttribute() -> void
 Avatars.AvatarNaming
 Avatars.BehaviorPipeline
 Avatars.BehaviorPipeline.BehaviorPipeline() -> void
-Avatars.BehaviorPipeline.BehaviorPipeline(params Avatars.ExecuteDelegate![]! behaviors) -> void
+Avatars.BehaviorPipeline.BehaviorPipeline(params Avatars.ExecuteHandler![]! behaviors) -> void
 Avatars.BehaviorPipeline.BehaviorPipeline(params Avatars.IAvatarBehavior![]! behaviors) -> void
-Avatars.BehaviorPipeline.BehaviorPipeline(System.Collections.Generic.IEnumerable<Avatars.ExecuteDelegate!>! behaviors) -> void
+Avatars.BehaviorPipeline.BehaviorPipeline(System.Collections.Generic.IEnumerable<Avatars.ExecuteHandler!>! behaviors) -> void
 Avatars.BehaviorPipeline.BehaviorPipeline(System.Collections.Generic.IEnumerable<Avatars.IAvatarBehavior!>! behaviors) -> void
 Avatars.BehaviorPipeline.Behaviors.get -> System.Collections.Generic.IList<Avatars.IAvatarBehavior!>!
 Avatars.BehaviorPipeline.Invoke(Avatars.IMethodInvocation! invocation, bool throwOnException = false) -> Avatars.IMethodReturn!
@@ -49,7 +49,7 @@ Avatars.BehaviorPipelineFactory
 Avatars.DefaultEqualityBehavior
 Avatars.DefaultEqualityBehavior.AppliesTo(Avatars.IMethodInvocation! invocation) -> bool
 Avatars.DefaultEqualityBehavior.DefaultEqualityBehavior() -> void
-Avatars.DefaultEqualityBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.GetNextBehavior! next) -> Avatars.IMethodReturn!
+Avatars.DefaultEqualityBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.ExecuteHandler! next) -> Avatars.IMethodReturn!
 Avatars.DefaultValueBehavior
 Avatars.DefaultValueBehavior.AppliesTo(Avatars.IMethodInvocation! invocation) -> bool
 Avatars.DefaultValueBehavior.DefaultValueBehavior() -> void
@@ -64,8 +64,7 @@ Avatars.DefaultValueProvider.GetDefault(System.Type! type) -> object?
 Avatars.DefaultValueProvider.GetDefault<T>() -> T?
 Avatars.DefaultValueProvider.Register(System.Type! key, System.Func<System.Type!, object!>! factory) -> void
 Avatars.DefaultValueProvider.Register<T>(System.Func<T>! factory) -> void
-Avatars.ExecuteDelegate
-Avatars.GetNextBehavior
+Avatars.ExecuteHandler
 Avatars.IArgumentCollection
 Avatars.IArgumentCollection.Contains(string! name) -> bool
 Avatars.IArgumentCollection.GetValue(int index) -> object?
@@ -78,7 +77,7 @@ Avatars.IAvatar
 Avatars.IAvatar.Behaviors.get -> System.Collections.Generic.IList<Avatars.IAvatarBehavior!>!
 Avatars.IAvatarBehavior
 Avatars.IAvatarBehavior.AppliesTo(Avatars.IMethodInvocation! invocation) -> bool
-Avatars.IAvatarBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.GetNextBehavior! next) -> Avatars.IMethodReturn!
+Avatars.IAvatarBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.ExecuteHandler! next) -> Avatars.IMethodReturn!
 Avatars.IAvatarFactory
 Avatars.IAvatarFactory.CreateAvatar(System.Reflection.Assembly! assembly, System.Type! baseType, System.Type![]! implementedInterfaces, object?[]! constructorArguments) -> object!
 Avatars.IBehaviorPipelineFactory
@@ -108,8 +107,8 @@ Avatars.MethodInvocation.Equals(Avatars.IMethodInvocation? other) -> bool
 Avatars.MethodInvocation.Equals(Avatars.MethodInvocation! other) -> bool
 Avatars.MethodInvocation.MethodBase.get -> System.Reflection.MethodBase!
 Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method) -> void
-Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase) -> void
-Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, Avatars.IArgumentCollection! arguments) -> void
+Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase) -> void
+Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, Avatars.IArgumentCollection! arguments) -> void
 Avatars.MethodInvocation.MethodInvocation(object! target, System.Reflection.MethodBase! method, Avatars.IArgumentCollection! arguments) -> void
 Avatars.MethodInvocation.SkipBehaviors.get -> System.Collections.Generic.HashSet<System.Type!>!
 Avatars.MethodInvocation.SupportsCallBase.get -> bool
@@ -130,7 +129,7 @@ Avatars.ObjectArgument
 Avatars.ObjectArgument.ObjectArgument(System.Reflection.ParameterInfo! parameter, object? value) -> void
 Avatars.RecordingBehavior
 Avatars.RecordingBehavior.AppliesTo(Avatars.IMethodInvocation! invocation) -> bool
-Avatars.RecordingBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.GetNextBehavior! next) -> Avatars.IMethodReturn!
+Avatars.RecordingBehavior.Execute(Avatars.IMethodInvocation! invocation, Avatars.ExecuteHandler! next) -> Avatars.IMethodReturn!
 Avatars.RecordingBehavior.Invocations.get -> System.Collections.Generic.List<Avatars.RecordingBehavior.RecordedInvocation!>!
 Avatars.RecordingBehavior.RecordedInvocation
 Avatars.RecordingBehavior.RecordedInvocation.Invocation.get -> Avatars.IMethodInvocation!
@@ -185,13 +184,13 @@ static Avatars.ArgumentCollectionExtensions.GetNullable<T>(this Avatars.IArgumen
 static Avatars.ArgumentCollectionExtensions.GetNullable<T>(this Avatars.IArgumentCollection! arguments, string! name) -> T?
 static Avatars.ArgumentCollectionExtensions.Set<T>(this Avatars.IArgumentCollection! arguments, int index, T value) -> Avatars.IArgumentCollection!
 static Avatars.ArgumentCollectionExtensions.Set<T>(this Avatars.IArgumentCollection! arguments, string! name, T value) -> Avatars.IArgumentCollection!
-static Avatars.AvatarExtensions.AddBehavior(this Avatars.IAvatar! avatar, Avatars.ExecuteDelegate! behavior, Avatars.AppliesToDelegate? appliesTo = null, string? name = null) -> Avatars.IAvatar!
+static Avatars.AvatarExtensions.AddBehavior(this Avatars.IAvatar! avatar, Avatars.ExecuteHandler! behavior, Avatars.AppliesToHandler? appliesTo = null, string? name = null) -> Avatars.IAvatar!
 static Avatars.AvatarExtensions.AddBehavior(this Avatars.IAvatar! avatar, Avatars.IAvatarBehavior! behavior) -> Avatars.IAvatar!
-static Avatars.AvatarExtensions.AddBehavior<TAvatar>(this TAvatar avatar, Avatars.ExecuteDelegate! behavior, Avatars.AppliesToDelegate? appliesTo = null, string? name = null) -> TAvatar
+static Avatars.AvatarExtensions.AddBehavior<TAvatar>(this TAvatar avatar, Avatars.ExecuteHandler! behavior, Avatars.AppliesToHandler? appliesTo = null, string? name = null) -> TAvatar
 static Avatars.AvatarExtensions.AddBehavior<TAvatar>(this TAvatar avatar, Avatars.IAvatarBehavior! behavior) -> TAvatar
-static Avatars.AvatarExtensions.InsertBehavior(this Avatars.IAvatar! avatar, int index, Avatars.ExecuteDelegate! behavior, Avatars.AppliesToDelegate? appliesTo = null, string? name = null) -> Avatars.IAvatar!
+static Avatars.AvatarExtensions.InsertBehavior(this Avatars.IAvatar! avatar, int index, Avatars.ExecuteHandler! behavior, Avatars.AppliesToHandler? appliesTo = null, string? name = null) -> Avatars.IAvatar!
 static Avatars.AvatarExtensions.InsertBehavior(this Avatars.IAvatar! avatar, int index, Avatars.IAvatarBehavior! behavior) -> Avatars.IAvatar!
-static Avatars.AvatarExtensions.InsertBehavior<TAvatar>(this TAvatar avatar, int index, Avatars.ExecuteDelegate! behavior, Avatars.AppliesToDelegate? appliesTo = null, string? name = null) -> TAvatar
+static Avatars.AvatarExtensions.InsertBehavior<TAvatar>(this TAvatar avatar, int index, Avatars.ExecuteHandler! behavior, Avatars.AppliesToHandler? appliesTo = null, string? name = null) -> TAvatar
 static Avatars.AvatarExtensions.InsertBehavior<TAvatar>(this TAvatar avatar, int index, Avatars.IAvatarBehavior! behavior) -> TAvatar
 static Avatars.AvatarFactory.Default.get -> Avatars.IAvatarFactory!
 static Avatars.AvatarFactory.Default.set -> void
@@ -211,38 +210,38 @@ static Avatars.BehaviorPipelineFactory.Default.set -> void
 static Avatars.BehaviorPipelineFactory.LocalDefault.get -> Avatars.IBehaviorPipelineFactory?
 static Avatars.BehaviorPipelineFactory.LocalDefault.set -> void
 static Avatars.MethodInvocation.Create(object! target, System.Reflection.MethodBase! method) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8, T9>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7, T8>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6, T7>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5, T6>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4, T5>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3, T4>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3, T4>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3, T4 arg4) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3, T4>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3, T4 arg4) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2, T3>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2, T3 arg3) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2, T3>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2, T3 arg3) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2, T3>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2, T3 arg3) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T1, T2>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T1 arg1, T2 arg2) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T1, T2>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T1 arg1, T2 arg2) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T1, T2>(object! target, System.Reflection.MethodBase! method, T1 arg1, T2 arg2) -> Avatars.MethodInvocation!
-static Avatars.MethodInvocation.Create<T>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteDelegate! callBase, T arg) -> Avatars.MethodInvocation!
+static Avatars.MethodInvocation.Create<T>(object! target, System.Reflection.MethodBase! method, Avatars.ExecuteHandler! callBase, T arg) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocation.Create<T>(object! target, System.Reflection.MethodBase! method, T arg) -> Avatars.MethodInvocation!
 static Avatars.MethodInvocationExtensions.CreateReturn(this Avatars.IMethodInvocation! invocation) -> Avatars.IMethodReturn!
 static Avatars.MethodInvocationExtensions.CreateReturn<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(this Avatars.IMethodInvocation! invocation, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16) -> Avatars.IMethodReturn!

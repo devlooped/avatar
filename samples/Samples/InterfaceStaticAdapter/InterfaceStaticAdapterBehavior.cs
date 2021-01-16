@@ -24,7 +24,7 @@ namespace Samples
 
         public bool AppliesTo(IMethodInvocation invocation) => targetMethods.ContainsKey(GetHashCode(invocation.MethodBase as MethodInfo));
 
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
         {
             var method = targetMethods[GetHashCode(invocation.MethodBase as MethodInfo)];
             var arguments = invocation.Arguments.ToArray();

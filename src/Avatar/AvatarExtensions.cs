@@ -15,7 +15,7 @@ namespace Avatars
         /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
-        public static IAvatar AddBehavior(this IAvatar avatar, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static IAvatar AddBehavior(this IAvatar avatar, ExecuteHandler behavior, AppliesToHandler? appliesTo = null, string? name = null)
         {
             avatar.Behaviors.Add(new AnonymousBehavior(behavior, appliesTo, name));
             return avatar;
@@ -40,7 +40,7 @@ namespace Avatars
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
         //[EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static TAvatar AddBehavior<TAvatar>(this TAvatar avatar, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static TAvatar AddBehavior<TAvatar>(this TAvatar avatar, ExecuteHandler behavior, AppliesToHandler? appliesTo = null, string? name = null)
         {
             // We can't just add a constraint to the method signature, because 
             // proxies are typically generated and don't expose the IProxy interface directly.
@@ -77,7 +77,7 @@ namespace Avatars
         /// <param name="behavior">(invocation, next) => invocation.CreateValueReturn() | invocation.CreateExceptionReturn() | next().Invoke(invocation, next)</param>
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
-        public static IAvatar InsertBehavior(this IAvatar avatar, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static IAvatar InsertBehavior(this IAvatar avatar, int index, ExecuteHandler behavior, AppliesToHandler? appliesTo = null, string? name = null)
         {
             avatar.Behaviors.Insert(index, new AnonymousBehavior(behavior, appliesTo, name));
             return avatar;
@@ -106,7 +106,7 @@ namespace Avatars
         /// <param name="appliesTo">invocation => true|false</param>
         /// <param name="name">Optional friendly name for the behavior.</param>
         //[EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static TAvatar InsertBehavior<TAvatar>(this TAvatar avatar, int index, ExecuteDelegate behavior, AppliesToDelegate? appliesTo = null, string? name = null)
+        public static TAvatar InsertBehavior<TAvatar>(this TAvatar avatar, int index, ExecuteHandler behavior, AppliesToHandler? appliesTo = null, string? name = null)
         {
             if (avatar is IAvatar target)
                 target.Behaviors.Insert(index, new AnonymousBehavior(behavior, appliesTo, name));

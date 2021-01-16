@@ -35,7 +35,7 @@ namespace Avatars.UnitTests
             Action a = WhenInvokingPipelineWithNoBehaviors_ThenInvokesTarget;
 
             Assert.Throws<NotSupportedException>(() => pipeline.Invoke(
-                new MethodInvocation(this, a.GetMethodInfo(), (m, n) => n().Invoke(m, n))));
+                new MethodInvocation(this, a.GetMethodInfo(), (m, n) => n.Invoke(m, n))));
         }
 
         [Fact]
@@ -46,8 +46,8 @@ namespace Avatars.UnitTests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
-                new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
+                new ExecuteHandler((m, n) => { firstCalled = true; return n.Invoke(m, n); }),
+                new ExecuteHandler((m, n) => { secondCalled = true; return n.Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 
@@ -67,8 +67,8 @@ namespace Avatars.UnitTests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new AnonymousBehavior((m, n) => { firstCalled = true; return n().Invoke(m, n); }, m => false),
-                new AnonymousBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+                new AnonymousBehavior((m, n) => { firstCalled = true; return n.Invoke(m, n); }, m => false),
+                new AnonymousBehavior((m, n) => { secondCalled = true; return n.Invoke(m, n); }, m => false));
 
             Action a = WhenInvokingPipelineWithNoApplicableBehaviors_ThenInvokesTarget;
 
@@ -88,8 +88,8 @@ namespace Avatars.UnitTests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new AnonymousBehavior((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
-                new AnonymousBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+                new AnonymousBehavior((m, n) => { firstCalled = true; return n.Invoke(m, n); }),
+                new AnonymousBehavior((m, n) => { secondCalled = true; return n.Invoke(m, n); }, m => false));
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 
@@ -109,8 +109,8 @@ namespace Avatars.UnitTests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => { firstCalled = true; return m.CreateReturn(); }),
-                new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
+                new ExecuteHandler((m, n) => { firstCalled = true; return m.CreateReturn(); }),
+                new ExecuteHandler((m, n) => { secondCalled = true; return n.Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenBehaviorCanShortcircuitInvocation;
 
@@ -129,8 +129,8 @@ namespace Avatars.UnitTests
             var actual = Guid.Empty;
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => { m.Context["guid"] = expected; return n().Invoke(m, n); }),
-                new ExecuteDelegate((m, n) => { actual = (Guid)m.Context["guid"]; return n().Invoke(m, n); }));
+                new ExecuteHandler((m, n) => { m.Context["guid"] = expected; return n.Invoke(m, n); }),
+                new ExecuteHandler((m, n) => { actual = (Guid)m.Context["guid"]; return n.Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanPassDataWithContext;
 
@@ -147,7 +147,7 @@ namespace Avatars.UnitTests
             var expected = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected)));
+                new ExecuteHandler((m, n) => m.CreateValueReturn(expected)));
 
             Func<object?> a = NonVoidMethod;
 
@@ -162,7 +162,7 @@ namespace Avatars.UnitTests
             var expected = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, m.Arguments)));
+                new ExecuteHandler((m, n) => m.CreateValueReturn(expected, m.Arguments)));
 
             Func<object, object?> a = NonVoidMethodWithArg;
 
@@ -178,7 +178,7 @@ namespace Avatars.UnitTests
             var output = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), output)));
+                new ExecuteHandler((m, n) => m.CreateValueReturn(expected, new object(), output)));
 
             NonVoidMethodWithArgRefDelegate a = NonVoidMethodWithArgRef;
 
@@ -192,7 +192,7 @@ namespace Avatars.UnitTests
         public void WhenInvokingPipeline_ThenBehaviorsCanReturnException()
         {
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+                new ExecuteHandler((m, n) => m.CreateExceptionReturn(new ArgumentException())));
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
 
@@ -206,7 +206,7 @@ namespace Avatars.UnitTests
             var output = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), output)));
+                new ExecuteHandler((m, n) => m.CreateValueReturn(expected, new object(), output)));
 
             NonVoidMethodWithArgOutDelegate a = NonVoidMethodWithArgOut;
 
@@ -224,7 +224,7 @@ namespace Avatars.UnitTests
             var byref = new object();
 
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), byref, output)));
+                new ExecuteHandler((m, n) => m.CreateValueReturn(expected, new object(), byref, output)));
 
             NonVoidMethodWithArgRefOutDelegate a = NonVoidMethodWithArgRefOut;
 
@@ -240,7 +240,7 @@ namespace Avatars.UnitTests
         {
             var value = new object();
 
-            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateValueReturn(value)));
+            var pipeline = new BehaviorPipeline(new ExecuteHandler((m, n) => m.CreateValueReturn(value)));
 
             Func<object?> f = NonVoidMethod;
 
@@ -263,7 +263,7 @@ namespace Avatars.UnitTests
         [Fact]
         public void CanExecutePipelineNoTarget()
         {
-            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateReturn()));
+            var pipeline = new BehaviorPipeline(new ExecuteHandler((m, n) => m.CreateReturn()));
 
             Action a = CanExecutePipelineNoTarget;
 
@@ -295,7 +295,7 @@ namespace Avatars.UnitTests
         public void WhenExecutingPipeline_ThenBehaviorCanThrow()
         {
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+                new ExecuteHandler((m, n) => m.CreateExceptionReturn(new ArgumentException())));
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
 
@@ -307,7 +307,7 @@ namespace Avatars.UnitTests
         public void WhenExecutingPipelineResult_ThenBehaviorCanThrow()
         {
             var pipeline = new BehaviorPipeline(
-                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+                new ExecuteHandler((m, n) => m.CreateExceptionReturn(new ArgumentException())));
 
             Func<object?> f = NonVoidMethod;
 
@@ -415,7 +415,7 @@ namespace Avatars.UnitTests
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
-            public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+            public IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next)
             {
                 return invocation.CreateValueReturn(new object());
             }
