@@ -41,7 +41,7 @@
     
     <!-- For packaging purposes -->
     <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
-    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
 
     <!-- Unit tests need to pack this for tests to run on macOS, for example -->
     <PackageVersion Include="SQLitePCLRaw.bundle_green" Version="2.0.4" />
