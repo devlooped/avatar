@@ -144,7 +144,9 @@ jobs:
       # < VS Preview
 
       - name: ⚙ curl
-        run: choco install curl -y
+        run: |
+          iwr -useb get.scoop.sh | iex
+          scoop install curl
 
       - name: 🔍 status for PR
         if: ${{ github.event.pull_request.head.sha }}
