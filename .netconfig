@@ -90,7 +90,7 @@
 	weak
 [file ".github/workflows/sponsors.yml"]
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.yml
-	etag = e75616713b78e84de89ea58f52f779805dd1c9c1cd223d2471c8087a272b6eb5
+	etag = 0142be767cd24215b54631593cfab08d711001b71ba4fc358e412f27c434a227
 	weak
 [file ".github/workflows/sponsors.ps1"]
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.ps1

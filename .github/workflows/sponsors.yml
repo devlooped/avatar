@@ -3,9 +3,9 @@
 name: sponsors
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened]
   issues:
-    types: [opened, edited, reopened, transferred]
+    types: [opened]
 
 jobs:
   sponsors:
