@@ -48,7 +48,7 @@ Behaviors can also dynamically determine whether they apply to a given invocatio
 public interface IAvatarBehavior
 {
     bool AppliesTo(IMethodInvocation invocation);
-    IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next);
+    IMethodReturn Execute(IMethodInvocation invocation, ExecuteHandler next);
 }
 ```
 
