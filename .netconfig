@@ -85,8 +85,16 @@
 	etag = b8d789b5b6bea017cdcc8badcea888ad78de3e34298efca922054e9fb0e7b6b9
 	weak
 [file ".github/workflows/pages.yml"]
-	url = https://github.com/devlooped/oss/blob/main/.github/workflows/pages.yml
+	url = https://github.com/devlooped/.github/blob/main/.github/workflows/pages.yml
 	etag = 3f1fb2481dcb41987d775eb6ed61c10adc00995f287636e7adda3ade5efc94b7
+	weak
+[file ".github/workflows/sponsors.yml"]
+	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.yml
+	etag = e75616713b78e84de89ea58f52f779805dd1c9c1cd223d2471c8087a272b6eb5
+	weak
+[file ".github/workflows/sponsors.ps1"]
+	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.ps1
+	etag = a908a75d4d531ece5a314ab999fe2a45d599d1279d0c58d84497ca4129d846ad
 	weak
 [file "Gemfile"]
 	url = https://github.com/devlooped/oss/blob/main/Gemfile
