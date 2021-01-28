@@ -8,12 +8,12 @@ Avatar is a modern interception library which implements the [proxy pattern](htt
 
 [![Version](https://img.shields.io/nuget/vpre/Avatar.svg?color=royalblue)](https://www.nuget.org/packages/Avatar)
 [![Downloads](https://img.shields.io/nuget/dt/Avatar?color=darkmagenta)](https://www.nuget.org/packages/Avatar)
-[![License](https://img.shields.io/github/license/kzu/avatar.svg?color=blue)](https://github.com/kzu/avatar/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/devlooped/avatar.svg?color=blue)](https://github.com/devlooped/avatar/blob/main/LICENSE)
 [![Discord Chat](https://img.shields.io/badge/chat-on%20discord-7289DA.svg)](https://discord.gg/AfGsdRa)
-[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/kzu/avatar)
+[![GitHub](https://img.shields.io/badge/-source-181717.svg?logo=GitHub)](https://github.com/devlooped/avatar)
 
-[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/Avatar/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
-[![GH CI Status](https://github.com/kzu/avatar/workflows/build/badge.svg?branch=main)](https://github.com/kzu/avatar/actions?query=branch%3Amain+workflow%3Abuild+)
+[![CI Version](https://img.shields.io/endpoint?url=https://shields.kzu.io/vpre/devlooped/main&label=nuget.ci&color=brightgreen)](https://pkg.kzu.io/index.json)
+[![GH CI Status](https://github.com/kzu/avatar/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/avatar/actions?query=branch%3Amain+workflow%3Abuild+)
 
 
 > NOTE: Avatar provides a fairly low-level API with just the essential building blocks on top of which higher-level APIs can be built, such as the upcoming Moq vNext API.
