@@ -14,11 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: ⚙ dotnet 5.0.x
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-
       - name: 🙏 build
         run: dotnet build -p:BuildDocFx=true
         working-directory: src/Avatar
@@ -33,7 +28,7 @@ jobs:
           git add -A
           git config --local user.email "hello@clarius.org"
           git config --local user.name "GitHub Action"
-          git commit -m "Publish ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
+          git commit -m "Publish pages from ${GITHUB_REPOSITORY}@${GITHUB_SHA:0:9}"
 
       - name: 🚀 push
         uses: ad-m/github-push-action@v0.6.0
