@@ -49,8 +49,8 @@ $headers = @{ 'Accept'='application/vnd.github.v3+json;charset=utf-8'; 'Authoriz
 iwr -Body '{ "name":"sponsor :purple_heart:", "color":"ea4aaa", "description":"sponsor" }' "$env:GITHUB_API_URL/repos/$env:GITHUB_REPOSITORY/labels" -Method Post -Headers $headers -SkipHttpErrorCheck -UseBasicParsing | select -ExpandProperty StatusCode
 iwr -Body '{ "name":"sponsor :yellow_heart:", "color":"ea4aaa", "description":"sponsor++" }'  "$env:GITHUB_API_URL/repos/$env:GITHUB_REPOSITORY/labels" -Method Post -Headers $headers -SkipHttpErrorCheck -UseBasicParsing | select -ExpandProperty StatusCode
 
-$labels = $amount -ge 100 ? '{"labels":["sponsor :yellow_heart:"]}' : '{"labels":["sponsor :purple_heart:"]}'
 $number = $event.issue ? $event.issue.number : $event.pull_request.number
+$labels = $amount -ge 100 ? '{"labels":["sponsor :yellow_heart:"]}' : '{"labels":["sponsor :purple_heart:"]}'
 
 iwr -Body $labels "$env:GITHUB_API_URL/repos/$env:GITHUB_REPOSITORY/issues/$number/labels" -Method Post -Headers $headers -SkipHttpErrorCheck -UseBasicParsing | select -ExpandProperty StatusCode
 
