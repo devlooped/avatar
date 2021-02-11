@@ -186,7 +186,9 @@ namespace Avatars.Processors
                                     InvocationExpression(
                                         MemberAccessExpression(
                                             MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)),
-                                            GenericName("Get", parameter.Type!)),
+                                            parameter.Type!.Kind() == SyntaxKind.NullableType ?
+                                            GenericName(nameof(ArgumentCollectionExtensions.GetNullable), parameter.Type!) :
+                                            GenericName(nameof(ArgumentCollectionExtensions.Get), parameter.Type!)),
                                         Argument(
                                             LiteralExpression(parameter.Identifier.ToString())))));
 
@@ -296,7 +298,9 @@ namespace Avatars.Processors
                                         MemberAccessExpression(
                                             prefix + "result",
                                             nameof(IMethodReturn.Outputs)),
-                                    GenericName("Get", x.Type!)),
+                                    x.Type!.Kind() == SyntaxKind.NullableType ?
+                                    GenericName(nameof(ArgumentCollectionExtensions.GetNullable), x.Type!) :
+                                    GenericName(nameof(ArgumentCollectionExtensions.Get), x.Type!)),
                                     Argument(
                                         LiteralExpression(x.Identifier.ToString()))))))
                         .ToArray());
@@ -398,7 +402,9 @@ namespace Avatars.Processors
                         baseCall = baseCall?.WithRight(InvocationExpression(
                             MemberAccessExpression(
                                 MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)),
-                                GenericName("Get", node.Type)),
+                                node.Type.Kind() == SyntaxKind.NullableType ?
+                                GenericName(nameof(ArgumentCollectionExtensions.GetNullable), node.Type) :
+                                GenericName(nameof(ArgumentCollectionExtensions.Get), node.Type)),
                             Argument(
                                 LiteralExpression("value"))));
 
@@ -471,7 +477,9 @@ namespace Avatars.Processors
                             .WithRight(InvocationExpression(
                                 MemberAccessExpression(
                                     MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)),
-                                    GenericName("Get", node.Type)),
+                                    node.Type.Kind() == SyntaxKind.NullableType ?
+                                    GenericName(nameof(ArgumentCollectionExtensions.GetNullable), node.Type) :
+                                    GenericName(nameof(ArgumentCollectionExtensions.Get), node.Type)),
                                 Argument(
                                     LiteralExpression("value"))));
 
@@ -545,7 +553,9 @@ namespace Avatars.Processors
                             InvocationExpression(
                                 MemberAccessExpression(
                                     MemberAccessExpression("m", nameof(IMethodInvocation.Arguments)),
-                                    GenericName("Get", prm.Type!)),
+                                    prm.Type!.Kind() == SyntaxKind.NullableType ?
+                                    GenericName(nameof(ArgumentCollectionExtensions.GetNullable), prm.Type) :
+                                    GenericName(nameof(ArgumentCollectionExtensions.Get), prm.Type!)),
                                 Argument(
                                     Literal(prm.Identifier.ToString()))))));
 

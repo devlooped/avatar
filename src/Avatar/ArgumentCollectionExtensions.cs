@@ -101,7 +101,7 @@ namespace Avatars
         static T? GetNullable<T>(Argument argument)
         {
             if (argument is Argument<T> typed)
-                return typed.Value!;
+                return typed.Value;
 
             var type = typeof(T);
             var value = argument.RawValue;
