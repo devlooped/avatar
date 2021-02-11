@@ -227,15 +227,28 @@ namespace Avatars
                         syntax = processor.Process(syntax, context);
 
                 var code = syntax.NormalizeWhitespace().ToFullString();
+                var shouldEmit = false;
+
+                // Additional pretty-printing when emitting generated files, improves whitespace handling for C#
+                if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.EmitCompilerGeneratedFiles", out var emitSources) &&
+                    bool.TryParse(emitSources, out shouldEmit) &&
+                    shouldEmit &&
+                    // NOTE: checking for C# last, since the Debugger.Attached section below would depend on 
+                    // the proper initialization of shouldEmit too, regardless of language
+                    context.Language == LanguageNames.CSharp)
+                {
+                    syntax = CSharpSyntaxTree.ParseText(code, (CSharpParseOptions)context.ParseOptions).GetRoot();
+                    syntax = new CSharpFormatter().Visit(syntax);
+                    code = syntax.GetText().ToString();
+                }
+
                 avatars.Add(name);
                 context.AddSource(name, SourceText.From(code, Encoding.UTF8));
 
 #if DEBUG
                 if (Debugger.IsAttached)
                 {
-                    if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.EmitCompilerGeneratedFiles", out var emitSources) &&
-                        bool.TryParse(emitSources, out var shouldEmit) &&
-                        shouldEmit &&
+                    if (shouldEmit &&
                         context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.IntermediateOutputPath", out var intermediateDir) &&
                         context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.MSBuildProjectDirectory", out var projectDir))
                     {
@@ -244,7 +257,7 @@ namespace Avatars
 
                         var filePath = Path.Combine(targetDir, name + (context.Language == LanguageNames.CSharp ? ".cs" : ".vb"));
                         File.WriteAllText(filePath, code);
-                        Debugger.Log(0, "", "Avatar Generated: " + filePath);
+                        Debugger.Log(0, "", "Avatar Generated: " + filePath + Environment.NewLine);
                     }
 
                     Debugger.Log(0, "", string.Join(
@@ -253,6 +266,69 @@ namespace Avatars
                                 .Select((line, index) => index.ToString().PadLeft(3) + " " + line)) + Environment.NewLine);
                 }
 #endif
+            }
+        }
+
+        class CSharpFormatter : CSharpSyntaxRewriter
+        {
+            static SyntaxTrivia NewLine => SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, "\n");
+            static SyntaxTrivia Tab => SyntaxFactory.SyntaxTrivia(SyntaxKind.WhitespaceTrivia, "    ");
+
+            public override SyntaxNode? VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+                // Ctor is always replaced, so it needs whitespace
+                => base.VisitConstructorDeclaration(node)!
+                    .WithTrailingTrivia(node.GetTrailingTrivia().Add(NewLine));
+
+            public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+            {
+                var canRead = node.AccessorList?.Accessors.Any(SyntaxKind.GetAccessorDeclaration) == true;
+                var canWrite = node.AccessorList?.Accessors.Any(SyntaxKind.SetAccessorDeclaration) == true;
+
+                // If there's get+set, the property declaration is preserved from scaffold
+                if (canRead && canWrite)
+                    return base.VisitPropertyDeclaration(node);
+
+                return base.VisitPropertyDeclaration(node)!
+                    .WithTrailingTrivia(node.GetTrailingTrivia().Add(NewLine));
+            }
+
+            public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
+            {
+                // ref/out already get proper whitespace from scaffold
+                if (!node.ParameterList.Parameters.Any(x => x.IsRefOut()))
+                    return base.VisitMethodDeclaration(node)!
+                        .WithTrailingTrivia(node.GetTrailingTrivia().Add(NewLine));
+
+                return base.VisitMethodDeclaration(node);
+            }
+
+            public override SyntaxNode? VisitFieldDeclaration(FieldDeclarationSyntax node)
+                => base.VisitFieldDeclaration(node)!
+                    .WithTrailingTrivia(node.GetTrailingTrivia().Add(NewLine));
+
+            SyntaxTriviaList? indent;
+
+            public override SyntaxNode? VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
+            {
+                indent = node.Initializer?.GetLeadingTrivia();
+
+                return base.VisitObjectCreationExpression(node);
+            }
+
+            public override SyntaxNode? VisitInitializerExpression(InitializerExpressionSyntax node)
+            {
+                if (node.Kind() == SyntaxKind.ComplexElementInitializerExpression)
+                    return base.VisitInitializerExpression(node)!.WithLeadingTrivia(indent?.Insert(0, NewLine).Add(Tab));
+
+                if (node.Kind() == SyntaxKind.CollectionInitializerExpression)
+                {
+                    var last = node.Expressions.Count - 1;
+                    return base.VisitInitializerExpression(node
+                        .WithExpressions(SyntaxFactory.SeparatedList(
+                            node.Expressions.Select((e, i) => i != last ? e : e.WithTrailingTrivia(indent?.Insert(0, NewLine))))));
+                }
+
+                return base.VisitInitializerExpression(node);
             }
         }
 
