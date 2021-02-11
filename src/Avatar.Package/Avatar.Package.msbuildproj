@@ -3,10 +3,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Avatar</PackageId>
     <Title>Avatar</Title>
-    <Description>Avatars blend with the Na'vi seamlessly, and you can control their behavior precisely ('drive' them) with a psionic link. 
-Just like a dynamic proxy, with behavior driven by code.
-      
-IMyService service = Avatar.Of&lt;IMyService&gt;();
+    <Description>Avatar is a modern interception library which implements the proxy pattern 
+and runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or 
+limitted, like physical iOS devices and game consoles, through compile-time code generation. 
+The proxy behavior is configured in code using what we call a behavior pipeline.
+
+      IMyService service = Avatar.Of&lt;IMyService&gt;();
 service.AddBehavior(...);
     </Description>
     <PackageTags>dotnet proxy runtime dynamic</PackageTags>
