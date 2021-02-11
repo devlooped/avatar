@@ -122,7 +122,7 @@ namespace Avatars.Processors
 
                 node = node.WithExpressionBody(ArrowExpressionClause(body))
                         .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                        .WithSemicolon();
 
                 return base.VisitConstructorDeclaration(node);
             }
@@ -350,7 +350,7 @@ namespace Avatars.Processors
                     method = method
                         .WithBody(null)
                         .WithExpressionBody(ArrowExpressionClause(body))
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                        .WithSemicolon();
                 }
 
                 return base.VisitMethodDeclaration(method);
@@ -378,7 +378,7 @@ namespace Avatars.Processors
                     node = node
                         .WithExpressionBody(ArrowExpressionClause(Execute(
                             node.Type, Enumerable.Empty<ParameterSyntax>(), baseCall)))
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                        .WithSemicolon();
                 }
                 else
                 {
@@ -388,7 +388,7 @@ namespace Avatars.Processors
                         node = node.AddAccessorListAccessors(AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                             .WithExpressionBody(ArrowExpressionClause(Execute(
                                 node.Type, Enumerable.Empty<ParameterSyntax>(), baseCall)))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                            .WithSemicolon());
                     }
                     if (canWrite)
                     {
@@ -406,7 +406,7 @@ namespace Avatars.Processors
                             .WithExpressionBody(ArrowExpressionClause(
                                 // NOTE: we always append the implicit "value" parameter for setters.
                                 Execute(null, new[] { Parameter(Identifier("value")).WithType(node.Type) }, baseCall)))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                            .WithSemicolon());
                     }
                 }
 
@@ -445,7 +445,7 @@ namespace Avatars.Processors
                                     (ElementAccessExpressionSyntax?)GetBaseCall(
                                         prop,
                                         SyntaxKind.GetAccessorDeclaration)))))
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                        .WithSemicolon();
                 }
                 else
                 {
@@ -459,7 +459,7 @@ namespace Avatars.Processors
                                     (ElementAccessExpressionSyntax?)GetBaseCall(
                                         prop,
                                         SyntaxKind.GetAccessorDeclaration)))))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                            .WithSemicolon());
                     }
 
                     if (canWrite)
@@ -479,7 +479,7 @@ namespace Avatars.Processors
                             .WithExpressionBody(ArrowExpressionClause(
                                 Execute(null, node.ParameterList.Parameters.Concat(new[] { Parameter(Identifier("value")).WithType(node.Type) }),
                                 baseCall)))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                            .WithSemicolon());
                     }
                 }
 
