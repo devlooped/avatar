@@ -14,7 +14,7 @@ namespace Sample
 
         int Add(int x, int y, int z);
 
-        bool TryAdd(ref int x, ref int y, out int z);
+        bool TryAdd(ref int x, ref int y, out int? z);
 
         void TurnOn();
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Sample;
+using Avatars.Sample;
 using Xunit;
 
 namespace Avatars.UnitTests
@@ -8,7 +8,7 @@ namespace Avatars.UnitTests
     {
         public void CanUseManualAvatar()
         {
-            var avatar = new CalculatorClassAvatar();
+            var avatar = new CalculatorAvatar();
             var recorder = new RecordingBehavior();
             avatar.AddBehavior(recorder);
 
@@ -31,7 +31,7 @@ namespace Avatars.UnitTests
 
             var x = 1;
             var y = 2;
-            var z = 0;
+            int? z = 0;
             Assert.True(avatar.TryAdd(ref x, ref y, out z));
             Assert.Equal(3, z);
 

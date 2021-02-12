@@ -6,8 +6,8 @@ namespace Sample
 {
     public class Calculator : ICalculator, IDisposable
     {
-        CalculatorMemory memory = new CalculatorMemory();
-        Dictionary<string, int> namedMemory = new Dictionary<string, int>();
+        readonly CalculatorMemory memory = new CalculatorMemory();
+        readonly Dictionary<string, int> namedMemory = new Dictionary<string, int>();
 
         public virtual event EventHandler TurnedOn;
 
@@ -42,11 +42,11 @@ namespace Sample
 
         public virtual void Clear(string name) => namedMemory.Remove(name ?? "null");
 
-        public virtual int? Recall(string name) => (namedMemory.TryGetValue(name ?? "null", out int i)) ? i : default(int?);
+        public virtual int? Recall(string name) => (namedMemory.TryGetValue(name ?? "null", out var i)) ? i : default(int?);
 
         public virtual void Store(string name, int value) => namedMemory[name ?? "null"] = value;
 
-        public virtual bool TryAdd(ref int x, ref int y, out int z)
+        public virtual bool TryAdd(ref int x, ref int y, out int? z)
         {
             z = x + y;
             return true;
