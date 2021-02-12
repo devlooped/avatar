@@ -88,14 +88,12 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="WriteCscCommandLineArgs" AfterTargets="CoreCompile"
-          Inputs="@(IntermediateAssembly)" Outputs="$(OutputPath)csc.txt"
-          Condition="'@(CscCommandLineArgs)' != ''">
+  <Target Name="WriteCscCommandLineArgs" AfterTargets="CoreCompile" Inputs="@(IntermediateAssembly)" Outputs="$(OutputPath)csc.txt" Condition="'@(CscCommandLineArgs)' != ''">
     <WriteLinesToFile Lines="@(CscCommandLineArgs)" File="$(OutputPath)csc.txt" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
   <Target Name="WriteLibs" AfterTargets="ResolvePackageAssets">
-    <WriteLinesToFile Lines="@(RuntimeCopyLocalItems -> '%(FullPath)')" File="$(OutputPath)lib.txt"  Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <WriteLinesToFile Lines="@(RuntimeCopyLocalItems -> '%(FullPath)')" File="$(OutputPath)lib.txt" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
 </Project>

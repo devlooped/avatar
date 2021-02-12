@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS0436
+﻿#pragma warning disable IDE0079
+#pragma warning disable CS0436
 using System;
 using Xunit;
 

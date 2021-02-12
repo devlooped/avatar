@@ -8,6 +8,6 @@
 
         void Clear();
 
-        int Recall();
+        int? Recall();
     }
 }

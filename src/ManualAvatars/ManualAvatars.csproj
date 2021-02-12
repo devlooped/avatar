@@ -15,6 +15,7 @@ by compile-time or run-time generators.
     <ProjectReference Include="..\Avatar.Package\Avatar.Package.msbuildproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="@(Compile)" TargetPath="Avatar/%(Filename)%(Extension)" />
+    <Compile Update="@(Compile)" TargetPath="Avatar\%(RelativeDir)\%(Filename)%(Extension)" />
+    <Compile Update="@(Compile -&gt; HasMetadata('RelativeDir'))" Pack="false" />
   </ItemGroup>
 </Project>

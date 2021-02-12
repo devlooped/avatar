@@ -8,7 +8,7 @@
 
         public virtual void Clear() => memory = 0;
 
-        public virtual int Recall() => memory;
+        public virtual int? Recall() => memory;
 
         public virtual void Subtract(int value) => memory -= value;
     }

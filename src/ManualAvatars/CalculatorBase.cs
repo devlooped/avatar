@@ -17,7 +17,7 @@ namespace Sample
 
         public abstract int Add(int x, int y, int z);
 
-        public abstract bool TryAdd(ref int x, ref int y, out int z);
+        public abstract bool TryAdd(ref int x, ref int y, out int? z);
 
         public abstract void TurnOn();
 
