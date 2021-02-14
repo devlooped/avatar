@@ -101,7 +101,7 @@ namespace Avatars
             if (index == -1)
                 return CallBaseOrThrow(invocation);
 
-            Func<ExecuteHandler> getNext = () =>
+            ExecuteHandler GetNext()
             {
                 for (index++; index < behaviors.Length; index++)
                     if (!invocation.SkipBehaviors.Contains(behaviors[index].GetType()) && behaviors[index].AppliesTo(invocation))
@@ -110,9 +110,9 @@ namespace Avatars
                 return (index < behaviors.Length) ?
                     behaviors[index].Execute :
                     (m, n) => CallBaseOrThrow(m);
-            };
+            }
 
-            var result = behaviors[index].Execute(invocation, (m, n) => getNext().Invoke(m, n));
+            var result = behaviors[index].Execute(invocation, (m, n) => GetNext().Invoke(m, n));
 
             if (throwOnException && result.Exception != null)
                 throw result.Exception;
