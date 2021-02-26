@@ -51,6 +51,8 @@ jobs:
           base: main
           branch: dotnet-file-sync
           commit-message: 🔄 dotnet-file sync
+          
+            ${{ env.CHANGES }}
           title: "🔄 dotnet-file sync"
           body: ${{ env.CHANGES }}
           token: ${{ env.GH_TOKEN }}
