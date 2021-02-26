@@ -190,6 +190,6 @@
 
 [file ".github/workflows/dotnet-file.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
-	sha = a4c3e951625fa11744f16aa92aa7506676800cae
-	etag = 150dec32ed5e31488159ae0e6574f6e68ac176fb6ccf16c1c8d5b500caaf724f
+	sha = e977ded975b1a536e76d5577a15a8512570ad8c7
+	etag = a84e35210d22591f420ba49ffed469e23107fbccb685857a20188134026d91bd
 	weak
