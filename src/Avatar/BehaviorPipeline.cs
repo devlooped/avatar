@@ -76,12 +76,12 @@ namespace Avatars
         /// <returns>Return value from the pipeline.</returns>
         public IMethodReturn Invoke(IMethodInvocation invocation, bool throwOnException = false)
         {
-            IMethodReturn CallBaseOrThrow(IMethodInvocation invocation) => invocation.SupportsCallBase ?
-                invocation.CreateCallBaseReturn() :
-                throw new NotImplementedException(ThisAssembly.Strings.PipelineNotImplemented(invocation));
+            IMethodReturn InvokeTargetOrThrow(IMethodInvocation invocation) => invocation.HasImplementation ?
+                invocation.CreateInvokeReturn() :
+                throw new NotImplementedException(ThisAssembly.Strings.NotImplemented(invocation));
 
             if (Behaviors.Count == 0)
-                return CallBaseOrThrow(invocation);
+                return InvokeTargetOrThrow(invocation);
 
             // We convert to array so that the collection of behaviors can potentially 
             // be modified by behaviors themselves for a subsequent pipeline execution. 
@@ -99,7 +99,7 @@ namespace Avatars
             }
 
             if (index == -1)
-                return CallBaseOrThrow(invocation);
+                return InvokeTargetOrThrow(invocation);
 
             ExecuteHandler GetNext()
             {
@@ -109,7 +109,7 @@ namespace Avatars
 
                 return (index < behaviors.Length) ?
                     behaviors[index].Execute :
-                    (m, n) => CallBaseOrThrow(m);
+                    (m, n) => InvokeTargetOrThrow(m);
             }
 
             var result = behaviors[index].Execute(invocation, (m, n) => GetNext().Invoke(m, n));

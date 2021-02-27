@@ -25,8 +25,7 @@ namespace Avatars
         MethodBase MethodBase { get; }
 
         /// <summary>
-        /// The ultimate target of the method invocation, typically 
-        /// an avatar object.
+        /// The avatar object that was the target of the method invocation.
         /// </summary>
         object Target { get; }
 
@@ -36,23 +35,29 @@ namespace Avatars
         HashSet<Type> SkipBehaviors { get; }
 
         /// <summary>
-        /// Whether the invocation has a base call target that can be invoked via 
-        /// <see cref="CreateCallBaseReturn"/>.
+        /// Whether the method has a built-in implementation that can be invoked via 
+        /// <see cref="CreateInvokeReturn"/>.
         /// </summary>
-        bool SupportsCallBase { get; }
+        /// <remarks>
+        /// For a class-based avatar, this would be <see langword="true"/> for virtual 
+        /// methods, for an interface-based avatar, it would be <see langword="true"/> 
+        /// if a target implementation instance was provided (i.e. as a decorator pattern).
+        /// </remarks>
+        bool HasImplementation { get; }
 
         /// <summary>
-        /// Creates the method invocation return that ends the current invocation by invoking the 
-        /// base method implementation, optionally overriding the arguments passed to that invocation.
+        /// Invokes the underlying implementation of the method, if <see cref="HasImplementation"/> 
+        /// is <see langword="true"/>, optionally overriding the arguments passed to that invocation.
         /// </summary>
         /// <param name="arguments">Ordered list of all arguments to the method invocation, including ref/out arguments.
         /// If not provided, the arguments from the invocation will be used.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
         /// <exception cref="NotImplementedException">The current method invocation does not have a 
-        /// base implementation. In other words, it's either abstract or a member of an interface.</exception>
-        /// <exception cref="NotSupportedException">The call base implementation attempted to get the 
+        /// base implementation. In other words, it's either abstract or a member of an interface (with 
+        /// no target implementation).</exception>
+        /// <exception cref="NotSupportedException">The target invocation attempted to get the 
         /// next behavior, which is not supported.</exception>
-        IMethodReturn CreateCallBaseReturn(IArgumentCollection? arguments = null);
+        IMethodReturn CreateInvokeReturn(IArgumentCollection? arguments = null);
 
         /// <summary>
         /// Creates the method invocation return that ends the current invocation by providing 

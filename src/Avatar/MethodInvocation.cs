@@ -15,7 +15,7 @@ namespace Avatars
     /// </summary>
     public partial class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
     {
-        readonly ExecuteHandler callBase;
+        readonly ExecuteHandler implementation;
 
         /// <summary>
         /// Initializes the <see cref="MethodInvocation"/> for a method that has no parameters.
@@ -43,7 +43,7 @@ namespace Avatars
             if (method.GetParameters().Length != Arguments.Count)
                 throw new TargetParameterCountException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count));
 
-            callBase = (m, n) => throw new NotImplementedException(ThisAssembly.Strings.CallBaseNotImplemented(ToString()));
+            implementation = (m, n) => throw new NotImplementedException(ThisAssembly.Strings.NotImplemented(ToString()));
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace Avatars
         /// </summary>
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
-        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteHandler callBase)
-            : this(target, method, callBase, new ArgumentCollection())
+        /// <param name="implementation">Delegate to invoke the method implementation.</param>
+        public MethodInvocation(object target, MethodBase method, ExecuteHandler implementation)
+            : this(target, method, implementation, new ArgumentCollection())
         {
         }
 
@@ -62,9 +62,9 @@ namespace Avatars
         /// </summary>
         /// <param name="target">The target object where the invocation is being performed.</param>
         /// <param name="method">The method being invoked.</param>
-        /// <param name="callBase">Delegate to invoke the base method implementation for virtual methods.</param>
+        /// <param name="implementation">Delegate to invoke the method implementation.</param>
         /// <param name="arguments">The arguments of the method invocation.</param>
-        public MethodInvocation(object target, MethodBase method, ExecuteHandler callBase, IArgumentCollection arguments)
+        public MethodInvocation(object target, MethodBase method, ExecuteHandler implementation, IArgumentCollection arguments)
         {
             // TODO: validate that arguments length and type match the method info?
             Target = target ?? throw new ArgumentNullException(nameof(target));
@@ -74,8 +74,8 @@ namespace Avatars
             if (method.GetParameters().Length != Arguments.Count)
                 throw new TargetParameterCountException(ThisAssembly.Strings.MethodArgumentsMismatch(method.Name, method.GetParameters().Length, Arguments.Count));
 
-            this.callBase = callBase;
-            SupportsCallBase = true;
+            this.implementation = implementation;
+            HasImplementation = true;
         }
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace Avatars
         public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
 
         /// <inheritdoc />
-        public bool SupportsCallBase { get; }
+        public bool HasImplementation { get; }
 
         /// <inheritdoc />
         public IMethodReturn CreateExceptionReturn(Exception exception)
@@ -105,9 +105,9 @@ namespace Avatars
             => new MethodReturn(this, returnValue, arguments ?? Arguments);
 
         /// <inheritdoc />
-        public IMethodReturn CreateCallBaseReturn(IArgumentCollection? arguments = null)
-            => callBase.Invoke(arguments == null ? this : new MethodInvocation(Target, MethodBase, arguments),
-                (m, n) => throw new NotSupportedException(ThisAssembly.Strings.CallBaseGetNextNotSupported));
+        public IMethodReturn CreateInvokeReturn(IArgumentCollection? arguments = null)
+            => implementation.Invoke(arguments == null ? this : new MethodInvocation(Target, MethodBase, arguments),
+                (m, n) => throw new NotSupportedException(ThisAssembly.Strings.GetNextNotSupported));
 
         /// <summary>
         /// Gets a friendly representation of the invocation.
