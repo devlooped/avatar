@@ -11,7 +11,7 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
-  changelog:
+  sync:
     runs-on: windows-latest
     steps:
       - name: 🔍 GH_TOKEN
