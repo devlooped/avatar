@@ -35,6 +35,8 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="3.8.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.8.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.8.0" />
+    <!-- Required to unify this dependency across projects. -->
+    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
 
     <!-- When running under .netframework, this dependency will be needed -->
     <PackageVersion Include="System.ValueTuple" Version="4.5.0" />

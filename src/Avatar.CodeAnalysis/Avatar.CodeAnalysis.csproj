@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Superpower" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
