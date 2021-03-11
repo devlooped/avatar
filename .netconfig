@@ -130,8 +130,8 @@
 
 [file ".github/workflows/sponsors.ps1"]
 	url = https://github.com/devlooped/.github/blob/main/.github/workflows/sponsors.ps1
-	sha = ffde0b030405ef9925309cf69467570c75b6edea
-	etag = 5e29155d35ab142150e900df391363e03e5a15a8be46e4adeeb4c6fd34013289
+	sha = 11f5c27cfdb304436ef0b7ee27ff333cda31ef65
+	etag = 57a303125f3367b68ad0700d89ff4ba57cb29b33b303903488c9c8638d0bf735
 	weak
 
 [file "Gemfile"]
@@ -190,6 +190,6 @@
 
 [file ".github/workflows/dotnet-file.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/workflows/dotnet-file.yml
-	sha = 99c4bb740c516bd2953464f4fdbfa32bcbde6352
-	etag = 9a04b2aa64b7f5b1d4a246908337a86c69e2124a61cfd7c198c8979d1a76bfa1
+	sha = 094043587f7e7313a0a77dece1532fbcb1ce8555
+	etag = 15333d15756257ec2d7975ea3ba5a22d1e3fae98aab35d83d67a728628e90cea
 	weak
