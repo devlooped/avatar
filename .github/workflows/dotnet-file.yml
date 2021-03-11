@@ -34,7 +34,7 @@ jobs:
           dotnet gcm store --protocol=https --host=github.com --username=$env:GITHUB_ACTOR --password=$env:GH_TOKEN
           gh auth status
 
-          dotnet tool update -g dotnet-file --no-cache --add-source https://pkg.kzu.io/index.json --version 42.42.42-main.75
+          dotnet tool update -g dotnet-file
           dotnet file sync -c:$env:TEMP\dotnet-file.md
           if (test-path $env:TEMP\dotnet-file.md) {
             echo 'CHANGES<<EOF' >> $env:GITHUB_ENV
@@ -50,9 +50,9 @@ jobs:
         with:
           base: main
           branch: dotnet-file-sync
-          commit-message: 🔄 dotnet-file sync
+          commit-message: Bump files with dotnet-file sync
           
             ${{ env.CHANGES }}
-          title: "🔄 dotnet-file sync"
+          title: "Bump files with dotnet-file sync"
           body: ${{ env.CHANGES }}
           token: ${{ env.GH_TOKEN }}
