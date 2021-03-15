@@ -9,20 +9,10 @@
 
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
-
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
-    <SourceLinkVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'Microsoft.SourceLink.GitHub'))" />
-
-    <PackageVersion Include="ThisAssembly" Version="1.0.3" />
-    <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
-    <ThisAssemblyVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'ThisAssembly'))" />
-
+    <PackageVersion Include="ThisAssembly" Version="1.0.6" />
     <PackageVersion Include="NuGetizer" Version="0.6.0" />
-    <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
-    <NuGetizerVersion Include="@(PackageVersion -> WithMetadataValue('Identity', 'NuGetizer'))" />
-
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-
     <PackageVersion Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2" />
   </ItemGroup>
 

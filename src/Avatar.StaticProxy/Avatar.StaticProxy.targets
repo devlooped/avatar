@@ -15,10 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Grab versions from Directory.Packages.props for the Core group -->
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="@(SourceLinkVersion -> '%(Version)')" PrivateAssets="all" />
-    <PackageReference Include="NuGetizer" Version="@(NuGetizerVersion -> '%(Version)')" PrivateAssets="all" />
-    <PackageReference Include="ThisAssembly" Version="@(ThisAssemblyVersion -> '%(Version)')"  PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    <PackageReference Include="NuGetizer" Version="0.6.0" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" Version="1.0.6"  PrivateAssets="all" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
