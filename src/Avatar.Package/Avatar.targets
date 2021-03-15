@@ -2,7 +2,7 @@
 
   <!-- If source generators aren't supported, we just won't register the static one -->
   <PropertyGroup>
-    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' AND $(MSBuildShortVersion) &gt;= '16.8'">true</SourceGeneratorSupported>
+    <SourceGeneratorSupported Condition="'$(Language)' == 'C#' AND $([System.Version]::Parse('16.8.0').CompareTo($([System.Version]::Parse($(MSBuildVersion))))) != 1">true</SourceGeneratorSupported>
     <EnableCompileTimeAvatars Condition="'$(EnableCompileTimeAvatars)' == '' AND '$(SourceGeneratorSupported)' == 'true'">true</EnableCompileTimeAvatars>
   </PropertyGroup>
 
