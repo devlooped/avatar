@@ -84,12 +84,6 @@ jobs:
       - name: 🤘 checkout
         uses: actions/checkout@v2
 
-      - name: ⚙ dotnet 5.0
-        uses: actions/setup-dotnet@v1
-        if: matrix.os != 'windows-latest'
-        with:
-          dotnet-version: 5.0.x
-
       - name: 🔽 packages
         uses: actions/download-artifact@v2
         with:
