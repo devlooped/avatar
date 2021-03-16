@@ -22,8 +22,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)$(RoslynLabel)" Pack="false" />
-
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(RoslynVersion) == '3.8.0'">
     <!-- Don't bump these dependencies to 5.0.0 because that breaks net472 source generator runs -->
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.1" Pack="false" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Pack="false" />
