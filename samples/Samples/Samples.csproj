@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>

@@ -101,6 +101,7 @@ namespace Avatars.UnitTests
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
             var libs = new HashSet<string>(File.ReadAllLines("lib.txt"), StringComparer.OrdinalIgnoreCase)
+                .Distinct(FileNameEqualityComparer.Default)
                 .ToDictionary(x => Path.GetFileName(x));
 
             var args = CSharpCommandLineParser.Default.Parse(

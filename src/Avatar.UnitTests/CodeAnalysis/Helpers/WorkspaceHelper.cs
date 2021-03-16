@@ -57,6 +57,7 @@ public static class WorkspaceHelper
         var documents = new List<DocumentInfo>();
 
         var libs = new HashSet<string>(File.ReadAllLines("lib.txt"), StringComparer.OrdinalIgnoreCase)
+            .Distinct(FileNameEqualityComparer.Default)
             .ToDictionary(x => Path.GetFileName(x));
 
         var references = args.MetadataReferences.Select(x =>

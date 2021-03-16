@@ -1,5 +1,5 @@
 ﻿<Project>
-  
+
   <!-- Supports the main Avatar Pack project -->
   <Target Name="IsPackable" Returns="@(IsPackable)">
     <ItemGroup>

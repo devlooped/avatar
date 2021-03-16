@@ -5,14 +5,19 @@
   <PropertyGroup>
     <DebugSymbols>true</DebugSymbols>
     <Nullable>annotations</Nullable>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <RestoreSources>
       $(MSBuildThisFileDirectory)../../bin;
       https://api.nuget.org/v3/index.json
     </RestoreSources>
+    <IncludeGlobalPackages>false</IncludeGlobalPackages>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Avatar" Version="$(Version)" />
+    <PackageVersion Include="ManualAvatars" Version="$(Version)" />
+  </ItemGroup>
 
   <!-- Imported early so $(Version) in our references Just Works -->
   <Import Project="..\Directory.Build.targets"/>
