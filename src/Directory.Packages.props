@@ -2,13 +2,11 @@
 
   <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" Visible="false" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" Visible="false" />
     <PackageReference Include="NuGetizer" PrivateAssets="all" Visible="false" />
     <PackageReference Include="ThisAssembly" PrivateAssets="all" Visible="false" />
   </ItemGroup>
 
   <ItemGroup Label="Core">
-    <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="ThisAssembly" Version="1.0.6" />
     <PackageVersion Include="NuGetizer" Version="0.6.0" />
