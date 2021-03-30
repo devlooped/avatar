@@ -74,5 +74,18 @@ namespace Avatars.CodeAnalysis
             DiagnosticSeverity.Error,
             true,
             Strings.PointerMember.Description);
+
+        /// <summary>
+        /// Diagnostic reported whenever the specified base type for a 
+        /// <see cref="AvatarGeneratorAttribute"/>-annotated method is sealed.
+        /// </summary>
+        public static DiagnosticDescriptor BaseTypeNoContructor { get; } = new DiagnosticDescriptor(
+            "ST006",
+            Strings.BaseTypeNoCtor.Title,
+            Resources.BaseTypeNoCtor_Message,
+            "Build",
+            DiagnosticSeverity.Error,
+            true,
+            Strings.BaseTypeNoCtor.Description);
     }
 }

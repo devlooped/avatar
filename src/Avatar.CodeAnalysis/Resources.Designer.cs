@@ -61,6 +61,33 @@ namespace Avatars {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Base type has no accessible constructors..
+        /// </summary>
+        internal static string BaseTypeNoCtor_Description {
+            get {
+                return ResourceManager.GetString("BaseTypeNoCtor_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify base type &apos;{0}&apos; because it has no public or protected constructors..
+        /// </summary>
+        internal static string BaseTypeNoCtor_Message {
+            get {
+                return ResourceManager.GetString("BaseTypeNoCtor_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid base type.
+        /// </summary>
+        internal static string BaseTypeNoCtor_Title {
+            get {
+                return ResourceManager.GetString("BaseTypeNoCtor_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When a base type is specified, it must be the first type in the type arguments list..
         /// </summary>
         internal static string BaseTypeNotFirst_Description {
@@ -124,7 +151,7 @@ namespace Avatars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot specify enum type &apos;{0}&apos;...
+        ///   Looks up a localized string similar to Cannot specify enum type &apos;{0}&apos;..
         /// </summary>
         internal static string EnumType_Message {
             get {
@@ -169,7 +196,7 @@ namespace Avatars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot generate code for nested types yet: {0}.
+        ///   Looks up a localized string similar to Cannot generate code for nested types yet: {0}..
         /// </summary>
         internal static string NestedType_Message {
             get {
@@ -196,7 +223,7 @@ namespace Avatars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot generate code for types containing members that use pointer types yet: {0}.
+        ///   Looks up a localized string similar to Cannot generate code for types containing members that use pointer types yet: {0}..
         /// </summary>
         internal static string PointerMember_Message {
             get {
@@ -223,7 +250,7 @@ namespace Avatars {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot specify sealed base type &apos;{0}&apos;...
+        ///   Looks up a localized string similar to Cannot specify sealed base type &apos;{0}&apos;..
         /// </summary>
         internal static string SealedBaseType_Message {
             get {

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Sample;
@@ -114,7 +115,96 @@ namespace UnitTests
             }
         }
 
-        static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, [CallerMemberName] string? test = null)
+        [Fact]
+        public void FailIfNoAvailableConstructor()
+        {
+            var code = @"
+using System;
+using Avatars;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do() => Avatar.Of<BaseTypePrivateCtor>();
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code, new[]
+            {
+@"
+    public class BaseTypePrivateCtor
+    {
+        private BaseTypePrivateCtor() { }
+    }
+"
+            });
+
+            Assert.Single(diagnostics);
+
+            var diagnostic = diagnostics.First();
+
+            Assert.Equal(AvatarDiagnostics.BaseTypeNoContructor.Id, diagnostic.Id);
+            Assert.Equal(8, diagnostic.Location.GetLineSpan().StartLinePosition.Line);
+        }
+
+        [Fact]
+        public void SucceedsIfInternalConstructor()
+        {
+            var code = @"
+using System;
+using Avatars;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do() => Avatar.Of<BaseTypeInternalCtor>();
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code, new[]
+            {
+@"
+public class BaseTypeInternalCtor
+{
+    internal BaseTypeInternalCtor() { }
+}
+"
+            });
+
+            Assert.Empty(diagnostics);
+        }
+
+        [Fact]
+        public void SucceedsIfInternalProtectedConstructor()
+        {
+            var code = @"
+using System;
+using Avatars;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do() => Avatar.Of<BaseTypeInternalCtor>();
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code, new[]
+            {
+@"
+public class BaseTypeInternalCtor
+{
+    internal protected BaseTypeInternalCtor() { }
+}
+"
+            });
+
+            Assert.Empty(diagnostics);
+        }
+
+        static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, string[] additionalSources = null, [CallerMemberName] string? test = null)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(source, path: test + ".cs");
 
@@ -126,13 +216,14 @@ namespace UnitTests
                     references.Add(MetadataReference.CreateFromFile(assembly.Location));
             }
 
-            var compilation = CSharpCompilation.Create(test,
-                new SyntaxTree[]
+            var compilation = CSharpCompilation.Create(test, (additionalSources ?? Array.Empty<string>())
+                .Select((code, index) => CSharpSyntaxTree.ParseText(code, path: $"AdditionalSource{index}.cs"))
+                .Concat(new SyntaxTree[]
                 {
                     syntaxTree,
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                }), references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => d.Severity == DiagnosticSeverity.Hidden || d.Severity == DiagnosticSeverity.Info);
             if (diagnostics.Any())
