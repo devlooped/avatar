@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net472;net5.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
+    <NoWarn>THIS001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
