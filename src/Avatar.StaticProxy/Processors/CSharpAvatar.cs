@@ -10,7 +10,7 @@ namespace Avatars.Processors
     /// <summary>
     /// Adds the <see cref="IAvatar"/> interface implementation.
     /// </summary>
-    public class CSharpAvatar : IAvatarProcessor
+    public class CSharpAvatar : ISyntaxProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/>.

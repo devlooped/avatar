@@ -87,5 +87,19 @@ namespace Avatars.CodeAnalysis
             DiagnosticSeverity.Error,
             true,
             Strings.BaseTypeNoCtor.Description);
+
+        /// <summary>
+        /// Diagnostic reported whenever the specified generator attribute to use to flag 
+        /// avatar-generating invocations cannot be located in the current compilation for some 
+        /// reason.
+        /// </summary>
+        public static DiagnosticDescriptor GeneratorAttributeNotFound { get; } = new DiagnosticDescriptor(
+            "AVTR007",
+            Strings.GeneratorAttributeNotFound.Title,
+            Resources.GeneratorAttributeNotFound_Message,
+            "Build",
+            DiagnosticSeverity.Error,
+            true,
+            Strings.GeneratorAttributeNotFound.Description);
     }
 }

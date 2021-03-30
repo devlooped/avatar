@@ -12,7 +12,7 @@ namespace Avatars.Processors
     /// <summary>
     /// Adds a set of default imports to a document.
     /// </summary>
-    public class DefaultImports : IAvatarProcessor
+    public class DefaultImports : ISyntaxProcessor
     {
         // These namespaces are used by the default avatar code and are always imported.
         static readonly string[] DefaultNamespaces =

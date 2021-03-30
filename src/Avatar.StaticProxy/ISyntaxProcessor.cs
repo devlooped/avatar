@@ -2,7 +2,11 @@
 
 namespace Avatars
 {
-    public interface IAvatarProcessor
+    /// <summary>
+    /// A processor of <see cref="SyntaxNode"/> that can alter the resulting 
+    /// syntax in arbitrary ways.
+    /// </summary>
+    public interface ISyntaxProcessor
     {
         /// <summary>
         /// Gets the language supported by the processor.
@@ -10,7 +14,7 @@ namespace Avatars
         string Language { get; }
 
         /// <summary>
-        /// Gets the phase at which an <see cref="IAvatarProcessor"/> acts.
+        /// Gets the phase at which an <see cref="ISyntaxProcessor"/> acts.
         /// </summary>
         ProcessorPhase Phase { get; }
 
