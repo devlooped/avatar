@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Avatars.UnitTests
 {
-    public class ST004_EnumType : DiagnosticVerifier
+    public class AVTR004_EnumType : DiagnosticVerifier
     {
         protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new ValidateTypesAnalyzer();
 
@@ -16,7 +16,7 @@ namespace Avatars.UnitTests
             VerifyCSharpDiagnostic(
                 new[]
                 {
-                    File.ReadAllText(ThisAssembly.Constants.CodeAnalysis.ST004.Diagnostic.MultipleEnums),
+                    File.ReadAllText(ThisAssembly.Constants.CodeAnalysis.AVTR004.Diagnostic.MultipleEnums),
                     File.ReadAllText(@"Avatar/Avatar.cs"),
                 },
                 new[]
@@ -43,7 +43,7 @@ namespace Avatars.UnitTests
         }
 
         [Theory]
-        [InlineData(ThisAssembly.Constants.CodeAnalysis.ST004.Diagnostic.PublicClass, 9, 26)]
+        [InlineData(ThisAssembly.Constants.CodeAnalysis.AVTR004.Diagnostic.PublicClass, 9, 26)]
         public void Verify_Diagnostic(string path, int line, int column)
         {
             var expected = new DiagnosticResult

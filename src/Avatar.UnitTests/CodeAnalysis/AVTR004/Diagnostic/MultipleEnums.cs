@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Avatars.UnitTests.CodeAnalysis.ST004.Diagnostic
+namespace Avatars.UnitTests.CodeAnalysis.AVTR004.Diagnostic
 {
     public partial class MultipleEnums
     {

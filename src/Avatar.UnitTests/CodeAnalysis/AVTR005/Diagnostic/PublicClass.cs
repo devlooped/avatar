@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Avatars.UnitTests.CodeAnalysis.ST005.Diagnostic
+namespace Avatars.UnitTests.CodeAnalysis.AVTR005.Diagnostic
 {
     public partial class MyClass
     {

@@ -6,18 +6,18 @@ using Xunit;
 
 namespace Avatars.UnitTests
 {
-    public class ST001_BaseTypeNotFist : DiagnosticVerifier
+    public class AVTR002_DuplicateBaseType : DiagnosticVerifier
     {
         protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new ValidateTypesAnalyzer();
 
         [Theory]
-        [InlineData(ThisAssembly.Constants.CodeAnalysis.ST001.Diagnostic.PublicClass, 9, 26)]
+        [InlineData(ThisAssembly.Constants.CodeAnalysis.AVTR002.Diagnostic.PublicClass, 9, 26)]
         public void Verify_Diagnostic(string path, int line, int column)
         {
             var expected = new DiagnosticResult
             {
-                Id = AvatarDiagnostics.BaseTypeNotFirst.Id,
-                Message = string.Format(Resources.BaseTypeNotFirst_Message, "BaseType"),
+                Id = AvatarDiagnostics.DuplicateBaseType.Id,
+                Message = Resources.DuplicateBaseType_Message,
                 Severity = DiagnosticSeverity.Error,
                 Locations = new[] {
                     new DiagnosticResultLocation("Test0.cs", line, column)
