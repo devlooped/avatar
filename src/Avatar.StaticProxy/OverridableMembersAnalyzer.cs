@@ -44,7 +44,6 @@ namespace Avatars
         {
             context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
             context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
         }
 
@@ -53,7 +52,8 @@ namespace Avatars
             var overridable = RoslynInternals.GetOverridableMembers((INamedTypeSymbol)context.Symbol, context.CancellationToken);
 
             if (context.Compilation.Language == LanguageNames.VisualBasic)
-                overridable = overridable.Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
+                overridable = overridable
+                    .Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
                     .Where(x => x.Kind != SymbolKind.Event)
                     .ToImmutableArray();

@@ -46,19 +46,22 @@ namespace Avatars
         public static ElementAccessExpressionSyntax WithArgumentList(this ElementAccessExpressionSyntax indexer, IEnumerable<ArgumentSyntax> arguments)
             => indexer.WithArgumentList(BracketedArgumentList(SeparatedList(arguments)));
 
-        public static ConstructorDeclarationSyntax WithSemicolon(this ConstructorDeclarationSyntax syntax)
-            => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        public static UsingDirectiveSyntax WithSemicolon(this UsingDirectiveSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
 
-        public static PropertyDeclarationSyntax WithSemicolon(this PropertyDeclarationSyntax syntax)
-            => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        public static ConstructorDeclarationSyntax WithSemicolon(this ConstructorDeclarationSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
 
-        public static AccessorDeclarationSyntax WithSemicolon(this AccessorDeclarationSyntax syntax)
-            => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        public static PropertyDeclarationSyntax WithSemicolon(this PropertyDeclarationSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
 
-        public static IndexerDeclarationSyntax WithSemicolon(this IndexerDeclarationSyntax syntax)
-            => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        public static AccessorDeclarationSyntax WithSemicolon(this AccessorDeclarationSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
 
-        public static MethodDeclarationSyntax WithSemicolon(this MethodDeclarationSyntax syntax)
-            => syntax.WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        public static IndexerDeclarationSyntax WithSemicolon(this IndexerDeclarationSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
+
+        public static MethodDeclarationSyntax WithSemicolon(this MethodDeclarationSyntax syntax, params SyntaxTrivia[] trailingTrivia)
+            => syntax.WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(trailingTrivia)));
     }
 }

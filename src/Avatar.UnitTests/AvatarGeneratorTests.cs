@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -149,6 +150,41 @@ namespace UnitTests
         }
 
         [Fact]
+        public void GenerateDefaultImplementationWithAllConstructors()
+        {
+            var code = @"
+using System;
+using Avatars;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do() => Avatar.Of<BaseTypeMultipleCtors>();
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code, new[]
+            {
+@"
+    public class BaseTypeMultipleCtors
+    {
+        internal BaseTypeMultipleCtors(string name, int value) { }
+        protected BaseTypeMultipleCtors(string name) { }
+        protected internal BaseTypeMultipleCtors(int value) { }
+        public BaseTypeMultipleCtors(bool value) { }
+        private BaseTypeMultipleCtors() { }
+    }
+"
+            });
+
+            Assert.Empty(diagnostics);
+            var assembly = compilation.Emit(true);
+
+            var type = assembly.GetType("BaseTypeMultipleCtorsNotImplemented", true);
+        }
+
+        [Fact]
         public void SucceedsIfInternalConstructor()
         {
             var code = @"
@@ -206,7 +242,7 @@ public class BaseTypeInternalCtor
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, string[] additionalSources = null, [CallerMemberName] string? test = null)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(source, path: test + ".cs");
+            var syntaxTree = CSharpSyntaxTree.ParseText(source, path: test + ".cs", encoding: Encoding.UTF8);
 
             var references = new List<MetadataReference>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -217,12 +253,12 @@ public class BaseTypeInternalCtor
             }
 
             var compilation = CSharpCompilation.Create(test, (additionalSources ?? Array.Empty<string>())
-                .Select((code, index) => CSharpSyntaxTree.ParseText(code, path: $"AdditionalSource{index}.cs"))
+                .Select((code, index) => CSharpSyntaxTree.ParseText(code, path: $"AdditionalSource{index}.cs", encoding: Encoding.UTF8))
                 .Concat(new SyntaxTree[]
                 {
                     syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs"),
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs"),
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.cs"), path: "Avatar.cs", encoding: Encoding.UTF8),
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Avatar/Avatar.StaticFactory.cs"), path: "Avatar.StaticFactory.cs", encoding: Encoding.UTF8),
                 }), references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             var diagnostics = compilation.GetDiagnostics().RemoveAll(d => d.Severity == DiagnosticSeverity.Hidden || d.Severity == DiagnosticSeverity.Info);

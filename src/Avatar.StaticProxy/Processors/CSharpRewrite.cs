@@ -309,6 +309,7 @@ namespace Avatars.Processors
                     {
                         method = method
                             .WithExpressionBody(null)
+                            .WithSemicolonToken(Token(SyntaxKind.None))
                             .WithBody(body.AddStatements(
                                 // return ref _result.AsRef<T>().Value;
                                 ReturnStatement(
@@ -323,6 +324,7 @@ namespace Avatars.Processors
                     {
                         method = method
                             .WithExpressionBody(null)
+                            .WithSemicolonToken(Token(SyntaxKind.None))
                             .WithBody(body.AddStatements(
                                 // return (T)_result.ReturnValue;
                                 ReturnStatement(
@@ -338,6 +340,7 @@ namespace Avatars.Processors
                     {
                         method = method
                             .WithExpressionBody(null)
+                            .WithSemicolonToken(Token(SyntaxKind.None))
                             .WithBody(body);
                     }
                 }

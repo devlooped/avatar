@@ -62,7 +62,7 @@ namespace Avatars.Processors
                         .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed);
 
                     if (node.Members.Count > 0)
-                        node = node.InsertNodesAfter(node.Members.First(), new[] { behaviors });
+                        node = node.InsertNodesBefore(node.Members.First(), new[] { behaviors });
                     else
                         node = node.AddMembers(behaviors);
                 }

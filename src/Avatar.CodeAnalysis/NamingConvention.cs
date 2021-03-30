@@ -8,17 +8,17 @@ namespace Avatars.CodeAnalysis
     /// <summary>
     /// Naming conventions used for analyzers, code fixes and code generation.
     /// </summary>
-    public class NamingConvention
+    public record NamingConvention
     {
         /// <summary>
         /// The root or base namespace of the generated code.
         /// </summary>
-        public virtual string RootNamespace => AvatarNaming.DefaultRootNamespace;
+        public string RootNamespace { get; init; } = AvatarNaming.DefaultRootNamespace;
 
         /// <summary>
         /// Suffix appended to the type name, i.e. <c>IFooAvatar</c>.
         /// </summary>
-        public virtual string NameSuffix => AvatarNaming.DefaultSuffix;
+        public string NameSuffix { get; init; } = AvatarNaming.DefaultSuffix;
 
         /// <summary>
         /// The type name to generate for the given (optional) base type and implemented interfaces.

@@ -22,7 +22,7 @@ namespace Avatars.Processors
         public ProcessorPhase Phase => ProcessorPhase.Fixup;
 
         /// <summary>
-        /// Adds the <c>auto-generated</c> file header to the document.
+        /// Adds the #nullable and #warning disable pragmas.
         /// </summary>
         public SyntaxNode Process(SyntaxNode syntax, ProcessorContext context)
         {

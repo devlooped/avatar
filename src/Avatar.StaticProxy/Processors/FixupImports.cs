@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -36,7 +37,19 @@ namespace Avatars.Processors
             return unit.WithUsings(
                 List(
                     unit.Usings
+                        .Distinct(UsingEqualityComparer.Default)
                         .OrderBy(x => x.Name.ToString())));
+        }
+
+        class UsingEqualityComparer : IEqualityComparer<UsingDirectiveSyntax>
+        {
+            public static IEqualityComparer<UsingDirectiveSyntax> Default { get; } = new UsingEqualityComparer();
+
+            UsingEqualityComparer() { }
+
+            public bool Equals(UsingDirectiveSyntax? x, UsingDirectiveSyntax? y) => x?.Name == y?.Name;
+
+            public int GetHashCode(UsingDirectiveSyntax obj) => obj.Name.GetHashCode();
         }
     }
 }

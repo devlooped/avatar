@@ -91,16 +91,18 @@ namespace Avatars.Sample
         [CompilerGenerated]
         public override event EventHandler TurnedOn
         {
-            add => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), (m, n) =>
-            {
-                base.TurnedOn += value;
-                return m.CreateReturn();
-            }, value));
-            remove => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod(), (m, n) =>
-            {
-                base.TurnedOn -= value;
-                return m.CreateReturn();
-            }, value));
+            add => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
+            //, (m, n) =>
+            //{
+            //    base.TurnedOn += value;
+            //    return m.CreateReturn();
+            //}, value));
+            remove => pipeline.Execute(MethodInvocation.Create(this, MethodBase.GetCurrentMethod()));
+            //, (m, n) =>
+            //{
+            //    base.TurnedOn -= value;
+            //    return m.CreateReturn();
+            //}, value));
         }
     }
 }
