@@ -198,24 +198,25 @@ namespace Avatars
                 if (!configuredProcessors.TryGetValue(context.Language, out var supportedProcessors))
                     continue;
 
+                // For each processor, we pass in an updated context with the passed-in syntax tree added 
+                // to the compilation each time. This allows us to have an up-to-date compilation with the 
+                // changes from each processor, should semantic information be needed for anything in the 
+                // updated syntax trees at any point.
+
                 if (supportedProcessors.TryGetValue(ProcessorPhase.Prepare, out var prepares))
                     foreach (var processor in prepares)
-                        syntax = processor.Process(syntax, context);
+                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
 
                 if (supportedProcessors.TryGetValue(ProcessorPhase.Scaffold, out var scaffolds))
                 {
                     foreach (var processor in scaffolds)
-                        syntax = processor.Process(syntax, context);
+                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
                 }
                 else
                 {
                     // Default scaffolding we provide is based on Roslyn code actions
                     var document = (defaultScaffold ??= new AvatarScaffold(context)).ScaffoldAsync(name, syntax).Result;
                     syntax = document.GetSyntaxRootAsync(context.CancellationToken).Result!;
-                    // NOTE: if any subsequent processor needs semantic model from the syntax tree, 
-                    // we'd need to update the compilation from the context to the one containing it,
-                    // retrieved from the document's project compilation.
-                    context = context with { Compilation = document.Project.GetCompilationAsync(context.CancellationToken).Result! };
                 }
 
                 // After scaffold, we should have a type that has at least one public constructor
@@ -232,11 +233,11 @@ namespace Avatars
 
                 if (supportedProcessors.TryGetValue(ProcessorPhase.Rewrite, out var rewriters))
                     foreach (var processor in rewriters)
-                        syntax = processor.Process(syntax, context);
+                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
 
                 if (supportedProcessors.TryGetValue(ProcessorPhase.Fixup, out var fixups))
                     foreach (var processor in fixups)
-                        syntax = processor.Process(syntax, context);
+                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
 
                 var code = syntax.NormalizeWhitespace().ToFullString();
                 var shouldEmit = false;
