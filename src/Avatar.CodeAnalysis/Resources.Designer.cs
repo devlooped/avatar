@@ -169,6 +169,33 @@ namespace Avatars {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Specified generator attribute not found in compilation..
+        /// </summary>
+        internal static string GeneratorAttributeNotFound_Description {
+            get {
+                return ResourceManager.GetString("GeneratorAttributeNotFound_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified generator attribute &apos;{0}&apos; was not found in the current project compilation, so code generation cannot proceed..
+        /// </summary>
+        internal static string GeneratorAttributeNotFound_Message {
+            get {
+                return ResourceManager.GetString("GeneratorAttributeNotFound_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid generator attribute.
+        /// </summary>
+        internal static string GeneratorAttributeNotFound_Title {
+            get {
+                return ResourceManager.GetString("GeneratorAttributeNotFound_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used in avatars. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidAvatarTypes {

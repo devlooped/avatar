@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Avatars
 {
     /// <summary>
-    /// The context used when running <see cref="IAvatarProcessor"/> 
+    /// The context used when running <see cref="ISyntaxProcessor"/> 
     /// in the generation pipeline.
     /// </summary>
     public record ProcessorContext
@@ -26,23 +26,19 @@ namespace Avatars
         /// </summary>
         /// <param name="context">Context provided to a source generator</param>
         /// <param name="naming">Naming convention to apply to generated types.</param>
-        /// <param name="generatorAttribute">The attribute used to flag generic methods that 
-        /// should trigger avatar generation.</param>
-        public ProcessorContext(GeneratorExecutionContext context, NamingConvention naming, INamedTypeSymbol generatorAttribute)
+        public ProcessorContext(GeneratorExecutionContext context, NamingConvention naming)
         {
             this.context = context;
             NamingConvention = naming;
-            GeneratorAttribute = generatorAttribute;
             Compilation = context.Compilation;
             ParseOptions = context.ParseOptions;
             CancellationToken = context.CancellationToken;
         }
 
-        internal ProcessorContext(NamingConvention naming, INamedTypeSymbol generatorAttribute, Compilation compilation, ParseOptions parseOptions, CancellationToken cancellationToken = default)
+        internal ProcessorContext(NamingConvention naming, Compilation compilation, ParseOptions parseOptions, CancellationToken cancellationToken = default)
         {
             context = null;
             NamingConvention = naming;
-            GeneratorAttribute = generatorAttribute;
             Compilation = compilation;
             ParseOptions = parseOptions;
             CancellationToken = cancellationToken;
@@ -79,12 +75,6 @@ namespace Avatars
         /// A <see cref="CancellationToken"/> that can be checked to see if the generation should be cancelled.
         /// </summary>
         public CancellationToken CancellationToken { get; }
-
-        /// <summary>
-        /// The attribute used to flag generic methods that 
-        /// should trigger avatar generation.
-        /// </summary>
-        public INamedTypeSymbol GeneratorAttribute { get; init; }
 
         /// <summary>
         /// The language being generated.

@@ -8,7 +8,7 @@ namespace Avatars.Processors
     /// <summary>
     /// Sorts imports.
     /// </summary>
-    public class FixupImports : IAvatarProcessor
+    public class FixupImports : ISyntaxProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.

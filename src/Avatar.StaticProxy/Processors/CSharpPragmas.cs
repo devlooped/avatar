@@ -9,7 +9,7 @@ namespace Avatars.Processors
     /// Disables all nullable warnings since project may or may not 
     /// have nullable annotations enabled.
     /// </summary>
-    public class CSharpPragmas : IAvatarProcessor
+    public class CSharpPragmas : ISyntaxProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.

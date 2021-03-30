@@ -15,7 +15,7 @@ namespace Avatars.Processors
     /// the <see cref="BehaviorPipeline"/> field added to the 
     /// class by the <see cref="CSharpAvatar"/>.
     /// </summary>
-    public class CSharpRewrite : IAvatarProcessor
+    public class CSharpRewrite : ISyntaxProcessor
     {
         /// <summary>
         /// Applies to <see cref="LanguageNames.CSharp"/> only.
