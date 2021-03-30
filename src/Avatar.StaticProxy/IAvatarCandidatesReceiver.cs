@@ -17,6 +17,11 @@ namespace Avatars
         /// (interface or base class) plus any extra interfaces to implement for it. 
         /// </summary>
         /// <param name="context">The current generation context, from which the compilation and symbols can be resolved.</param>
-        IEnumerable<INamedTypeSymbol[]> GetCandidates(ProcessorContext context);
+        /// <returns>
+        /// A tuple of the <see cref="SyntaxNode"/> that caused the nomination of a candidate 
+        /// for avatar generation, and the array of <see cref="INamedTypeSymbol"/> symbols in 
+        /// use at that location.
+        /// </returns>
+        IEnumerable<(SyntaxNode source, INamedTypeSymbol[] candidate)> GetCandidates(ProcessorContext context);
     }
 }

@@ -186,7 +186,7 @@ namespace Avatars
             AvatarScaffold? defaultScaffold = null;
             var avatars = new HashSet<string>();
 
-            foreach (var candidate in context.SyntaxReceivers
+            foreach (var (source, candidate) in context.SyntaxReceivers
                 .OfType<IAvatarCandidatesReceiver>()
                 .SelectMany(receiver => receiver.GetCandidates(context)).ToArray())
             {
@@ -216,6 +216,18 @@ namespace Avatars
                     // we'd need to update the compilation from the context to the one containing it,
                     // retrieved from the document's project compilation.
                     context = context with { Compilation = document.Project.GetCompilationAsync(context.CancellationToken).Result! };
+                }
+
+                // After scaffold, we should have a type that has at least one public constructor
+                // Ensure at least one ctor.
+                if (!syntax.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Any())
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            AvatarDiagnostics.BaseTypeNoContructor,
+                            source.GetLocation(),
+                            candidate[0].Name));
+                    continue;
                 }
 
                 if (supportedProcessors.TryGetValue(ProcessorPhase.Rewrite, out var rewriters))
@@ -370,7 +382,7 @@ namespace Avatars
         {
             readonly List<(InvocationExpressionSyntax, GenericNameSyntax)> invocations = new();
 
-            public IEnumerable<INamedTypeSymbol[]> GetCandidates(ProcessorContext context)
+            public IEnumerable<(SyntaxNode source, INamedTypeSymbol[] candidate)> GetCandidates(ProcessorContext context)
             {
                 foreach (var (invocation, genericName) in invocations)
                 {
@@ -390,7 +402,7 @@ namespace Avatars
                     if (!typeArgs.All(CanGenerateFor))
                         continue;
 
-                    yield return typeArgs.Cast<INamedTypeSymbol>().ToArray();
+                    yield return (invocation, typeArgs.Cast<INamedTypeSymbol>().ToArray());
                 }
             }
 

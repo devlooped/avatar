@@ -145,7 +145,7 @@
     <value>Nested types are not supported yet.</value>
   </data>
   <data name="NestedType_Message" xml:space="preserve">
-    <value>Cannot generate code for nested types yet: {0}</value>
+    <value>Cannot generate code for nested types yet: {0}.</value>
   </data>
   <data name="NestedType_Title" xml:space="preserve">
     <value>Nested types not supported</value>
@@ -154,7 +154,7 @@
     <value>Types containing members that use pointer types are not supported yet.</value>
   </data>
   <data name="PointerMember_Message" xml:space="preserve">
-    <value>Cannot generate code for types containing members that use pointer types yet: {0}</value>
+    <value>Cannot generate code for types containing members that use pointer types yet: {0}.</value>
   </data>
   <data name="PointerMember_Title" xml:space="preserve">
     <value>Types using pointer parameters are not supported</value>
@@ -163,7 +163,7 @@
     <value>Cannot specify sealed base type.</value>
   </data>
   <data name="SealedBaseType_Message" xml:space="preserve">
-    <value>Cannot specify sealed base type '{0}'..</value>
+    <value>Cannot specify sealed base type '{0}'.</value>
   </data>
   <data name="SealedBaseType_Title" xml:space="preserve">
     <value>Invalid sealed base type</value>
@@ -178,9 +178,18 @@
     <value>Cannot specify an enum base type.</value>
   </data>
   <data name="EnumType_Message" xml:space="preserve">
-    <value>Cannot specify enum type '{0}'..</value>
+    <value>Cannot specify enum type '{0}'.</value>
   </data>
   <data name="EnumType_Title" xml:space="preserve">
     <value>Invalid enum base type</value>
+  </data>
+  <data name="BaseTypeNoCtor_Description" xml:space="preserve">
+    <value>Base type has no accessible constructors.</value>
+  </data>
+  <data name="BaseTypeNoCtor_Message" xml:space="preserve">
+    <value>Cannot specify base type '{0}' because it has no public or protected constructors.</value>
+  </data>
+  <data name="BaseTypeNoCtor_Title" xml:space="preserve">
+    <value>Invalid base type</value>
   </data>
 </root>
