@@ -6,18 +6,18 @@ using Xunit;
 
 namespace Avatars.UnitTests
 {
-    public class ST003_SealedBaseType : DiagnosticVerifier
+    public class AVTR005_PointerMember : DiagnosticVerifier
     {
-        protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new ValidateTypesAnalyzer();
+        protected override DiagnosticAnalyzer? GetCSharpDiagnosticAnalyzer() => new PointerMemberAnalyzer();
 
         [Theory]
-        [InlineData(ThisAssembly.Constants.CodeAnalysis.ST003.Diagnostic.PublicClass, 9, 26)]
+        [InlineData(ThisAssembly.Constants.CodeAnalysis.AVTR005.Diagnostic.PublicClass, 9, 26)]
         public void Verify_Diagnostic(string path, int line, int column)
         {
             var expected = new DiagnosticResult
             {
-                Id = AvatarDiagnostics.SealedBaseType.Id,
-                Message = string.Format(Resources.SealedBaseType_Message, "BaseType"),
+                Id = AvatarDiagnostics.PointerMember.Id,
+                Message = string.Format(Resources.PointerMember_Message, "IPointers"),
                 Severity = DiagnosticSeverity.Error,
                 Locations = new[] {
                     new DiagnosticResultLocation("Test0.cs", line, column)

@@ -16,9 +16,9 @@ namespace Avatars
     public class OverridableMembersAnalyzer : DiagnosticAnalyzer
     {
         /// <summary>
-        /// The diagnostics identifier exposed by this analyzer, <c>ST999</c>.
+        /// The diagnostics identifier exposed by this analyzer, <c>AVTR999</c>.
         /// </summary>
-        public const string DiagnosticId = "ST999";
+        public const string DiagnosticId = "AVTR999";
         /// <summary>
         /// The category for the diagnostics reported by this analyzer, <c>Build</c>.
         /// </summary>

@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace Avatars.UnitTests.CodeAnalysis.ST001.Diagnostic
+namespace Avatars.UnitTests.CodeAnalysis.AVTR003.Diagnostic
 {
     public partial class MyClass
     {
         public MyClass()
         {
-            var avatar = Avatar.Of<IDisposable, BaseType>();
+            var avatar = Avatar.Of<BaseType>();
 
             Console.WriteLine(avatar);
         }
     }
 
-    public class BaseType { }
+    public sealed class BaseType { }
 }

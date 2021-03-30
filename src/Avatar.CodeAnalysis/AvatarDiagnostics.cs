@@ -15,7 +15,7 @@ namespace Avatars.CodeAnalysis
         /// the compiler requirement of having the base class as the first type too.
         /// </summary>
         public static DiagnosticDescriptor BaseTypeNotFirst { get; } = new DiagnosticDescriptor(
-            "ST001",
+            "AVTR001",
             nameof(Strings.BaseTypeNotFirst.Title),
             Resources.BaseTypeNotFirst_Message,
             "Build",
@@ -28,7 +28,7 @@ namespace Avatars.CodeAnalysis
         /// <see cref="AvatarGeneratorAttribute"/>-annotated method is duplicated.
         /// </summary>
         public static DiagnosticDescriptor DuplicateBaseType { get; } = new DiagnosticDescriptor(
-            "ST002",
+            "AVTR002",
             Strings.DuplicateBaseType.Title,
             Resources.DuplicateBaseType_Message,
             "Build",
@@ -41,7 +41,7 @@ namespace Avatars.CodeAnalysis
         /// <see cref="AvatarGeneratorAttribute"/>-annotated method is sealed.
         /// </summary>
         public static DiagnosticDescriptor SealedBaseType { get; } = new DiagnosticDescriptor(
-            "ST003",
+            "AVTR003",
             Strings.SealedBaseType.Title,
             Resources.SealedBaseType_Message,
             "Build",
@@ -54,7 +54,7 @@ namespace Avatars.CodeAnalysis
         /// <see cref="AvatarGeneratorAttribute"/>-annotated method is an enum.
         /// </summary>
         public static DiagnosticDescriptor EnumType { get; } = new DiagnosticDescriptor(
-            "ST004",
+            "AVTR004",
             Strings.EnumType.Title,
             Resources.EnumType_Message,
             "Build",
@@ -67,7 +67,7 @@ namespace Avatars.CodeAnalysis
         /// pointer type arguments, which are unsupported at the moment.
         /// </summary>
         public static DiagnosticDescriptor PointerMember { get; } = new DiagnosticDescriptor(
-            "ST005",
+            "AVTR005",
             Strings.PointerMember.Title,
             Resources.PointerMember_Message,
             "Build",
@@ -80,7 +80,7 @@ namespace Avatars.CodeAnalysis
         /// <see cref="AvatarGeneratorAttribute"/>-annotated method is sealed.
         /// </summary>
         public static DiagnosticDescriptor BaseTypeNoContructor { get; } = new DiagnosticDescriptor(
-            "ST006",
+            "AVTR006",
             Strings.BaseTypeNoCtor.Title,
             Resources.BaseTypeNoCtor_Message,
             "Build",
