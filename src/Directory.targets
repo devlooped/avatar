@@ -1,5 +1,10 @@
 <Project>
 
+  <ItemGroup Condition="'$(EnableRexCodeGenerator)' == 'true'">
+    <!-- Restore resource file generation since it's needed with as-is strings for diagnostics -->
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+  </ItemGroup>
+
   <Target Name="Test" Condition="@(PackageReference -> WithMetadataValue('Identity', 'xunit')) != ''" DependsOnTargets="GetTargetPath">
     <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
     <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />

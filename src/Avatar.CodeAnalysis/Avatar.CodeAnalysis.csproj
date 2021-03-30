@@ -5,6 +5,7 @@
     <IsPackable>true</IsPackable>
     <!-- When the packaging project references it for embedding -->
     <PackFolder Condition="'$(IsPackable)' != 'true'">analyzers\dotnet</PackFolder>
+    <EnableRexCodeGenerator>true</EnableRexCodeGenerator>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,10 +21,21 @@
   <ItemGroup>
     <!-- When not packed standalone, include the build targets/sources too -->
     <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" Condition="'$(IsPackable)' != 'true'" />
-    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator">
+    <InternalsVisibleTo Include="Avatar.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <InternalsVisibleTo Include="Avatar.UnitTests" />
   </ItemGroup>
 
 </Project>
