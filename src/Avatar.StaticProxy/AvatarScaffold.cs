@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avatars.CodeActions;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Avatars
 {
@@ -64,13 +66,17 @@ namespace Avatars
 
         public void Dispose() => workspace?.Dispose();
 
-        public async Task<Document> ScaffoldAsync(string name, SyntaxNode syntax)
+        public async Task<Document> ScaffoldAsync(SyntaxNode syntax, NamingConvention naming)
         {
+            var name = syntax.DescendantNodes().OfType<ClassDeclarationSyntax>()
+                .Select(x => x.Identifier.ToString())
+                .FirstOrDefault() ?? "Avatar";
+
             var document = project.AddDocument(nameof(AvatarScaffold),
                 // NOTE: if we don't force re-parsing in the context of our own 
                 // project, nested types can't be resolved, for some reason :/
                 syntax.NormalizeWhitespace().ToFullString(),
-                folders: context.NamingConvention.RootNamespace.Split('.'),
+                folders: naming.RootNamespace.Split('.'),
                 filePath: name);
 
             foreach (var refactoring in refactorings)

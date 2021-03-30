@@ -25,9 +25,6 @@ namespace Avatars
     {
         ImmutableArray<Func<ISyntaxReceiver>> receivers = ImmutableArray<Func<ISyntaxReceiver>>.Empty;
 
-        // Configured processors, by language, then phase.
-        Dictionary<string, Dictionary<ProcessorPhase, ISyntaxProcessor[]>>? configuredProcessors = null;
-
         /// <summary>
         /// Default naming convention used when generating documents, unless overridden
         /// via the corresponding constructor argument.
@@ -125,7 +122,7 @@ namespace Avatars
                 return;
             }
 
-            OnExecute(new ProcessorContext(context, NamingConvention));
+            OnExecute(new ProcessorContext(context), NamingConvention);
         }
 
         /// <inheritdoc/>
@@ -173,59 +170,27 @@ namespace Avatars
         public AvatarGenerator WithSyntaxReceiver(Func<ISyntaxReceiver> receiverFactory)
             => this with { receivers = receivers.Add(receiverFactory) };
 
-        void OnExecute(ProcessorContext context)
+        void OnExecute(ProcessorContext context, NamingConvention naming)
         {
-            // Once configured, the dictionary is immutable.
-            configuredProcessors ??= Processors
-                .GroupBy(processor => processor.Language)
-                .ToDictionary(
-                    bylang => bylang.Key,
-                    bylang => bylang
-                        .GroupBy(proclang => proclang.Phase)
-                        .ToDictionary(
-                            byphase => byphase.Key,
-                            byphase => byphase.Select(proclang => proclang).ToArray()));
-
+            var driver = new SyntaxProcessorDriver(Processors.Add(new RoslynInternalScaffold(context, naming)));
             var factory = AvatarSyntaxFactory.CreateFactory(context.Language);
-            AvatarScaffold? defaultScaffold = null;
             var avatars = new HashSet<string>();
 
             foreach (var (source, candidate) in context.SyntaxReceivers
                 .OfType<IAvatarCandidatesReceiver>()
                 .SelectMany(receiver => receiver.GetCandidates(context)).ToArray())
             {
-                var name = context.NamingConvention.GetName(candidate);
+                var name = naming.GetName(candidate);
                 if (avatars.Contains(name))
                     continue;
 
-                var syntax = factory.CreateSyntax(context.NamingConvention, candidate);
-                if (!configuredProcessors.TryGetValue(context.Language, out var supportedProcessors))
+                var syntax = factory.CreateSyntax(naming, candidate);
+                var updated = driver.Process(syntax, context);
+                if (syntax.IsEquivalentTo(updated))
                     continue;
 
-                // For each processor, we pass in an updated context with the passed-in syntax tree added 
-                // to the compilation each time. This allows us to have an up-to-date compilation with the 
-                // changes from each processor, should semantic information be needed for anything in the 
-                // updated syntax trees at any point.
-
-                if (supportedProcessors.TryGetValue(ProcessorPhase.Prepare, out var prepares))
-                    foreach (var processor in prepares)
-                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
-
-                if (supportedProcessors.TryGetValue(ProcessorPhase.Scaffold, out var scaffolds))
-                {
-                    foreach (var processor in scaffolds)
-                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
-                }
-                else
-                {
-                    // Default scaffolding we provide is based on Roslyn code actions
-                    var document = (defaultScaffold ??= new AvatarScaffold(context)).ScaffoldAsync(name, syntax).Result;
-                    syntax = document.GetSyntaxRootAsync(context.CancellationToken).Result!;
-                }
-
-                // After scaffold, we should have a type that has at least one public constructor
-                // Ensure at least one ctor.
-                if (!syntax.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Any())
+                // At this point, we should have a type that has at least one public constructor
+                if (!updated.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Any())
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -235,15 +200,7 @@ namespace Avatars
                     continue;
                 }
 
-                if (supportedProcessors.TryGetValue(ProcessorPhase.Rewrite, out var rewriters))
-                    foreach (var processor in rewriters)
-                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
-
-                if (supportedProcessors.TryGetValue(ProcessorPhase.Fixup, out var fixups))
-                    foreach (var processor in fixups)
-                        syntax = processor.Process(syntax, context with { Compilation = context.Compilation.AddSyntaxTrees(syntax.SyntaxTree) });
-
-                var code = syntax.NormalizeWhitespace().ToFullString();
+                var code = updated.NormalizeWhitespace().ToFullString();
                 var shouldEmit = false;
 
                 // Additional pretty-printing when emitting generated files, improves whitespace handling for C#
@@ -254,9 +211,9 @@ namespace Avatars
                     // the proper initialization of shouldEmit too, regardless of language
                     context.Language == LanguageNames.CSharp)
                 {
-                    syntax = CSharpSyntaxTree.ParseText(code, (CSharpParseOptions)context.ParseOptions).GetRoot();
-                    syntax = new CSharpFormatter().Visit(syntax);
-                    code = syntax.GetText().ToString();
+                    updated = CSharpSyntaxTree.ParseText(code, (CSharpParseOptions)context.ParseOptions).GetRoot();
+                    updated = new CSharpFormatter().Visit(updated);
+                    code = updated.GetText().ToString();
                 }
 
                 avatars.Add(name);

@@ -25,20 +25,17 @@ namespace Avatars
         /// to generated types.
         /// </summary>
         /// <param name="context">Context provided to a source generator</param>
-        /// <param name="naming">Naming convention to apply to generated types.</param>
-        public ProcessorContext(GeneratorExecutionContext context, NamingConvention naming)
+        public ProcessorContext(GeneratorExecutionContext context)
         {
             this.context = context;
-            NamingConvention = naming;
             Compilation = context.Compilation;
             ParseOptions = context.ParseOptions;
             CancellationToken = context.CancellationToken;
         }
 
-        internal ProcessorContext(NamingConvention naming, Compilation compilation, ParseOptions parseOptions, CancellationToken cancellationToken = default)
+        internal ProcessorContext(Compilation compilation, ParseOptions parseOptions, CancellationToken cancellationToken = default)
         {
             context = null;
-            NamingConvention = naming;
             Compilation = compilation;
             ParseOptions = parseOptions;
             CancellationToken = cancellationToken;
@@ -80,11 +77,6 @@ namespace Avatars
         /// The language being generated.
         /// </summary>
         public string Language => LanguageNames.CSharp; // TODO: VB
-
-        /// <summary>
-        /// The naming convention applied for code generation.
-        /// </summary>
-        public NamingConvention NamingConvention { get; init; }
 
         /// <summary>
         /// Gets access to the <see cref="ISyntaxReceiver"/>s registered via 
