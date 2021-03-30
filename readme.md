@@ -18,7 +18,7 @@ Avatar is a modern interception library which implements the [proxy pattern](htt
 
 > NOTE: Avatar provides a fairly low-level API with just the essential building blocks on top of which higher-level APIs can be built, such as the upcoming Moq vNext API.
 
-## Requirements:
+## Requirements
 
 Avatar is a .NET Standard 2.0 library and runs on any runtime that supports that. 
 
