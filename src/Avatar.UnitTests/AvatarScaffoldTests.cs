@@ -23,7 +23,7 @@ namespace Avatars.UnitTests
             var (_, project) = CreateWorkspaceAndProject(LanguageNames.CSharp);
             var compilation = await project.GetCompilationAsync();
             var naming = new NamingConvention();
-            var context = new ProcessorContext(naming, compilation.GetTypeByMetadataName(typeof(AvatarGeneratorAttribute).FullName), compilation, project.ParseOptions);
+            var context = new ProcessorContext(compilation, project.ParseOptions);
             var scaffold = new AvatarScaffold(context);
 
             var types = new INamedTypeSymbol[]
@@ -33,7 +33,7 @@ namespace Avatars.UnitTests
             };
 
             var factory = AvatarSyntaxFactory.CreateFactory(LanguageNames.CSharp);
-            var document = await scaffold.ScaffoldAsync(naming.GetName(types), factory.CreateSyntax(naming, types));
+            var document = await scaffold.ScaffoldAsync(factory.CreateSyntax(naming, types), naming);
             var syntax = await document.GetSyntaxRootAsync();
             var code = syntax.NormalizeWhitespace().ToFullString();
 
