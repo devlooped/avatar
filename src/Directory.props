@@ -11,6 +11,8 @@
     
     <TypeNameFormatterInternal>true</TypeNameFormatterInternal>
     <PackageProjectUrl>https://clarius.org/avatar</PackageProjectUrl>
+
+    <DogfoodingVersion>42.42.42</DogfoodingVersion>
   </PropertyGroup>
 
   <!-- We need this in .props so it kicks-in before all the common.props defaulting -->
