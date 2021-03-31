@@ -55,7 +55,7 @@
     <PackageVersion Include="Microsoft.Build" Version="16.8.0" />
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="16.8.0" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.4.1" />
-    <PackageVersion Include="MSBuild.StructuredLogger" Version="2.1.303" />
+    <PackageVersion Include="MSBuild.StructuredLogger" Version="2.1.364" />
   </ItemGroup>
   
   <ItemGroup>
