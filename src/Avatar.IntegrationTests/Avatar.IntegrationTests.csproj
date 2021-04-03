@@ -26,7 +26,7 @@
 
     <PackageReference Include="Superpower" />
     <PackageReference Include="NuGet.Client" />
-    <PackageReference Include="NuGet.Protocol.Core.v3" />
+    <PackageReference Include="NuGet.Protocol" />
   </ItemGroup>
 
   <ItemGroup Label="Targets">
