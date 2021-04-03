@@ -48,7 +48,7 @@
     <PackageVersion Include="System.ComponentModel.Composition" Version="5.0.0" />
 
     <PackageVersion Include="NuGet.Client" Version="4.2.0" />
-    <PackageVersion Include="NuGet.Protocol.Core.v3" Version="4.2.0" />
+    <PackageVersion Include="NuGet.Protocol" Version="5.9.0" />
   </ItemGroup>
 
   <ItemGroup Label="MSBuild">

@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
+using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Protocol;
@@ -28,8 +30,9 @@ namespace Avatars.AcceptanceTests
             Assert.True(FindDotNet(out var dotnet), dotnet ?? "Could not find dotnet");
             output.WriteLine($"Located dotnet at '{dotnet}'");
 
-            var projectFile = Path.GetFullPath(Path.Combine("InternalAccess", $"test-{package}-{targetFramework}.csproj"))!;
+            var projectFile = Path.GetFullPath(Path.Combine("InternalAccess", package.Version.Version.ToString(3), targetFramework, $"test-{package}.csproj"))!;
             var outputType = targetFramework == "net472" ? "Exe" : "Library";
+            Directory.CreateDirectory(Path.GetDirectoryName(projectFile));
 
             File.WriteAllText(projectFile,
 $@"<Project Sdk='Microsoft.NET.Sdk'>
@@ -37,21 +40,24 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
         <OutputType>Exe</OutputType>
         <TargetFramework>{targetFramework}</TargetFramework>
         <UseAppHost>false</UseAppHost>
-        <OutputPath>bin/{package.Version}</OutputPath>
-        <IntermediateOutputPath>obj/{package.Version}</IntermediateOutputPath>
+        <OutputPath>bin</OutputPath>
+        <IntermediateOutputPath>obj</IntermediateOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include='{package.Id}' Version='{package.Version}' />
         <PackageReference Include='System.Composition' Version='5.0.0' />
     </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include='..\..\*.cs' />
+    </ItemGroup>
 </Project>");
 
             output.WriteLine($"Writing temp project to '{projectFile}'");
 
             var outDir = Path.Combine(Path.Combine(
-                Path.GetDirectoryName(projectFile) ?? "",
-                Path.Combine("pub", package.Version.ToString(), targetFramework)));
+                Path.GetDirectoryName(projectFile) ?? "", "pub"));
 
             var binlog = Path.ChangeExtension(projectFile, ".binlog");
             var process = Process.Start(new ProcessStartInfo(dotnet, $"publish {projectFile} -o {outDir} -bl:{binlog} --self-contained false")
@@ -148,14 +154,16 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             var source = new PackageSource("https://api.nuget.org/v3/index.json");
             var repo = new SourceRepository(source, providers);
             var resource = repo.GetResourceAsync<PackageMetadataResource>().Result;
-            var metadata = resource.GetMetadataAsync("Microsoft.CodeAnalysis", true, false, new Logger(null), CancellationToken.None).Result;
+            var metadata = resource.GetMetadataAsync("Microsoft.CodeAnalysis", true, false, new SourceCacheContext(), new Logger(null), CancellationToken.None).Result;
 
             // 3.8.0 is the first version we support that introduces source generators
             return metadata
-                .Select(m => m.Identity)
-                .Where(m => m.Version >= new NuGetVersion("3.8.0"))
+                .Select(x => x.Identity)
+                .Where(x => x.Version >= new NuGetVersion("3.8.0"))
+                .OrderByDescending(x => x.Version)
+                .GroupBy(x => x.Version.Version)
 #pragma warning disable CS0436 // Type conflicts with imported type
-                .Select(v => new object[] { v, ThisAssembly.Project.TargetFramework });
+                .Select(v => new object[] { v.First(), ThisAssembly.Project.TargetFramework });
 #pragma warning restore CS0436 // Type conflicts with imported type
         }
 
@@ -174,6 +182,18 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             public void LogErrorSummary(string data) => output?.WriteLine($"ERROR: {data}");
             public void LogSummary(string data) => output?.WriteLine($"SUMMARY: {data}");
             public void LogInformationSummary(string data) => output?.WriteLine($"SUMMARY: {data}");
+            public void Log(LogLevel level, string data) => output?.WriteLine($"{level.ToString().ToUpperInvariant()}: {data}");
+            public Task LogAsync(LogLevel level, string data)
+            {
+                output?.WriteLine($"{level.ToString().ToUpperInvariant()}: {data}");
+                return Task.CompletedTask;
+            }
+            public void Log(ILogMessage message) => output?.WriteLine($"{message.Level.ToString().ToUpperInvariant()}: {message.Message}");
+            public Task LogAsync(ILogMessage message)
+            {
+                output?.WriteLine($"{message.Level.ToString().ToUpperInvariant()}: {message.Message}");
+                return Task.CompletedTask;
+            }
         }
     }
 }
