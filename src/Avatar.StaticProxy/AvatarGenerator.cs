@@ -172,7 +172,11 @@ namespace Avatars
 
         void OnExecute(ProcessorContext context, NamingConvention naming)
         {
-            var driver = new SyntaxProcessorDriver(Processors.Add(new RoslynInternalScaffold(context, naming)));
+            var processors = Processors;
+            if (!processors.Any(x => x.Phase == ProcessorPhase.Scaffold))
+                processors = processors.Add(new RoslynInternalScaffold(context, naming));
+
+            var driver = new SyntaxProcessorDriver(processors);
             var factory = AvatarSyntaxFactory.CreateFactory(context.Language);
             var avatars = new HashSet<string>();
 
