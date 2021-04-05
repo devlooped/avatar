@@ -8,8 +8,8 @@ namespace Avatars.Processors
         readonly AvatarScaffold scaffold;
         readonly NamingConvention naming;
 
-        public RoslynInternalScaffold(ProcessorContext context, NamingConvention naming) 
-            => (scaffold, this.naming) 
+        public RoslynInternalScaffold(ProcessorContext context, NamingConvention naming)
+            => (scaffold, this.naming)
             = (new AvatarScaffold(context), naming);
 
         public string Language => LanguageNames.CSharp;
