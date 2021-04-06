@@ -24,9 +24,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{E1FA02D5-89FF-4C7D-80F1-F94117386637}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\changelog.yml = .github\workflows\changelog.yml
+		.github\workflows\dotnet-file.yml = .github\workflows\dotnet-file.yml
 		.github\workflows\pages.yml = .github\workflows\pages.yml
-		.github\workflows\release.yml = .github\workflows\release.yml
-		.github\workflows\tag.yml = .github\workflows\tag.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+		.github\workflows\release-artifacts.yml = .github\workflows\release-artifacts.yml
+		.github\workflows\release-notes.yml = .github\workflows\release-notes.yml
+		.github\workflows\sponsors.ps1 = .github\workflows\sponsors.ps1
+		.github\workflows\sponsors.yml = .github\workflows\sponsors.yml
+		.github\workflows\wait-status.ps1 = .github\workflows\wait-status.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avatar.CodeAnalysis", "src\Avatar.CodeAnalysis\Avatar.CodeAnalysis.csproj", "{6668E6C9-128B-4D2C-9041-C3EB573DC9A7}"

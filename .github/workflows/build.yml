@@ -106,6 +106,7 @@ jobs:
     defaults:
       run:
         shell: pwsh
+    needs: dotnet-format
     runs-on: windows-latest
 
     steps:
