@@ -6,6 +6,6 @@
     <RoslynVersion>3.8.0</RoslynVersion>
   </PropertyGroup>
 
-  <Import Project="Avatar.StaticProxy.targets"/>
+  <Import Project="Avatar.StaticProxy.targets" />
 
 </Project>
