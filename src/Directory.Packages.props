@@ -62,7 +62,7 @@
     <PackageVersion Include="TypeNameFormatter.Sources" Version="1.1.1" />
     <PackageVersion Include="Castle.Core" Version="4.4.1" />
     <PackageVersion Include="Superpower" Version="2.3.0" />
-    <PackageVersion Include="docfx.console" Version="2.56.7" />
+    <PackageVersion Include="docfx.console" Version="2.57.0" />
   </ItemGroup>
 
 </Project>
