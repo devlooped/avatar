@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
+        with: 
+          submodules: recursive
+          fetch-depth: 0
+
       - name: ✓ ensure format
         run: |
           dotnet tool update -g dotnet-format --version 5.0.*
@@ -50,21 +54,12 @@ jobs:
       - name: 📦 pack
         run: dotnet pack -m:1 -bl:pack.binlog -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER" -p:RepositoryBranch=${GITHUB_REF#refs/*/}
 
-      - name: 🔼 logs
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: |
-            **/*.binlog
-            logs/**/*.*
-      
       - name: 🔼 packages
         uses: actions/upload-artifact@v2
         with:
           name: bin
           path: bin/*.nupkg
-
+      
       # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
         env:
@@ -72,7 +67,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && env.SLEET_CONNECTION != ''
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
-          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
 
   acceptance:
     name: acceptance-${{ matrix.os }}
@@ -92,15 +87,8 @@ jobs:
           path: bin
 
       - name: 🧪 test
-        run: dotnet test -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER" -bl:acceptance.binlog
+        run: dotnet test -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
         working-directory: src/Acceptance
-
-      - name: 🔼 logs
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: '**/*.binlog'
 
   preview:
     defaults:
@@ -126,7 +114,6 @@ jobs:
         run: |
           iwr -useb get.scoop.sh | iex
           scoop install curl
-
       - name: 🔍 status for PR
         if: ${{ github.event.pull_request.head.sha }}
         run: echo "STATUS_SHA=${{ github.event.pull_request.head.sha }}" >> $env:GITHUB_ENV
@@ -156,12 +143,5 @@ jobs:
           path: bin
 
       - name: 🧪 test
-        run: msbuild -r -t:build,test -p:TargetFramework=net472 -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)" -bl:preview.binlog
+        run: msbuild -r -t:build,test -p:TargetFramework=net472 -p:VersionLabel="$($env:GITHUB_REF).$($env:GITHUB_RUN_NUMBER)"
         working-directory: src/Acceptance
-
-      - name: 🔼 logs
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: windows-latest
-          path: '**/*.binlog'
