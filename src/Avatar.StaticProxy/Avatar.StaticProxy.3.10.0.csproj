@@ -11,7 +11,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <RoslynVersion>3.10.0</RoslynVersion>
-    <RoslynLabel>-1.final</RoslynLabel>
+    <RoslynLabel>-3.final</RoslynLabel>
   </PropertyGroup>
 
   <Import Project="Avatar.StaticProxy.targets"/>
