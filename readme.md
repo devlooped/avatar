@@ -2,7 +2,7 @@
 
 Avatar is a modern interception library which implements the [proxy pattern](https://en.wikipedia.org/wiki/Proxy_pattern) and runs everywhere, even where run-time code generation (Reflection.Emit) is forbidden or limitted, like physical iOS devices and game consoles, through compile-time code generation. The proxy behavior is configured in code using what we call a *behavior pipeline*. 
 
-> *Avatars blend in with the Na'vi seamlessly, and you can control their behavior precisely by 'driving' them through a psionic link. Just like a [proxy](https://en.wikipedia.org/wiki/Proxy_pattern), with behavior driven through  code.*
+> *Avatars blend in with the Na'vi seamlessly, and you can control their behavior precisely by 'driving' them through a psionic link. Just like a [proxy](https://en.wikipedia.org/wiki/Proxy_pattern), with behavior driven through code.*
 
 ![Avatar Overloads](https://github.com/kzu/avatar/raw/main/docs/images/AvatarIncubation.png)
 
