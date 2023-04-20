@@ -6,12 +6,4 @@ updates:
 - package-ecosystem: nuget
   directory: /
   schedule:
-    interval: weekly
-  ignore:
-      - dependency-name: "Microsoft.CodeAnalysis.Common"
-      - dependency-name: "Microsoft.CodeAnalysis.CSharp"
-      - dependency-name: "Microsoft.CodeAnalysis.CSharp.Features"
-      - dependency-name: "Microsoft.CodeAnalysis.CSharp.Workspaces"
-      - dependency-name: "Microsoft.CodeAnalysis.VisualBasic"
-      - dependency-name: "Microsoft.Bcl.AsyncInterfaces"
-      - dependency-name: "Microsoft.Bcl.HashCode"
+    interval: daily
